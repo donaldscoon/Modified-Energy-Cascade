@@ -14,8 +14,9 @@ End goal is global sensitivity and uncertainty analysis of this version and comp
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 800          # umol/m^2/sec, needs to accept inputs
+PPFD = 300          # umol/m^2/sec, needs to accept inputs
 CO2 = 400           # umol CO2 / mol air,needs to accept  inputs
+H = 16              # photoperiod defined as 16 in Cavazonni 2001
 
 ##################################################
 ############## INTIALIZING VARIABLES  ############
@@ -33,7 +34,8 @@ t_Q = 51            # onset of senescence placeholder value ewert table 4-112
 CQY_min = 0         # minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # minimum carbon use efficiency ewert table 4-99
-
+OPF = 1.08          # Oxygen production fraction ewert table 4-113
+BCF = 0.40          # Biomass carbon fraction ewert table 4-113
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
 ##################################################
@@ -210,12 +212,15 @@ while t < 50:
     else: 
         """For lettuce the values of CQY_min and CUE_min 
         are n/a due to the assumption that the canopy does
-        not senesce before harvest. I coded them anyways. """
-        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q))
-        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q))
+        not senesce before harvest. I coded them anyways, it
+        makes it complete for all the other crops too. """
+        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # ewert eq 4-15
+        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
         print("Error: Utilizing CQY and CUE values without definitions")
         break
+    DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
+    DOP = OPF*DCG # ewert eq 4-18
+    CGR = 12.011*(DCG/BCF) # ewert eq 4-19 number is molecular weight of carbon
     
     t += 1
-    
 print(t)
