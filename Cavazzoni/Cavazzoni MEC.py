@@ -29,7 +29,11 @@ t = 0               # time in days
 n = 2.5             # Ewert table 4-97 crop specific
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
 t_M = 30            # time at harvest/maturity ewert table 4-112
-t_Q = 50            # onset of senescence placeholder value ewert table 4-112
+t_Q = 51            # onset of senescence placeholder value ewert table 4-112
+CQY_min = 0         # minimum canopy quantum yield ewert table 4-99
+CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
+CUE_min = 0         # minimum carbon use efficiency ewert table 4-99
+
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
 ##################################################
@@ -200,6 +204,17 @@ while t < 50:
         A = A_max*(t/t_A)**n # Ewert eq 4-14
     else: # after canopy closure
         A = A_max # Ewert eq 4-14
+    if t<= t_Q: # before onset of senescence
+        CQY = CQY_max # ewert eq 4-15
+        CUE_24 = CUE_max # ewert eq 4-16
+    else: 
+        """For lettuce the values of CQY_min and CUE_min 
+        are n/a due to the assumption that the canopy does
+        not senesce before harvest. I coded them anyways. """
+        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q))
+        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q))
+        print("Error: Utilizing CQY and CUE values without definitions")
+        break
     
     t += 1
     
