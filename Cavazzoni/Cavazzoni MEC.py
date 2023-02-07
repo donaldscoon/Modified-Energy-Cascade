@@ -11,6 +11,11 @@ End goal is global sensitivity and uncertainty analysis of this version and comp
 
 """
 
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
