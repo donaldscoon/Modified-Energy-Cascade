@@ -104,21 +104,22 @@ for day in range(days):
     crop_biomass[day] = TCB
     edible_biomass[day] = TEB
     print(TCB)
-    print(TEB)
+    print(crop_biomass)
+    # print(TEB)
 
-plt.figure()
+# plt.figure()
 
-fig1 = sns.lineplot(x=ts,y=crop_biomass)
-sns.lineplot(x=ts,y=edible_biomass)
-fig1.set(xlabel='Days After Planting',ylabel='Dry Weight, g/m$^2$',title='Cumulative Biomass, lettuce')
-fig1.legend(labels=['Crop Biomass','Edible Biomass'])
+# fig1 = sns.lineplot(x=ts,y=crop_biomass)
+# sns.lineplot(x=ts,y=edible_biomass)
+# fig1.set(xlabel='Days After Planting',ylabel='Dry Weight, g/m$^2$',title='Cumulative Biomass, lettuce')
+# fig1.legend(labels=['Crop Biomass','Edible Biomass'])
 
 # fig2 = sns.lineplot(x=ts,y=edible_biomass)
 # sns.lineplot(x=ts,y=edible_biomass)
 # fig2.set(xlabel='Days After Planting',ylabel='Dry Weight, g/m^2',title='Cumulative Biomass, L. sativa var. "Outredgeous"')
 # fig2.legend(labels=['Crop Biomass','Edible Biomass'])
 
-plt.show()
+# plt.show()
 # total crop biomass integrates CGR over the full grow
 
 # %%

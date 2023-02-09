@@ -9,6 +9,8 @@ Life Support Baseline Values and Assumptions Document by Ewert 2020
 
 End goal is global sensitivity and uncertainty analysis of this version and comparison against others. 
 
+Maybe one day I modify the structure to accept flags for which crop.
+
 """
 
 import numpy as np
@@ -19,15 +21,15 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 300          # umol/m^2/sec, needs to accept inputs
-CO2 = 400           # umol CO2 / mol air,needs to accept  inputs
+PPFD = 560          # umol/m^2/sec, needs to accept inputs
+CO2 = 419.5           # umol CO2 / mol air,needs to accept  inputs
 H = 16              # photoperiod defined as 16 in Cavazonni 2001
 
 ##################################################
 ############## INTIALIZING VARIABLES  ############
 ##################################################
 t = 0               # time in days
-
+dt = 1              # timestep (in days)
 
 ##################################################
 #################### CONSTANTS ###################
@@ -35,12 +37,24 @@ t = 0               # time in days
 n = 2.5             # Ewert table 4-97 crop specific
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
 t_M = 30            # time at harvest/maturity ewert table 4-112
-t_Q = 51            # onset of senescence placeholder value ewert table 4-112
+t_Q = 50            # onset of senescence placeholder value ewert table 4-112
 CQY_min = 0         # minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # minimum carbon use efficiency ewert table 4-99
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 BCF = 0.40          # Biomass carbon fraction ewert table 4-113
+
+##################################################
+################ Data Management #################
+##################################################
+matrix = range(t_M) + np.ones(t_M)      # hmm need to figure out how to make this work for timesteps other than
+
+TCB = 0                                 # starting crop biomass
+Biomass_mat = np.zeros(t_M)             # matrix for TCB storage
+
+TEB = 0                                 # starting total edible biomass
+edible_mat = np.zeros(t_M)              # matrix for TEB storage
+
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
 ##################################################
@@ -205,27 +219,30 @@ print("Canpopy Quantum Yield is", CQY_max)
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
-
-while t < 50:     
-    if t < t_A: # before canopy closure
-        A = A_max*(t/t_A)**n # Ewert eq 4-14
-    else: # after canopy closure
-        A = A_max # Ewert eq 4-14
-    if t<= t_Q: # before onset of senescence
-        CQY = CQY_max # ewert eq 4-15
-        CUE_24 = CUE_max # ewert eq 4-16
+while t < t_M:                 # while time is less than harvest time
+    if t < t_A:                  # before canopy closure
+        A = A_max*(t/t_A)**n         # Ewert eq 4-14
+    else:                        # after canopy closure
+        A = A_max                    # Ewert eq 4-14
+    if t<= t_Q:                  # before onset of senescence
+        CQY = CQY_max                # ewert eq 4-15
+        CUE_24 = CUE_max             # ewert eq 4-16
     else: 
         """For lettuce the values of CQY_min and CUE_min 
         are n/a due to the assumption that the canopy does
         not senesce before harvest. I coded them anyways, it
-        makes it complete for all the other crops too. """
+        makes it complete for all the other crops too. For 
+        crops other than lettuce remove the break statement."""
         CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # ewert eq 4-15
         CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
         print("Error: Utilizing CQY and CUE values without definitions")
         break
     DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
-    DOP = OPF*DCG # ewert eq 4-18
-    CGR = 12.011*(DCG/BCF) # ewert eq 4-19 number is molecular weight of carbon
-    
-    t += 1
+    DOP = OPF*DCG                    # ewert eq 4-18
+    CGR = 12.011*(DCG/BCF)           # ewert eq 4-19 number is molecular weight of carbon
+    TCB += CGR                       # 
+    print(TCB)
+    Biomass_mat[t] = TCB             # this only works with timestep of 1... not good
+    print(Biomass_mat)
+    t += dt                          # advance timestep
 print(t)
