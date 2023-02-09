@@ -22,11 +22,15 @@ import pandas as pd
 ################## MODEL INPUTS ##################
 ##################################################
 PPFD = 560          # umol/m^2/sec, needs to accept inputs
-CO2 = 419.5           # umol CO2 / mol air,needs to accept  inputs
+CO2 = 419.5         # umol CO2 / mol air,needs to accept  inputs
 H = 16              # photoperiod defined as 16 in Cavazonni 2001
+T_LIGHT = 23        # Light Cycle Average Temperature ewert table 4-111 or user input
+T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
+RH = .675           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
+P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 
 ##################################################
-############## INTIALIZING VARIABLES  ############
+################# INTIALIZATION  #################
 ##################################################
 t = 0               # time in days
 dt = 1             # timestep (in days)
@@ -46,6 +50,11 @@ CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 BCF = 0.40          # Biomass carbon fraction ewert table 4-113
 XFRT = 0.95         # edible biomass fraction ewert table 4-112
+D_PG = 24           # the plants diurnal cycle length assumed 24 in cavazzoni 2001
+g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
+MW_W = 18.015       # Molecular weight of water, ewert table 4-110
+p_W = 998.23        # density of water at 20 C, ewert table 4-110
+
 
 ##################################################
 ################ Data Management #################
@@ -153,10 +162,8 @@ t_A = (t_A_1 + t_A_2 + t_A_3 + t_A_4 + t_A_5 +
        t_A_11 + t_A_12 + t_A_13 + t_A_14 + t_A_15 + 
        t_A_16 + t_A_17 + t_A_18 + t_A_19 + t_A_20 + 
        t_A_21 + t_A_22 + t_A_23 + t_A_24 + t_A_25)
-print("Time to Canopy Closure (t_A) =",t_A)
 
 """ Canopy Quantum Yield Equation """
-
 # CQY_max Coefficients ewert table 4-102
 CQY_m_c_1 = 0
 CQY_m_c_2 = 0
@@ -217,17 +224,14 @@ CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
            CQY_m_t_11 + CQY_m_t_12 + CQY_m_t_13 + CQY_m_t_14 + CQY_m_t_15 + 
            CQY_m_t_16 + CQY_m_t_17 + CQY_m_t_18 + CQY_m_t_19 + CQY_m_t_20 + 
            CQY_m_t_21 + CQY_m_t_22 + CQY_m_t_23 + CQY_m_t_24 + CQY_m_t_25)
-print("Canpopy Quantum Yield is", CQY_max)
 
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
 while t < ts_to_harvest:                 # while time is less than harvest time
     if t < t_A:                  # before canopy closure
-        print(t, 'canopy open')
         A = A_max*(t/t_A)**n         # Ewert eq 4-14
     else:                        # after canopy closure
-        print(t,'canopy closed')
         A = A_max                    # Ewert eq 4-14
     if t<= t_Q:                  # before onset of senescence
         CQY = CQY_max                # ewert eq 4-15
@@ -252,16 +256,22 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
     '''now it works more, but only if the it results in a whole number'''
     edible_mat[i] = TEB
+    VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf temp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
+    VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
+    VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
+    P_GROSS = A*CQY*PPFD             # Gross photosynthesis ewert eq 4-24
+    P_NET = (((D_PG-H)/D_PG)+((H*CUE_24)/D_PG))*P_GROSS     # Net Photosynthesis ewert eq 4-25
+    g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
+    g_C = (g_A*g_S)/(g_A+g_S)                               # canopy conductance ewert 4-26
+    DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
+    print( g_S, g_C, DTR)
     t += dt                          # advance timestep
     i += 1                           # increase matrix index counter
-print("Total Time Step:", t)
-print("Final Biomass:", TCB)
-print("Final Edible Biomass:", TEB)
-print()
+
+
 ############################################################
 ##################### NOTES FOR LATER ######################
 ############################################################
-
 """double check that these values line up with stephens"""
 """I believe only the values in matrices are being stored
    may have to make a giant matrix, then export to CSV"""
