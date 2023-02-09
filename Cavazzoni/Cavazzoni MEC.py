@@ -29,7 +29,8 @@ H = 16              # photoperiod defined as 16 in Cavazonni 2001
 ############## INTIALIZING VARIABLES  ############
 ##################################################
 t = 0               # time in days
-dt = 1              # timestep (in days)
+dt = 15             # timestep (in days)
+i = 0               # loop counter
 
 ##################################################
 #################### CONSTANTS ###################
@@ -47,13 +48,14 @@ BCF = 0.40          # Biomass carbon fraction ewert table 4-113
 ##################################################
 ################ Data Management #################
 ##################################################
-matrix = range(t_M) + np.ones(t_M)      # hmm need to figure out how to make this work for timesteps other than
+ts_to_harvest = int(t_M/dt)             # calcs the timesteps needed to set up the matrix for each ts
+matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 
 TCB = 0                                 # starting crop biomass
-Biomass_mat = np.zeros(t_M)             # matrix for TCB storage
+Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 
 TEB = 0                                 # starting total edible biomass
-edible_mat = np.zeros(t_M)              # matrix for TEB storage
+edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
 
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
@@ -219,7 +221,7 @@ print("Canpopy Quantum Yield is", CQY_max)
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
-while t < t_M:                 # while time is less than harvest time
+while t < ts_to_harvest:                 # while time is less than harvest time
     if t < t_A:                  # before canopy closure
         A = A_max*(t/t_A)**n         # Ewert eq 4-14
     else:                        # after canopy closure
@@ -242,7 +244,10 @@ while t < t_M:                 # while time is less than harvest time
     CGR = 12.011*(DCG/BCF)           # ewert eq 4-19 number is molecular weight of carbon
     TCB += CGR                       # 
     print(TCB)
-    Biomass_mat[t] = TCB             # this only works with timestep of 1... not good
+    Biomass_mat[i] = TCB             # this only works with timestep of 1... not good
+    '''this will probably be fixed by making t divisable by dt'''
+    '''now it works more, but only if the it results in a whole number'''
     print(Biomass_mat)
     t += dt                          # advance timestep
+    i += 1
 print(t)
