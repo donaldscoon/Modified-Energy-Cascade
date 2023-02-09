@@ -29,14 +29,15 @@ H = 16              # photoperiod defined as 16 in Cavazonni 2001
 ############## INTIALIZING VARIABLES  ############
 ##################################################
 t = 0               # time in days
-dt = 15             # timestep (in days)
-i = 0               # loop counter
+dt = 1             # timestep (in days)
+i = 0               # matrix/loop counter
 
 ##################################################
 #################### CONSTANTS ###################
 ##################################################
 n = 2.5             # Ewert table 4-97 crop specific
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
+t_E = 1             # time at onset of organ formation ewert table 4-112
 t_M = 30            # time at harvest/maturity ewert table 4-112
 t_Q = 50            # onset of senescence placeholder value ewert table 4-112
 CQY_min = 0         # minimum canopy quantum yield ewert table 4-99
@@ -44,6 +45,7 @@ CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # minimum carbon use efficiency ewert table 4-99
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 BCF = 0.40          # Biomass carbon fraction ewert table 4-113
+XFRT = 0.95         # edible biomass fraction ewert table 4-112
 
 ##################################################
 ################ Data Management #################
@@ -73,17 +75,17 @@ c7 = 1
 c8 = CO2
 c9 = (CO2**2)
 c10 = (CO2**3)
-c11 = (PPFD/CO2)
+c11 = PPFD*(1/CO2)
 c12 = PPFD
 c13 = PPFD*CO2
 c14 = PPFD*(CO2**2)
 c15 = PPFD*(CO2**3)
-c16 = (PPFD**2/CO2)
+c16 = (PPFD**2)*(1/CO2)
 c17 = (PPFD**2)
 c18 = (PPFD**2)*CO2
 c19 = (PPFD**2)*(CO2**2)
 c20 = (PPFD**2)*(CO2**3)
-c21 = (PPFD**3/CO2)
+c21 = (PPFD**3)*(1/CO2)
 c22 = (PPFD**3)
 c23 = (PPFD**3)*CO2
 c24 = (PPFD**3)*(CO2**2)
@@ -242,12 +244,22 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
     DOP = OPF*DCG                    # ewert eq 4-18
     CGR = 12.011*(DCG/BCF)           # ewert eq 4-19 number is molecular weight of carbon
-    TCB += CGR                       # 
-    print(TCB)
-    Biomass_mat[i] = TCB             # this only works with timestep of 1... not good
-    '''this will probably be fixed by making t divisable by dt'''
+    TCB += CGR                       # ewert eq 4-20
+    if t > t_E:                      # accumilate edible biomass when organ formation begins
+        TEB += XFRT*CGR              # ewert eq 4-21
+    Biomass_mat[i] = TCB             # matrix that stores past values of TCB
+    '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
     '''now it works more, but only if the it results in a whole number'''
-    print(Biomass_mat)
+    edible_mat[i] = TEB
     t += dt                          # advance timestep
-    i += 1
-print(t)
+    i += 1                           # increase matrix index counter
+print("Total Time Step:", t)
+print()
+
+############################################################
+##################### NOTES FOR LATER ######################
+############################################################
+
+"""double check that these values line up with stephens"""
+"""I believe only the values in matrices are being stored
+   may have to make a giant matrix, then export to CSV"""
