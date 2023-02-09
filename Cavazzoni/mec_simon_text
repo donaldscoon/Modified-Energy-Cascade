@@ -84,7 +84,6 @@ CQY_c19 = 8.9265*10**(-15)
 CQY_MAX = CQY_c7+CQY_c8*CO2+CQY_c9*CO2**2+CQY_c12*PPF+CQY_c18*PPF**2*CO2+CQY_c19*PPF**2*CO2**2
 
 CQY = CQY_MAX # no canopy senescence onset, so this is just a constant
-
 # time-dependent equations (Eq. 4.15 and 4.16)
 # lettuce doesn't get to "maturity", so CQY = CQY_max
 
@@ -96,16 +95,21 @@ crop_biomass = np.zeros(days)
 edible_biomass = np.zeros(days)
 for day in range(days):
     t = day + 1
-    A = A_MAX*(t/t_A)**n
+    if t < t_A:
+        print(t, 'canopy open')
+        A = A_MAX*(t/t_A)**n
+    else:
+        print(t,'canopy closed')
+        A=A_MAX
     DCG = 0.0036*H*CUE_24*A*CQY*PPF # 
     CGR = MW_C*DCG/BCF # g/(m^2*d)
     TCB += CGR
     TEB += XFRT*CGR
     crop_biomass[day] = TCB
     edible_biomass[day] = TEB
-    print(TCB)
-    print(crop_biomass)
-    # print(TEB)
+print("Total Time Step:", t)
+print("Final Biomass:", TCB)
+print("Final Edible Biomass:", TEB)
 
 # plt.figure()
 

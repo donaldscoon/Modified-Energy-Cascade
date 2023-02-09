@@ -40,9 +40,9 @@ A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
 t_E = 1             # time at onset of organ formation ewert table 4-112
 t_M = 30            # time at harvest/maturity ewert table 4-112
 t_Q = 50            # onset of senescence placeholder value ewert table 4-112
-CQY_min = 0         # minimum canopy quantum yield ewert table 4-99
+CQY_min = 0         # N/A minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
-CUE_min = 0         # minimum carbon use efficiency ewert table 4-99
+CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 BCF = 0.40          # Biomass carbon fraction ewert table 4-113
 XFRT = 0.95         # edible biomass fraction ewert table 4-112
@@ -176,7 +176,7 @@ CQY_m_c_15 = 0
 CQY_m_c_16 = 0
 CQY_m_c_17 = 0
 CQY_m_c_18 = -1.9731*(10**-11)
-CQY_m_c_19 = 9.9265*(10**-15)
+CQY_m_c_19 = 8.9265*(10**-15)
 CQY_m_c_20 = 0
 CQY_m_c_21 = 0
 CQY_m_c_22 = 0
@@ -217,7 +217,6 @@ CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
            CQY_m_t_11 + CQY_m_t_12 + CQY_m_t_13 + CQY_m_t_14 + CQY_m_t_15 + 
            CQY_m_t_16 + CQY_m_t_17 + CQY_m_t_18 + CQY_m_t_19 + CQY_m_t_20 + 
            CQY_m_t_21 + CQY_m_t_22 + CQY_m_t_23 + CQY_m_t_24 + CQY_m_t_25)
-
 print("Canpopy Quantum Yield is", CQY_max)
 
 ##################################################
@@ -225,8 +224,10 @@ print("Canpopy Quantum Yield is", CQY_max)
 ##################################################
 while t < ts_to_harvest:                 # while time is less than harvest time
     if t < t_A:                  # before canopy closure
+        print(t, 'canopy open')
         A = A_max*(t/t_A)**n         # Ewert eq 4-14
     else:                        # after canopy closure
+        print(t,'canopy closed')
         A = A_max                    # Ewert eq 4-14
     if t<= t_Q:                  # before onset of senescence
         CQY = CQY_max                # ewert eq 4-15
@@ -243,7 +244,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         break
     DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
     DOP = OPF*DCG                    # ewert eq 4-18
-    CGR = 12.011*(DCG/BCF)           # ewert eq 4-19 number is molecular weight of carbon
+    CGR = 12.01*(DCG/BCF)            # ewert eq 4-19 number is molecular weight of carbon
     TCB += CGR                       # ewert eq 4-20
     if t > t_E:                      # accumilate edible biomass when organ formation begins
         TEB += XFRT*CGR              # ewert eq 4-21
@@ -254,8 +255,9 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     t += dt                          # advance timestep
     i += 1                           # increase matrix index counter
 print("Total Time Step:", t)
+print("Final Biomass:", TCB)
+print("Final Edible Biomass:", TEB)
 print()
-
 ############################################################
 ##################### NOTES FOR LATER ######################
 ############################################################
