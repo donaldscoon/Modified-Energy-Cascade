@@ -1,5 +1,6 @@
-import numpy as np
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 phs = 9000
 DTR = 0
@@ -26,9 +27,11 @@ for day in range(days+1):
             })
     dfrec = pd.concat([dfrec, dfts], ignore_index=True)
 print(dfrec)
-dfrec.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/SST_OUT.csv')
+# dfrec.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/SST_OUT.csv')
+# print(dfrec.loc[:, 'TEB'])
 
-# df_total = pd.concat({dfinit, dfrec}, ignore_index=True)
+sns.set_theme()
 
-# os.makedirs('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni')
-
+fig1 = sns.lineplot(x=day, y=dfrec.loc[:,'TEB'])
+fig1_data = pd.DataFrame({'Day' = dfrec.loc[:, 'Day']})
+plt.show()
