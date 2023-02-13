@@ -17,6 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import os
 
 ##################################################
 ################## MODEL INPUTS ##################
@@ -59,14 +60,18 @@ p_W = 998.23        # density of water at 20 C, ewert table 4-110
 ##################################################
 ################ Data Management #################
 ##################################################
+df_records = pd.DataFrame({})
+
+"""These matrices may need to become obsolete with
+   the new dataframes I'm about to introduce. :) """
 ts_to_harvest = int(t_M/dt)             # calcs the timesteps needed to set up the matrix for each ts
 matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
-
 TCB = 0                                 # starting crop biomass
 Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
-
 TEB = 0                                 # starting total edible biomass
 edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
+
+
 
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
@@ -264,14 +269,36 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
     g_C = (g_A*g_S)/(g_A+g_S)                               # canopy conductance ewert 4-26
     DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
-    print( g_S, g_C, DTR)
+    dfts = pd.DataFrame({
+        'Timestep': [t],
+        'A': [A],
+        'CQY': [CQY],
+        'CUE_24': [CUE_24],
+        'DCG': [DCG],
+        'CGR': [CGR],
+        'TCB': [TCB],
+        'TEB': [TEB],
+        'VP_SAT': [VP_SAT],
+        'VP_AIR': [VP_AIR],
+        'VPD': [VPD],
+        'P_GROSS': [P_GROSS],
+        'P_NET': [P_NET],
+        'g_S': [g_S],
+        'g_C': [g_C],
+        'DTR': [DTR]
+    }) # creates a dataframe of all the model outputs for each timestep. 
+    df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += dt                          # advance timestep
     i += 1                           # increase matrix index counter
 
+print(df_records)                    # prints a copy of output in the terminal
+df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
 
 ############################################################
 ##################### NOTES FOR LATER ######################
 ############################################################
-"""double check that these values line up with stephens"""
-"""I believe only the values in matrices are being stored
-   may have to make a giant matrix, then export to CSV"""
+"""The dataframe starts recording after the first calculations,
+ so its slightly off. Couldn't find a way to insert the intial 
+ conditions at the start of the frame or how to start it before
+  then add each timestep frame"""
+

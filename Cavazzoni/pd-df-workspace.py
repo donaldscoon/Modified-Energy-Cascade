@@ -25,10 +25,6 @@ for day in range(days+1):
             'Photosynthesis': [phs],
             })
     dfrec = pd.concat([dfrec, dfts], ignore_index=True)
-print(dfrec)
-dfrec.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/SST_OUT.csv')
+    print(dfrec)
 
-# df_total = pd.concat({dfinit, dfrec}, ignore_index=True)
-
-# os.makedirs('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni')
-
+df_total = pd.concat({dfinit, dfrec}, ignore_index=True)
