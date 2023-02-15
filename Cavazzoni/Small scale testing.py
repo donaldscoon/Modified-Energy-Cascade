@@ -29,9 +29,11 @@ for day in range(days+1):
 print(dfrec)
 # dfrec.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/SST_OUT.csv')
 # print(dfrec.loc[:, 'TEB'])
+print(dfrec.loc[:,'DTR'])
+
+DTR_data= dfrec.loc[:,'DTR']
 
 sns.set_theme()
-
-fig1 = sns.lineplot(x=day, y=dfrec.loc[:,'TEB'])
-fig1_data = pd.DataFrame({'Day' = dfrec.loc[:, 'Day']})
+figTEB = sns.lineplot(x = dfrec['Day'], y = dfrec['TEB'])
+# # fig1_data = pd.DataFrame({'Day' = dfrec.loc[:, 'Day']})
 plt.show()
