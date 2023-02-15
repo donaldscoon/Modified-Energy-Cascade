@@ -290,7 +290,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     t += dt                          # advance timestep
     i += 1                           # increase matrix index counter
 
-# print(df_records)                    # prints a copy of output in the terminal
+print(df_records)                    # prints a copy of output in the terminal
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
 
 
@@ -298,44 +298,49 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 ##################### VISUALIZATIONS #######################
 ############################################################
 '''This is a temporary set up until I figure out something better.'''
+'''I feel like my data is somehow set up wrong to utilize seaborn the way it is described in the tutorials :/ '''
 
-sns.set_theme
-fig_A = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['A']).set(title='Canopy Absorbtion')
-fig_CQY = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CQY']).set(title='Canopy Quantum Yield')
-fig_CUE_24 = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CUE_24']).set(title='Carbon Use Efficiency')
-plt.show()
+# sns.set_theme()
+# fig1 = sns.relplot(data=df_records)
+# plt.show()
 
-sns.set_theme
-fig_DCG = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DCG']).set(title='Daily Carbon Gain')
-fig_CGR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CGR']).set(title='Crop Growth Rate')
-fig_TCB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TCB']).set(title='Total Crop Biomass')
-fig_TEB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TEB']).set(title='Total Edible Biomass')
-plt.show()
+# sns.set_theme
+# fig_A = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['A']).set(title='Canopy Absorbtion')
+# fig_CQY = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CQY']).set(title='Canopy Quantum Yield')
+# fig_CUE_24 = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CUE_24']).set(title='Carbon Use Efficiency')
+# plt.show()
 
-sns.set_theme
-fig_VP_SAT = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_SAT']).set(title='Saturation Vapor Pressure')
-fig_VP_AIR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_AIR']).set(title='Air Vapor Pressure')
-fig_VPD = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VPD']).set(title='Vapor Pressure Defecit')
-plt.show()
+# sns.set_theme
+# fig_DCG = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DCG']).set(title='Daily Carbon Gain')
+# fig_CGR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CGR']).set(title='Crop Growth Rate')
+# fig_TCB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TCB']).set(title='Total Crop Biomass')
+# fig_TEB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TEB']).set(title='Total Edible Biomass')
+# plt.show()
 
-sns.set_theme
-fig_P_GROSS = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_GROSS']).set(title='Gross Photosynthesis')
-fig_P_NET = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_NET']).set(title='Net Photosynthesis')
-plt.show()
+# sns.set_theme
+# fig_VP_SAT = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_SAT']).set(title='Saturation Vapor Pressure')
+# fig_VP_AIR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_AIR']).set(title='Air Vapor Pressure')
+# fig_VPD = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VPD']).set(title='Vapor Pressure Defecit')
+# plt.show()
 
-sns.set_theme
-fig_g_S = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_S']).set(title='Stomatal Conductance')
-fig_g_C = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_C']).set(title='Canopy Conductance')
-fig_DTR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DTR']).set(title='Daily Transpiration Rate')
-plt.show()
+# sns.set_theme
+# fig_P_GROSS = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_GROSS']).set(title='Gross Photosynthesis')
+# fig_P_NET = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_NET']).set(title='Net Photosynthesis')
+# plt.show()
+
+# sns.set_theme
+# fig_g_S = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_S']).set(title='Stomatal Conductance')
+# fig_g_C = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_C']).set(title='Canopy Conductance')
+# fig_DTR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DTR']).set(title='Daily Transpiration Rate')
+# plt.show()
 
 
 
-############################################################
-##################### NOTES FOR LATER ######################
-############################################################
+# ############################################################
+# ##################### NOTES FOR LATER ######################
+# ############################################################
 """The dataframe starts recording after the first calculations,
- so its slightly off. Couldn't find a way to insert the intial 
- conditions at the start of the frame or how to start it before
-  then add each timestep frame"""
+  so its slightly off. Couldn't find a way to insert the intial 
+  conditions at the start of the frame or how to start it before
+   then add each timestep frame"""
 

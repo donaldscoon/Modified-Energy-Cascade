@@ -26,14 +26,10 @@ for day in range(days+1):
             'Photosynthesis': [phs],
             })
     dfrec = pd.concat([dfrec, dfts], ignore_index=True)
-print(dfrec)
-# dfrec.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/SST_OUT.csv')
-# print(dfrec.loc[:, 'TEB'])
-print(dfrec.loc[:,'DTR'])
+# print(dfrec)
 
-DTR_data= dfrec.loc[:,'DTR']
-
-sns.set_theme()
-figTEB = sns.lineplot(x = dfrec['Day'], y = dfrec['TEB'])
-# # fig1_data = pd.DataFrame({'Day' = dfrec.loc[:, 'Day']})
-plt.show()
+# DTR_data= dfrec.loc[:,'DTR']
+# sns.set_theme()
+# figTEB = sns.lineplot(x = dfrec['Day'], y = dfrec['TEB'])
+# # # fig1_data = pd.DataFrame({'Day' = dfrec.loc[:, 'Day']})
+# plt.show()
