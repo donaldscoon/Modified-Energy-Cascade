@@ -15,7 +15,6 @@ Maybe one day I modify the structure to accept flags like a real program
 
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 
 ##################################################
@@ -260,7 +259,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
     '''now it works more, but only if the it results in a whole number'''
     edible_mat[i] = TEB
-    VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf temp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
+    VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
     VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
     VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
     P_GROSS = A*CQY*PPFD             # Gross photosynthesis ewert eq 4-24
@@ -297,44 +296,14 @@ print(df_records)                    # prints a copy of output in the terminal
 ############################################################
 ##################### VISUALIZATIONS #######################
 ############################################################
-'''This is a temporary set up until I figure out something better.'''
-'''I feel like my data is somehow set up wrong to utilize seaborn the way it is described in the tutorials :/ '''
 
-# sns.set_theme()
-# fig1 = sns.relplot(data=df_records)
-# plt.show()
+full_chart = df_records.plot(x='Timestep', marker='o')
+plt.title('All the Data at once!')
+plt.show()
 
-# sns.set_theme
-# fig_A = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['A']).set(title='Canopy Absorbtion')
-# fig_CQY = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CQY']).set(title='Canopy Quantum Yield')
-# fig_CUE_24 = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CUE_24']).set(title='Carbon Use Efficiency')
-# plt.show()
-
-# sns.set_theme
-# fig_DCG = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DCG']).set(title='Daily Carbon Gain')
-# fig_CGR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['CGR']).set(title='Crop Growth Rate')
-# fig_TCB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TCB']).set(title='Total Crop Biomass')
-# fig_TEB = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['TEB']).set(title='Total Edible Biomass')
-# plt.show()
-
-# sns.set_theme
-# fig_VP_SAT = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_SAT']).set(title='Saturation Vapor Pressure')
-# fig_VP_AIR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VP_AIR']).set(title='Air Vapor Pressure')
-# fig_VPD = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['VPD']).set(title='Vapor Pressure Defecit')
-# plt.show()
-
-# sns.set_theme
-# fig_P_GROSS = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_GROSS']).set(title='Gross Photosynthesis')
-# fig_P_NET = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['P_NET']).set(title='Net Photosynthesis')
-# plt.show()
-
-# sns.set_theme
-# fig_g_S = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_S']).set(title='Stomatal Conductance')
-# fig_g_C = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['g_C']).set(title='Canopy Conductance')
-# fig_DTR = sns.lineplot(marker='o', x=df_records['Timestep'], y=df_records['DTR']).set(title='Daily Transpiration Rate')
-# plt.show()
-
-
+canopy_dev_chart = df_records.plot(x='Timestep', y=['A', 'CQY', 'CUE_24'], marker='o')
+plt.title('Canpopy Development')
+plt.show()
 
 # ############################################################
 # ##################### NOTES FOR LATER ######################
