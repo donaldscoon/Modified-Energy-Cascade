@@ -32,7 +32,7 @@ P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 ################# INTIALIZATION  #################
 ##################################################
 t = 0               # time in days
-dt = 1             # timestep (in days)
+res = 1             # model resolution (in days)
 i = 0               # matrix/loop counter
 
 ##################################################
@@ -62,7 +62,7 @@ df_records = pd.DataFrame({})
 
 """These matrices may need to become obsolete with
    the new dataframes I'm about to introduce. :) """
-ts_to_harvest = int(t_M/dt)             # calcs the timesteps needed to set up the matrix for each ts
+ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
 matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
 Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
@@ -286,7 +286,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'DTR': [DTR]
     }) # creates a dataframe of all the model outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    t += dt                          # advance timestep
+    t += res                          # advance timestep
     i += 1                           # increase matrix index counter
 
 print(df_records)                    # prints a copy of output in the terminal
@@ -298,11 +298,17 @@ print(df_records)                    # prints a copy of output in the terminal
 ############################################################
 
 full_chart = df_records.plot(x='Timestep', marker='o')
-plt.title('All the Data at once!')
+full_chart.set_ylabel('ALL THE UNITS!')
+plt.title('ALL THE DATA!')
 plt.show()
 
-canopy_dev_chart = df_records.plot(x='Timestep', y=['A', 'CQY', 'CUE_24'], marker='o')
-plt.title('Canpopy Development')
+fig,ax1 = plt.subplots()
+ax1.set_xlabel('x-axis')
+ax1.set_ylabel('y1-axis')
+ax1.plot(df_records['Timestep'], df_records['CQY'])
+ax2 =ax1.twinx()
+ax2.set_ylabel('y2-axis')
+ax2.plot(df_records['Timestep'], df_records['A','CUE_24'])
 plt.show()
 
 # ############################################################
