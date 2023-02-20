@@ -283,8 +283,12 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'P_NET': [P_NET],
         'g_S': [g_S],
         'g_C': [g_C],
-        'DTR': [DTR]
-    }) # creates a dataframe of all the model outputs for each timestep. 
+        'DTR': [DTR],
+        'T_LIGHT': [T_LIGHT],
+        'T_DARK': [T_DARK],
+        'RH': [RH],
+        'CO2': [CO2]
+    }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
@@ -302,14 +306,27 @@ full_chart.set_ylabel('ALL THE UNITS!')
 plt.title('ALL THE DATA!')
 plt.show()
 
-fig,ax1 = plt.subplots()
-ax1.set_xlabel('x-axis')
-ax1.set_ylabel('y1-axis')
-ax1.plot(df_records['Timestep'], df_records['CQY'])
-ax2 =ax1.twinx()
-ax2.set_ylabel('y2-axis')
-ax2.plot(df_records['Timestep'], df_records['A','CUE_24'])
-plt.show()
+# canopy_chart = df_records.plot(x='Timestep', y=['CQY', 'A','CUE_24'], marker= 'o')
+# plt.title('Canopy Development')
+# plt.ylabel('?2 fractions and umol C/umol photons?')
+# plt.show()
+
+# carbon_pathway_chart = df_records.plot(x='Timestep', y=['DCG', 'CGR'], marker='o')
+# plt.title('Carbon Pathway')
+# plt.ylabel('Future dual axis')
+# plt.show
+
+# crop_growth_chart = df_records.plot(x='Timestep', y=['TCB', 'TEB'], marker='o')
+# plt.title('Crop Growth')
+# plt.ylabel('g/m^2')
+# plt.show
+
+# vapor_chart = df_records.plot(x='Timestep', y=['VP_AIR', 'VP_SAT', 'VPD'], marker='o')
+# plt.title('Vapor Pressures')
+# plt.ylabel('kPa')
+# plt.show()
+
+
 
 # ############################################################
 # ##################### NOTES FOR LATER ######################
@@ -318,4 +335,7 @@ plt.show()
   so its slightly off. Couldn't find a way to insert the intial 
   conditions at the start of the frame or how to start it before
    then add each timestep frame"""
+'''this will need lots of adjustments to make it functionable in
+    variable environments in real time and represent it'''
+"""Ill worry about the visualizations later."""
 
