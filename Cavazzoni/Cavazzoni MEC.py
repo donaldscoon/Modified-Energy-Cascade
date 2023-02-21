@@ -301,15 +301,15 @@ print(df_records)                    # prints a copy of output in the terminal
 ##################### VISUALIZATIONS #######################
 ############################################################
 
-full_chart = df_records.plot(x='Timestep', marker='o')
-full_chart.set_ylabel('ALL THE UNITS!')
-plt.title('ALL THE DATA!')
-plt.show()
-
-# canopy_chart = df_records.plot(x='Timestep', y=['CQY', 'A','CUE_24'], marker= 'o')
-# plt.title('Canopy Development')
-# plt.ylabel('?2 fractions and umol C/umol photons?')
+# full_chart = df_records.plot(x='Timestep', marker='o')
+# full_chart.set_ylabel('ALL THE UNITS!')
+# plt.title('ALL THE DATA!')
 # plt.show()
+
+canopy_chart = df_records.plot(x='Timestep', y=['CQY', 'A','CUE_24'], marker= 'o')
+plt.title('Canopy Development')
+plt.ylabel('?2 fractions and umol C/umol photons?')
+plt.show()
 
 # carbon_pathway_chart = df_records.plot(x='Timestep', y=['DCG', 'CGR'], marker='o')
 # plt.title('Carbon Pathway')

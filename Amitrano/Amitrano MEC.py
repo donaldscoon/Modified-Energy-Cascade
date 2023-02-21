@@ -20,7 +20,8 @@ import pandas as pd
 ################## MODEL INPUTS ##################
 ##################################################
 H = 12              # Amitrano 2020 table 2
-PPFD = 314.54          # found at Amitrano 2020 table 2 but used decimal value in GN excel
+PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in GN excel
+T_LIGHT = 24        # placeholder value
 
 
 ##################################################
@@ -76,11 +77,23 @@ edible_mat = np.zeros(ts_to_harvest+1)              # matrix for TEB storage
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
 ##################################################
+"""Amitranos Model used a variable temp in the excel
+    so the following list is used to make this model 
+    match the excel one for development."""
+
+T_LIST = [24.87, 24.84, 24.87, 24.84, 24.85, 
+           24.87, 24.72, 24.87, 24.74, 24.74, 
+           24.07, 23.93, 23.83, 23.89, 23.58, 
+           23.88, 24.09, 24.21, 24.03, 23.73, 
+           24.02, 24.02, 24.02]
 
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
 while t <= ts_to_harvest:                  # while time is less than harvest time
+    # for l in range(len(T_LIST)):
+    #     T_LIGHT = T_LIST[l]
+    # print(T_LIGHT) 
     if t<= t_D:
         alpha = amin_GN                    # amitrano 2020 eq 15
         beta = bmin_GN                     # amitrano 2020 eq 15
@@ -96,6 +109,9 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     if t > t_E:                            # if edible organ formation has begun
         TEB = CGR+TEB                      # Amitrano 2020 GN excel column I
     edible_mat[i] = TEB                    # matrix that stores past values of TEB
+    P_GROSS = beta*PPFD                    # amitrano 2020 eq 8
+    P_NET = (H*alpha/24+beta*(24-H)/24)*PPFD    # Amitrano 2020 eq 9
+    # g_S = 1.717*T_LIGHT
 
     dfts = pd.DataFrame({
         'Timestep': [t],
@@ -107,14 +123,16 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
         'DOP': [DOP],
         'CGR': [CGR],
         'TEB': [TEB],
+        'P_GROSS': [P_GROSS],
+        'P_NET': [P_NET],
 
     }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                         # advance timestep
     i += 1                           # increase matrix index counter
 
-print(df_records)                    # prints a copy of output in the terminal
-# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
+# print(df_records)                    # prints a copy of output in the terminal
+# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMI_OUT.csv') # exports final data frame to a CSV
 
 
 ############################################################
@@ -133,7 +151,13 @@ print(df_records)                    # prints a copy of output in the terminal
   so its slightly off. Couldn't find a way to insert the intial 
   conditions at the start of the frame or how to start it before
    then add each timestep frame"""
+
 '''this will need lots of adjustments to make it functionable in
     variable environments in real time and represent it'''
+
 """Ill worry about the visualizations later."""
 
+'''Ill need to fix how the model doubles up at the start.'''
+
+'''Interesting her version starts with 0 P_GROSS but 1.09
+    P_NET. Cavazzonis doesn't I wonder how large that impact is'''
