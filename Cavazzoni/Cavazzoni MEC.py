@@ -306,9 +306,16 @@ print(df_records)                    # prints a copy of output in the terminal
 # plt.title('ALL THE DATA!')
 # plt.show()
 
-canopy_chart = df_records.plot(x='Timestep', y=['CQY', 'A','CUE_24'], marker= 'o')
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
+ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
+ax.set_ylabel('Fractional')
+ax2=ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
+ax2.set_ylabel('umol C / umol photons', color='red')
+ax2.tick_params(axis='y',labelcolor='red')
+fig.legend(['CQY', 'CUE_24', 'A'], loc='center right')
 plt.title('Canopy Development')
-plt.ylabel('?2 fractions and umol C/umol photons?')
 plt.show()
 
 # carbon_pathway_chart = df_records.plot(x='Timestep', y=['DCG', 'CGR'], marker='o')
