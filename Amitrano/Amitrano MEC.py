@@ -156,7 +156,8 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     i += 1                           # increase matrix index counter
     l += 1                           # dang temp data counter
 
-print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints a copy of output in the terminal
+print(df_records)       # Prints entire dataframe
+# print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints specific columns
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMI_OUT.csv') # exports final data frame to a CSV
 
 
@@ -164,10 +165,10 @@ print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints
 ##################### VISUALIZATIONS #######################
 ############################################################
 
-# full_chart = df_records.plot(x='Timestep', marker='o')
-# full_chart.set_ylabel('ALL THE UNITS!')
-# plt.title('ALL THE DATA!')
-# plt.show()
+full_chart = df_records.plot(x='Timestep', marker='o')
+full_chart.set_ylabel('ALL THE UNITS!')
+plt.title('ALL THE DATA!')
+plt.show()
 
 # ############################################################
 # ##################### NOTES FOR LATER ######################
@@ -180,12 +181,10 @@ print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints
 '''this will need lots of adjustments to make it functionable in
     variable environments in real time and represent it'''
 
-"""Ill worry about the visualizations later."""
-
-'''Ill need to fix how the model doubles up at the start.'''
-
 '''Interesting her version starts with 0 P_GROSS but 1.09
     P_NET. Cavazzonis doesn't I wonder how large that impact is'''
+
+'''Ill need to fix how the model doubles up at the start. See next note'''
 
 '''What the heck? if I intialize t=0 it duplicates a bunch of first 
     data points, but if I start at t=1 it doesn't...'''

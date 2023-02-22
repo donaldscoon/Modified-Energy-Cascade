@@ -282,6 +282,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'P_GROSS': [P_GROSS],
         'P_NET': [P_NET],
         'g_S': [g_S],
+        'g_A': [g_A],
         'g_C': [g_C],
         'DTR': [DTR],
         'T_LIGHT': [T_LIGHT],
@@ -293,7 +294,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
 
-print(df_records)                    # prints a copy of output in the terminal
+# print(df_records)                    # prints a copy of output in the terminal
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
 
 
@@ -306,33 +307,61 @@ print(df_records)                    # prints a copy of output in the terminal
 # plt.title('ALL THE DATA!')
 # plt.show()
 
-fig, ax = plt.subplots()
-ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
-ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
-ax.set_ylabel('Fractional')
-ax2=ax.twinx()
-ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
-ax2.set_ylabel('umol C / umol photons', color='red')
-ax2.tick_params(axis='y',labelcolor='red')
-fig.legend(['CQY', 'CUE_24', 'A'], loc='center right')
-plt.title('Canopy Development')
-plt.show()
-
-# carbon_pathway_chart = df_records.plot(x='Timestep', y=['DCG', 'CGR'], marker='o')
-# plt.title('Carbon Pathway')
-# plt.ylabel('Future dual axis')
-# plt.show
-
-# crop_growth_chart = df_records.plot(x='Timestep', y=['TCB', 'TEB'], marker='o')
-# plt.title('Crop Growth')
-# plt.ylabel('g/m^2')
-# plt.show
-
-# vapor_chart = df_records.plot(x='Timestep', y=['VP_AIR', 'VP_SAT', 'VPD'], marker='o')
-# plt.title('Vapor Pressures')
-# plt.ylabel('kPa')
+################ Canopy Development ########################
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
+# ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
+# ax.set_ylabel('Fractional')
+# ax2=ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
+# ax2.set_ylabel('umol C / umol photons', color='red')
+# ax2.tick_params(axis='y',labelcolor='red')
+# fig.legend(['CQY', 'CUE_24', 'A'])
+# plt.title('Canopy Development')
 # plt.show()
 
+###################### CARBON FLOW ######################
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
+ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
+ax.set_ylabel(' grams / meter^2', color = 'green')
+ax.tick_params(axis='y', labelcolor='green')
+ax2 = ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
+ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
+fig.legend(['TCB', 'TEB', 'DCG'])
+plt.title('Carbon Flow')
+plt.show()
+
+
+##################### VAPOR PRESSURES ###################
+# VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
+# VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
+# VP_chart.set_ylabel('kPa')
+# plt.title('Vapor Pressures')
+# plt.show()
+
+################### CODUCTANCE ###########################
+# conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
+# conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
+# conductance_chart.set_ylabel('moles of water / (m^2)*s')
+# plt.title('Conductances')
+# plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
+# plt.show()
+
+################### PHOTOSYNTHESIS ###########################
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
+ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
+ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
+ax.tick_params(axis='y', labelcolor='green')
+ax2 = ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
+ax2.set_ylabel('grams / ((m^2)*Day)')
+ax2.set_ybound(0, 35)
+fig.legend(['P_GROSS', 'P_NET', 'CGR'])
+plt.title('Carbon Flow')
+plt.show()
 
 
 # ############################################################
