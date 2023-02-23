@@ -23,6 +23,7 @@ PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in G
 CO2 = 370           # value used in Amitranos excel
 H = 12              # Amitrano 2020 table 2
 T_LIGHT = 24        # placeholder value
+RH = .675
 
 ##################################################
 ################# INTIALIZATION  #################
@@ -46,8 +47,8 @@ t_E = 1             # time at onset of organ formation Amitrano 2020 same as ewe
 MWC = 12.01            # molecular weight of carbon amitrano 2020
 MW_W = 18.015       # molecular weight of water ewert table 4-110
 d_W = 998.23        # water density ewert table 4-110
-P_ATM = 100         # atmospheric pressure Number from Amitrano excel
-T_LEAF = 20.2       # experimental data from  amitrano
+P_ATM = 101         # atmospheric pressure Number from Amitrano excel
+T_LEAF = 24       # experimental data from  amitrano
 
 amin_GN = 0.00691867456539118    # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 amin_RN = 0.0069915227965273     # amitrano 2020 calibrated with growth chamber experiment exact value from excel
@@ -78,23 +79,6 @@ ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up 
 TEB = 8.53                               # this is the only way I could make it match excel WHERE IT FROM??
 edible_mat = np.zeros(ts_to_harvest+1)   # matrix for TEB storage
 
-"""Amitranos Model used a variable temp in the excel
-    so the following list is used to make this model 
-    match the excel one for development."""
-l = 0
-T_LIST = [24.87, 24.84, 24.87, 24.84, 24.85, 
-          24.87, 24.72, 24.87, 24.74, 24.74, 
-          24.07, 23.93, 23.83, 23.89, 23.58, 
-          23.88, 24.09, 24.21, 24.03, 23.73, 
-          24.02, 24.02, 24.02]
-          
-RH_LIST =[0.7907, 0.825178571, 0.815595238, 0.823440476, 
-          0.809821429, 0.814761905, 0.80525, 0.810752381, 
-          0.801378571, 0.80675, 0.829931771, 0.793916667, 
-          0.798875, 0.806375, 0.811838542, 0.813192708, 
-          0.815588542, 0.819796875, 0.819541667, 0.794875, 
-          0.811090476, 0.811090476, 0.811090476]
-
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
 ##################################################
@@ -103,9 +87,6 @@ RH_LIST =[0.7907, 0.825178571, 0.815595238, 0.823440476,
 ################# THE MODEL LOOP #################
 ##################################################
 while t <= ts_to_harvest:                  # while time is less than harvest time
-    if l < t_M:                            # temporary loop to deal with experimental data
-        T_LIGHT = T_LIST[l]
-        RH = RH_LIST[l]
     if t<= t_D:                            # if timestep is before formation of edible organs
         alpha = amin_GN                    # amitrano 2020 eq 15
         beta = bmin_GN                     # amitrano 2020 eq 15
@@ -150,16 +131,17 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
         'g_S': [g_S],
         'g_C': [g_C],
         'DTR': [DTR],
+        'g_A': [g_A]
     }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                         # advance timestep
     i += 1                           # increase matrix index counter
-    l += 1                           # dang temp data counter
 
 print(df_records)       # Prints entire dataframe
 # print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints specific columns
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMI_OUT.csv') # exports final data frame to a CSV
-
+print(df_records[['Timestep', 'DTR', 'g_C', 'g_S', 'P_NET']])
+df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMICOMP_OUT.csv') # exports final data frame to a CSV
 
 ############################################################
 ##################### VISUALIZATIONS #######################
@@ -167,7 +149,48 @@ print(df_records)       # Prints entire dataframe
 
 # full_chart = df_records.plot(x='Timestep', marker='o')
 # full_chart.set_ylabel('ALL THE UNITS!')
-# plt.title('ALL THE DATA!')
+# plt.title('AMI ALL THE DATA!')
+# plt.show()
+
+# #################### CARBON FLOW ######################
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
+# ax.set_ylabel(' grams / meter^2', color = 'green')
+# ax.tick_params(axis='y', labelcolor='green')
+# ax2 = ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
+# ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
+# fig.legend(['TCB', 'TEB', 'DCG'])
+# plt.title('AMI Carbon Flow')
+# plt.show()
+
+# ################### VAPOR PRESSURES ###################
+# VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
+# VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
+# VP_chart.set_ylabel('kPa')
+# plt.title('AMI Vapor Pressures')
+# plt.show()
+
+# ################ CODUCTANCE ###########################
+# conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
+# conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
+# conductance_chart.set_ylabel('moles of water / (m^2)*s')
+# plt.title('AMI Conductances')
+# plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
+# plt.show()
+
+# ################# PHOTOSYNTHESIS ###########################
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
+# ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
+# ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
+# ax.tick_params(axis='y', labelcolor='green')
+# ax2 = ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
+# ax2.set_ylabel('grams / ((m^2)*Day)')
+# ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
+# fig.legend(['P_GROSS', 'P_NET', 'CGR'])
+# plt.title('AMI Carbon Flow')
 # plt.show()
 
 # ############################################################
