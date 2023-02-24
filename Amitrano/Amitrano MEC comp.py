@@ -140,8 +140,8 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
 print(df_records)       # Prints entire dataframe
 # print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints specific columns
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMI_OUT.csv') # exports final data frame to a CSV
-print(df_records[['Timestep', 'DTR', 'g_C', 'g_S', 'P_NET']])
-df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMICOMP_OUT.csv') # exports final data frame to a CSV
+# print(df_records[['Timestep', 'DTR', 'g_C', 'g_S', 'P_NET']])
+# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Amitrano/MEC_AMICOMP_OUT.csv') # exports final data frame to a CSV
 
 ############################################################
 ##################### VISUALIZATIONS #######################

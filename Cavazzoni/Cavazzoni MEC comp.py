@@ -4,13 +4,12 @@ Created on Mon Feb  6 12:33:34 2023
 
 @author: donal
 
-Written to recreate the MEC authored by Boscheri. 
+Written to recreate the MEC authored by Jones and Cavazzoni. Created using the 
+Life Support Baseline Values and Assumptions Document by Ewert 2020
 
 End goal is global sensitivity and uncertainty analysis of this version and comparison against others. 
 
 Maybe one day I modify the structure to accept flags like a real program
-
-This specific version will only be a single "crop layer" not a multi layer one like the paper
 
 """
 
@@ -21,10 +20,10 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 560          # umol/m^2/sec, needs to accept inputs
-CO2 = 419.5         # umol CO2 / mol air,needs to accept  inputs
-H = 16              # photoperiod defined as 16 in Cavazonni 2001
-T_LIGHT = 23        # Light Cycle Average Temperature ewert table 4-111 or user input
+PPFD = 314.54          # umol/m^2/sec, needs to accept inputs
+CO2 = 370         # umol CO2 / mol air,needs to accept  inputs
+H = 12              # photoperiod defined as 16 in Cavazonni 2001
+T_LIGHT = 24        # Light Cycle Average Temperature ewert table 4-111 or user input
 T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
 RH = .675           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
 P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
@@ -32,14 +31,9 @@ P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 ##################################################
 ################# INTIALIZATION  #################
 ##################################################
-t = 0                       # time in days
-res = 1                     # model resolution 1 Hour
-i = 0                       # matrix/loop counter
-I = 0                       # boscheri "I is equal to 1 and 0 during the photoperiod (day) and dark period (night)"
-night_len = 24 - H          # length of night
-day_len = 24 - night_len    # length of day
-pp_count = 0                # photoperiod counter
-day = 0
+t = 0               # time in days
+res = 1             # model resolution (in days)
+i = 0               # matrix/loop counter
 
 ##################################################
 #################### CONSTANTS ###################
@@ -47,26 +41,19 @@ day = 0
 BCF = 0.40          # Biomass carbon fraction ewert table 4-113
 XFRT = 0.95         # edible biomass fraction ewert table 4-112
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
-g_A = 2.5           # atmospheric aerodynamic conductance boscheri "for horizontal canopies"
+g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
-t_M = 30             # time at harvest/maturity ewert table 4-112
+t_M = 23            # time at harvest/maturity ewert table 4-112
 t_Q = 50            # onset of senescence placeholder value ewert table 4-112
 t_E = 1             # time at onset of organ formation ewert table 4-112
-MW_W = 18.0153      # Molecular weight of water, boscheri table 4
-MWC = 12.0107       # molecular weight of carbon boscheri table 4
-MW_O2 = 31.9988     # molecular weight of O2 boscheri table 4
-MW_CO2 = 44.010     # molecular weight of CO2 boscheri table 4
+MW_W = 18.015       # Molecular weight of water, ewert table 4-110
 CQY_min = 0         # N/A minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
 D_PG = 24           # the plants diurnal cycle length assumed 24 in cavazzoni 2001
 p_W = 998.23        # density of water at 20 C, ewert table 4-110
 n = 2.5             # Ewert table 4-97 crop specific
-a = 0.0036          # boscheri table 4 similar to others but in 'a'
-b = 3600            # boscheri table 4
-WBF = XFRT          # Boscheri doesn't define this, I'm assuming that its the same as XFRT
-DRY_FR = xxxxx      # Hanford 2004 Table 4.2.7, ugh boscheri just state the number
-NC_FR = xxxxx       # Hanford 2004 table 4.2.10, ugh boscheri just state the number
+
 
 ##################################################
 ################ Data Management #################
@@ -81,6 +68,8 @@ TCB = 0                                 # starting crop biomass
 Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
 edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
+
+
 
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
@@ -243,75 +232,72 @@ CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
 ################# THE MODEL LOOP #################
 ##################################################
 while t < ts_to_harvest:                 # while time is less than harvest time
-    if I == 0 and pp_count == night_len:    # turns night to day
-        I = 1
-        pp_count = 0
-    elif I == 1 and pp_count == day_len:    # turns day to night
-        I = 0
-        pp_count = 0
-    if (t % 24) == 0:                       # this if statement counts the days by checking if the ts/24 is a whole number
-        day += 1
-        if t == 0:                          # need this because 0/24 = 0 triggering day counter
-            day = 0
     if t < t_A:                  # before canopy closure
-        A = A_max*(t/t_A)**n         # boscheri eq 5
+        A = A_max*(t/t_A)**n         # Ewert eq 4-14
     else:                        # after canopy closure
-        A = A_max                    # boscheri eq 5
+        A = A_max                    # Ewert eq 4-14
     if t<= t_Q:                  # before onset of senescence
-        CQY = CQY_max                # boscheri eq 3
-        CUE_24 = CUE_max             # boscheri eq 4
-    elif t_Q < t: 
+        CQY = CQY_max                # ewert eq 4-15
+        CUE_24 = CUE_max             # ewert eq 4-16
+    else: 
         """For lettuce the values of CQY_min and CUE_min 
         are n/a due to the assumption that the canopy does
         not senesce before harvest. I coded them anyways, it
         makes it complete for all the other crops too. For 
         crops other than lettuce remove the break statement."""
-        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # boscheri eq 3
-        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) # boscheri eq 4
-        print(t, "Error: Utilizing CQY and CUE values without definitions")
+        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # ewert eq 4-15
+        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
+        print("Error: Utilizing CQY and CUE values without definitions")
         break
-    HCG = a*CUE_24*A*CQY*PPFD*I      # boscheri eq 2  
-    HCGR = HCG*MWC*(BCF)**(-1)       # boscheri eq 6
-    ######## SEE WBF FOR ASSUMPTION #############
-    HWCGR = HCGR*(1-WBF)**(-1)       # boscheri eq 7 
-    HOP = HCG/CUE_24*OPF*MW_O2       # boscheri eq 8
-    HOC = HCG/(1-CUE_24)/CUE_24*OPF*MW_O2*H/24 # paper includes "I" with a weird notation, but can't divide by I so I removed boscheri eq 9 
-    VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # boscheri eq 12
-    VPD = VP_SAT*(1-RH)             # boscheri eq 12
-    P_NET = A*CQY*PPFD              # boscheri eq 13
-    g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2) # boscheri unlabeled equation
-    g_C = (g_A*g_S)*(g_A+g_S)**(-1) # boscheri unlabeled equation
-    HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
-    HCO2C = HOP*MW_CO2*MW_O2**(-1)  # boscheri eq 14
-    HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15
-    HNC = HCGR*DRY_FC*NC_FR
-    # Biomass_mat[i] = TCB            # matrix that stores past values of TCB
-    # edible_mat[i] = TEB
+    DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
+    DOP = OPF*DCG                    # ewert eq 4-18
+    CGR = 12.01*(DCG/BCF)            # ewert eq 4-19 number is molecular weight of carbon
+    TCB += CGR                       # ewert eq 4-20
+    if t > t_E:                      # accumilate edible biomass when organ formation begins
+        TEB += XFRT*CGR              # ewert eq 4-21
+    Biomass_mat[i] = TCB             # matrix that stores past values of TCB
+    '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
+    '''now it works more, but only if the it results in a whole number'''
+    edible_mat[i] = TEB
+    VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
+    VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
+    VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
+    P_GROSS = A*CQY*PPFD             # Gross photosynthesis ewert eq 4-24
+    P_NET = (((D_PG-H)/D_PG)+((H*CUE_24)/D_PG))*P_GROSS     # Net Photosynthesis ewert eq 4-25
+    g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
+    g_C = (g_A*g_S)/(g_A+g_S)                               # canopy conductance ewert 4-26
+    DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
     dfts = pd.DataFrame({
         'Timestep': [t],
-        'Day': [day],
-        'diurnal': [I],
         'A': [A],
         'CQY': [CQY],
         'CUE_24': [CUE_24],
-        'HCG': [HCG],
-        'HCGR': [HCGR],
-        'HWCGR': [HWCGR],
-        'HOP': [HOP],
-        'HOC': [HOC],
-        'HTR': [HTR],
-        'HCO2C': [HCO2C],
-        'HCO2P': [HCO2P],
-
-        }) # creates a dataframe of all variables/outputs for each timestep. 
+        'DCG': [DCG],
+        'CGR': [CGR],
+        'TCB': [TCB],
+        'TEB': [TEB],
+        'VP_SAT': [VP_SAT],
+        'VP_AIR': [VP_AIR],
+        'VPD': [VPD],
+        'P_GROSS': [P_GROSS],
+        'P_NET': [P_NET],
+        'g_S': [g_S],
+        'g_A': [g_A],
+        'g_C': [g_C],
+        'DTR': [DTR],
+        'T_LIGHT': [T_LIGHT],
+        'T_DARK': [T_DARK],
+        'RH': [RH],
+        'CO2': [CO2]
+    }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    df_day = df_records.groupby(['Day']).sum()
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
-    pp_count += 1                    # photoperiod counter + 1
-print(df_records)                    # prints a copy of output in the terminal
-# print(df_day)                           # prints the output summed by the day!
-# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Boscheri/BOS_CAV_OUT.csv') # exports final data frame to a CSV
+
+# print(df_records)                    # prints a copy of output in the terminal
+# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
+print(df_records[['Timestep', 'DTR', 'g_C', 'g_S', 'P_NET']])
+df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAVCOMP_OUT.csv') # exports final data frame to a CSV
 
 
 ############################################################
@@ -320,10 +306,10 @@ print(df_records)                    # prints a copy of output in the terminal
 
 # full_chart = df_records.plot(x='Timestep', marker='o')
 # full_chart.set_ylabel('ALL THE UNITS!')
-# plt.title('ALL THE DATA!')
+# plt.title('CAV ALL THE DATA!')
 # plt.show()
 
-################ Canopy Development ########################
+# ############### Canopy Development ########################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
 # ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
@@ -333,10 +319,10 @@ print(df_records)                    # prints a copy of output in the terminal
 # ax2.set_ylabel('umol C / umol photons', color='red')
 # ax2.tick_params(axis='y',labelcolor='red')
 # fig.legend(['CQY', 'CUE_24', 'A'])
-# plt.title('Canopy Development')
-# plt.show()
+# plt.title('CAV Canopy Development')
+# # plt.show()
 
-###################### CARBON FLOW ######################
+# ##################### CARBON FLOW ######################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
 # ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
@@ -346,26 +332,27 @@ print(df_records)                    # prints a copy of output in the terminal
 # ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
 # ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
 # fig.legend(['TCB', 'TEB', 'DCG'])
-# plt.title('Carbon Flow')
+# plt.title('CAV Carbon Flow')
 # plt.show()
 
 
-##################### VAPOR PRESSURES ###################
+
+# #################### VAPOR PRESSURES ###################
 # VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
 # VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
 # VP_chart.set_ylabel('kPa')
-# plt.title('Vapor Pressures')
+# plt.title('CAV Vapor Pressures')
 # plt.show()
 
-################### CODUCTANCE ###########################
+# ################# CODUCTANCE ###########################
 # conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
 # conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
 # conductance_chart.set_ylabel('moles of water / (m^2)*s')
-# plt.title('Conductances')
+# plt.title(' CAV Conductances')
 # plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
 # plt.show()
 
-################### PHOTOSYNTHESIS ###########################
+# ################# PHOTOSYNTHESIS ###########################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
 # ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
@@ -376,13 +363,18 @@ print(df_records)                    # prints a copy of output in the terminal
 # ax2.set_ylabel('grams / ((m^2)*Day)')
 # ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
 # fig.legend(['P_GROSS', 'P_NET', 'CGR'])
-# plt.title('Carbon Flow')
+# plt.title('CAV Carbon Flow')
 # plt.show()
 
 
 # ############################################################
 # ##################### NOTES FOR LATER ######################
 # ############################################################
-    '''Not sure how wet crop biomass translates to TCB of TEB,
-    will need to dig deeper into that concept, which is why
-    those matrices are commented out'''
+"""The dataframe starts recording after the first calculations,
+  so its slightly off. Couldn't find a way to insert the intial 
+  conditions at the start of the frame or how to start it before
+   then add each timestep frame"""
+'''this will need lots of adjustments to make it functionable in
+    variable environments in real time and represent it'''
+"""Ill worry about the visualizations later."""
+

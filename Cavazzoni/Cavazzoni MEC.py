@@ -38,21 +38,21 @@ i = 0               # matrix/loop counter
 ##################################################
 #################### CONSTANTS ###################
 ##################################################
-n = 2.5             # Ewert table 4-97 crop specific
+BCF = 0.40          # Biomass carbon fraction ewert table 4-113
+XFRT = 0.95         # edible biomass fraction ewert table 4-112
+OPF = 1.08          # Oxygen production fraction ewert table 4-113
+g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
-t_E = 1             # time at onset of organ formation ewert table 4-112
 t_M = 30            # time at harvest/maturity ewert table 4-112
 t_Q = 50            # onset of senescence placeholder value ewert table 4-112
+t_E = 1             # time at onset of organ formation ewert table 4-112
+MW_W = 18.015       # Molecular weight of water, ewert table 4-110
 CQY_min = 0         # N/A minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
-OPF = 1.08          # Oxygen production fraction ewert table 4-113
-BCF = 0.40          # Biomass carbon fraction ewert table 4-113
-XFRT = 0.95         # edible biomass fraction ewert table 4-112
 D_PG = 24           # the plants diurnal cycle length assumed 24 in cavazzoni 2001
-g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
-MW_W = 18.015       # Molecular weight of water, ewert table 4-110
 p_W = 998.23        # density of water at 20 C, ewert table 4-110
+n = 2.5             # Ewert table 4-97 crop specific
 
 
 ##################################################
@@ -321,17 +321,17 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 # plt.show()
 
 ###################### CARBON FLOW ######################
-fig, ax = plt.subplots()
-ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
-ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
-ax.set_ylabel(' grams / meter^2', color = 'green')
-ax.tick_params(axis='y', labelcolor='green')
-ax2 = ax.twinx()
-ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
-ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
-fig.legend(['TCB', 'TEB', 'DCG'])
-plt.title('Carbon Flow')
-plt.show()
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
+# ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
+# ax.set_ylabel(' grams / meter^2', color = 'green')
+# ax.tick_params(axis='y', labelcolor='green')
+# ax2 = ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
+# ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
+# fig.legend(['TCB', 'TEB', 'DCG'])
+# plt.title('Carbon Flow')
+# plt.show()
 
 
 ##################### VAPOR PRESSURES ###################
@@ -350,18 +350,18 @@ plt.show()
 # plt.show()
 
 ################### PHOTOSYNTHESIS ###########################
-fig, ax = plt.subplots()
-ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
-ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
-ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
-ax.tick_params(axis='y', labelcolor='green')
-ax2 = ax.twinx()
-ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
-ax2.set_ylabel('grams / ((m^2)*Day)')
-ax2.set_ybound(0, 35)
-fig.legend(['P_GROSS', 'P_NET', 'CGR'])
-plt.title('Carbon Flow')
-plt.show()
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
+# ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
+# ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
+# ax.tick_params(axis='y', labelcolor='green')
+# ax2 = ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
+# ax2.set_ylabel('grams / ((m^2)*Day)')
+# ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
+# fig.legend(['P_GROSS', 'P_NET', 'CGR'])
+# plt.title('Carbon Flow')
+# plt.show()
 
 
 # ############################################################
