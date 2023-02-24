@@ -10,6 +10,8 @@ End goal is global sensitivity and uncertainty analysis of this version and comp
 
 Maybe one day I modify the structure to accept flags like a real program
 
+This specific version will only be a single "crop layer" not a multi layer one like the paper
+
 """
 
 import numpy as np
@@ -19,14 +21,46 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
+PPFD = 560          # umol/m^2/sec, needs to accept inputs
+CO2 = 419.5         # umol CO2 / mol air,needs to accept  inputs
+H = 16              # photoperiod defined as 16 in Cavazonni 2001
+T_LIGHT = 23        # Light Cycle Average Temperature ewert table 4-111 or user input
+T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
+RH = .675           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
+P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 
 ##################################################
 ################# INTIALIZATION  #################
 ##################################################
+t = 0                       # time in days
+res = 1                     # model resolution 1 Hour
+i = 0                       # matrix/loop counter
+I = 0                       # boscheri "I is equal to 1 and 0 during the photoperiod (day) and dark period (night)"
+night_len = 24 - H          # length of night
+day_len = 24 - night_len    # length of day
+pp_count = 0                # photoperiod counter
+day = 0
 
 ##################################################
 #################### CONSTANTS ###################
 ##################################################
+BCF = 0.40          # Biomass carbon fraction ewert table 4-113
+XFRT = 0.95         # edible biomass fraction ewert table 4-112
+OPF = 1.08          # Oxygen production fraction ewert table 4-113
+g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
+A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
+t_M = 30             # time at harvest/maturity ewert table 4-112
+t_Q = 50            # onset of senescence placeholder value ewert table 4-112
+t_E = 1             # time at onset of organ formation ewert table 4-112
+MW_W = 18.015       # Molecular weight of water, ewert table 4-110
+MWC = 12.01            # molecular weight of carbon amitrano 2020
+CQY_min = 0         # N/A minimum canopy quantum yield ewert table 4-99
+CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
+CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
+D_PG = 24           # the plants diurnal cycle length assumed 24 in cavazzoni 2001
+p_W = 998.23        # density of water at 20 C, ewert table 4-110
+n = 2.5             # Ewert table 4-97 crop specific
+a = 0.0036          # going out on a limb here saying this the same as cavazonnis conversion number for boscheri eq2
 
 ##################################################
 ################ Data Management #################
@@ -41,8 +75,6 @@ TCB = 0                                 # starting crop biomass
 Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
 edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
-
-
 
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
@@ -205,18 +237,56 @@ CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
 ################# THE MODEL LOOP #################
 ##################################################
 while t < ts_to_harvest:                 # while time is less than harvest time
+    if I == 0 and pp_count == night_len:    # turns night to day
+        I = 1
+        pp_count = 0
+    elif I == 1 and pp_count == day_len:    # turns day to night
+        I = 0
+        pp_count = 0
+    if (t % 24) == 0:                       # this if statement counts the days by checking if the ts/24 is a whole number
+        day += 1
+        if t == 0:                          # need this because 0/24 = 0 triggering day counter
+            day = 0
+    if t < t_A:                  # before canopy closure
+        A = A_max*(t/t_A)**n         # boscheri eq 5
+    else:                        # after canopy closure
+        A = A_max                    # boscheri eq 5
+    if t<= t_Q:                  # before onset of senescence
+        CQY = CQY_max                # boscheri eq 3
+        CUE_24 = CUE_max             # boscheri eq 4
+    elif t_Q < t: 
+        """For lettuce the values of CQY_min and CUE_min 
+        are n/a due to the assumption that the canopy does
+        not senesce before harvest. I coded them anyways, it
+        makes it complete for all the other crops too. For 
+        crops other than lettuce remove the break statement."""
+        CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # boscheri eq 3
+        CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) # boscheri eq 4
+        print(t, "Error: Utilizing CQY and CUE values without definitions")
+        break
+    HCG = a*CUE_24*A*CQY*PPFD*I      # boscheri eq 2
+    HCGR = HCG*MW_C
     Biomass_mat[i] = TCB             # matrix that stores past values of TCB
     '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
     '''now it works more, but only if the it results in a whole number'''
     edible_mat[i] = TEB
     dfts = pd.DataFrame({
         'Timestep': [t],
+        'Day': [day],
+        'diurnal': [I],
+        'A': [A],
+        'CQY': [CQY],
+        'CUE_24': [CUE_24],
+        'HCG': [HCG],
+        'HWCG'
         }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
+    df_day = df_records.groupby(['Day']).sum()
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
-
-# print(df_records)                    # prints a copy of output in the terminal
+    pp_count += 1                    # photoperiod counter + 1
+print(df_records)                    # prints a copy of output in the terminal
+# print(df_day)                           # prints the output summed by the day!
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Boscheri/BOS_CAV_OUT.csv') # exports final data frame to a CSV
 
 
