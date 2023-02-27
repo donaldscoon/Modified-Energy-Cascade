@@ -33,7 +33,7 @@ P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 ################# INTIALIZATION  #################
 ##################################################
 t = 0                       # time in days
-res = 1                     # model resolution 1 Hour
+res = 1                     # model resolution 1 hour
 i = 0                       # matrix/loop counter
 I = 0                       # boscheri "I is equal to 1 and 0 during the photoperiod (day) and dark period (night)"
 night_len = 24 - H          # length of night
@@ -49,8 +49,8 @@ XFRT = 0.95         # edible biomass fraction ewert table 4-112
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 g_A = 2.5           # atmospheric aerodynamic conductance boscheri "for horizontal canopies"
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
-t_M = 30             # time at harvest/maturity ewert table 4-112
-t_Q = 50            # onset of senescence placeholder value ewert table 4-112
+t_M = 30            # days  at harvest/maturity ewert table 4-112
+t_Q = 50            # days onset of senescence placeholder value ewert table 4-112
 t_E = 1             # time at onset of organ formation ewert table 4-112
 MW_W = 18.0153      # Molecular weight of water, boscheri table 4
 MWC = 12.0107       # molecular weight of carbon boscheri table 4
@@ -65,8 +65,8 @@ n = 2.5             # Ewert table 4-97 crop specific
 a = 0.0036          # boscheri table 4 similar to others but in 'a'
 b = 3600            # boscheri table 4
 WBF = XFRT          # Boscheri doesn't define this, I'm assuming that its the same as XFRT
-DRY_FR = xxxxx      # Hanford 2004 Table 4.2.7, ugh boscheri just state the number
-NC_FR = xxxxx       # Hanford 2004 table 4.2.10, ugh boscheri just state the number
+DRY_FR = 6.57/131.35 # dry over wet biomass fraction Hanford 2004 Table 4.2.7, with part from wheeler 2003
+NC_FR = 0.034       # Hanford 2004 table 4.2.10, ugh boscheri just state the number
 
 ##################################################
 ################ Data Management #################
@@ -75,7 +75,7 @@ df_records = pd.DataFrame({})
 
 """These matrices may need to become obsolete with
    the new dataframes I'm about to introduce. :) """
-ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
+ts_to_harvest = int(t_M*24/res)             # calcs the timesteps needed to set up the matrix for each ts
 matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
 Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
@@ -253,14 +253,14 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         day += 1
         if t == 0:                          # need this because 0/24 = 0 triggering day counter
             day = 0
-    if t < t_A:                  # before canopy closure
+    if t < (t_A*24/res):                  # before canopy closure
         A = A_max*(t/t_A)**n         # boscheri eq 5
     else:                        # after canopy closure
         A = A_max                    # boscheri eq 5
     if t<= t_Q:                  # before onset of senescence
         CQY = CQY_max                # boscheri eq 3
         CUE_24 = CUE_max             # boscheri eq 4
-    elif t_Q < t: 
+    elif (t_Q*24/res) < t: 
         """For lettuce the values of CQY_min and CUE_min 
         are n/a due to the assumption that the canopy does
         not senesce before harvest. I coded them anyways, it
@@ -283,8 +283,9 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     g_C = (g_A*g_S)*(g_A+g_S)**(-1) # boscheri unlabeled equation
     HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
     HCO2C = HOP*MW_CO2*MW_O2**(-1)  # boscheri eq 14
-    HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15
-    HNC = HCGR*DRY_FC*NC_FR
+    HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15 
+    HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
+    HWC = HTR+HOP+HCO2P+HWCGR-HOC-HCO2C-HNC # boscheri eq 16
     # Biomass_mat[i] = TCB            # matrix that stores past values of TCB
     # edible_mat[i] = TEB
     dfts = pd.DataFrame({
@@ -302,6 +303,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'HTR': [HTR],
         'HCO2C': [HCO2C],
         'HCO2P': [HCO2P],
+        'HNC': [HNC], 
+        'HWC': [HWC],
 
         }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
@@ -309,8 +312,9 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
-print(df_records)                    # prints a copy of output in the terminal
-# print(df_day)                           # prints the output summed by the day!
+    print(t, day)
+# print(df_records)                    # prints a copy of output in the terminal
+print(df_day)                           # prints the output summed by the day!
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Boscheri/BOS_CAV_OUT.csv') # exports final data frame to a CSV
 
 
@@ -383,6 +387,6 @@ print(df_records)                    # prints a copy of output in the terminal
 # ############################################################
 # ##################### NOTES FOR LATER ######################
 # ############################################################
-    '''Not sure how wet crop biomass translates to TCB of TEB,
+'''Not sure how wet crop biomass translates to TCB of TEB,
     will need to dig deeper into that concept, which is why
     those matrices are commented out'''

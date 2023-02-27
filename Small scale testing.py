@@ -46,10 +46,11 @@ while t <= ts_to_harvest:
     dfrec = pd.concat([dfrec, dfts], ignore_index=True)
     df_day = dfrec.groupby(['Day']).sum()
     pp_count += 1
+    print(t, day)
     t += 1
 
 # print(df_day)
-print(dfrec)
+# print(dfrec)
 
 # full_chart = dfrec.plot(x='ts', marker='o')
 # full_chart.set_ylabel('ALL THE UNITS!')
