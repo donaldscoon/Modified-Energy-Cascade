@@ -31,10 +31,17 @@ bigdf = pd.merge(pd.merge(pd.merge(bos_avg, bos_tot, on='Day'), ami, on='Day'), 
 ##################################################
 ###############   Start Charting  ################
 ##################################################
-# VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
-# VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
-# VP_chart.set_ylabel('kPa')
-# plt.title('Vapor Pressures')
+
+######### Alpha and Beta Comparison ##############
+# fig, ax = plt.subplots()
+# ax.plot(bigdf['Day'], bigdf['AMI_alpha'],       marker='o', color='lightgreen',     label='AMI a')
+# ax.plot(bigdf['Day'], bigdf['AMI_beta'],        marker='o', color='green',          label='AMI b')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_ALPHA'],   marker='o', color='lightblue',      label='BOS a')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_BETA'],    marker='o', color='blue',           label='BOS b')
+# ax.plot(bigdf['Day'], bigdf['CAV_ALPHA'],       marker='o', color='gold',           label='CAV a')
+# ax.plot(bigdf['Day'], bigdf['CAV_BETA'],        marker='o', color='goldenrod',      label='CAV b')
+# ax.set_ylabel('Stuff!')
+# plt.figlegend(bbox_to_anchor=(-0.21, 0.39, 0.5, 0.5))
+# plt.title('Alpha and Beta Comparison')
 # plt.show()
 
-abchart_data = bigdf[['Day', 'AMI_alpha', 'AMI_beta']]
