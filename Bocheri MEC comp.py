@@ -291,36 +291,38 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     # Biomass_mat[i] = TCB            # matrix that stores past values of TCB
     # edible_mat[i] = TEB
     dfts = pd.DataFrame({
-        'BOS_AVG_Timestep': [t],
+        'BOS_TOT_Timestep': [t],
         'Day': [day],
-        'BOS_AVG_diurnal': [I],
-        'BOS_AVG_ALPHA': [ALPHA],
-        'BOS_AVG_BETA': [BETA],
-        'BOS_AVG_A': [A],
-        'BOS_AVG_CQY': [CQY],
-        'BOS_AVG_CUE_24': [CUE_24],
-        'BOS_AVG_DCG': [HCG],
-        'BOS_AVG_DCGR': [HCGR],
-        'BOS_AVG_DWCGR': [HWCGR],
-        'BOS_AVG_DOP': [HOP],
-        'BOS_AVG_DOC': [HOC],
-        'BOS_AVG_DTR': [HTR],
-        'BOS_AVG_DCO2C': [HCO2C],
-        'BOS_AVG_DCO2P': [HCO2P],
-        'BOS_AVG_DNC': [HNC], 
-        'BOS_AVG_DWC': [HWC],
+        'BOS_TOT_diurnal': [I],
+        'BOS_TOT_ALPHA': [ALPHA],
+        'BOS_TOT_BETA': [BETA],
+        'BOS_TOT_A': [A],
+        'BOS_TOT_CQY': [CQY],
+        'BOS_TOT_CUE_24': [CUE_24],
+        'BOS_TOT_DCG': [HCG],
+        'BOS_TOT_g_S': [g_S],
+        'BOS_TOT_g_C': [g_C],
+        'BOS_TOT_DCGR': [HCGR],
+        'BOS_TOT_DWCGR': [HWCGR],
+        'BOS_TOT_DOP': [HOP],
+        'BOS_TOT_DOC': [HOC],
+        'BOS_TOT_DTR': [HTR],
+        'BOS_TOT_DCO2C': [HCO2C],
+        'BOS_TOT_DCO2P': [HCO2P],
+        'BOS_TOT_DNC': [HNC], 
+        'BOS_TOT_DWC': [HWC],
 
         }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    # df_day = df_records.groupby(['Day']).sum()
-    df_day_avg = df_records.groupby(['Day']).mean()
+    df_day = df_records.groupby(['Day']).sum()
+    # df_day_avg = df_records.groupby(['Day']).mean()
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
 # print(df_records)                    # prints a copy of output in the terminal
 # print(df_day)                           # prints the output summed by the day!
-# df_day.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_comp.csv') # exports final data frame to a CSV
-df_day_avg.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv') # exports final data frame to a CSV
+df_day.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_comp.csv') # exports final data frame to a CSV
+# df_day_avg.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv') # exports final data frame to a CSV
 
 
 ############################################################
