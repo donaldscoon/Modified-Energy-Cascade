@@ -21,12 +21,12 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 560          # umol/m^2/sec, needs to accept inputs
-CO2 = 419.5         # umol CO2 / mol air,needs to accept  inputs
-H = 16              # photoperiod defined as 16 in Cavazonni 2001
-T_LIGHT = 23        # Light Cycle Average Temperature ewert table 4-111 or user input
-T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
-RH = .675           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
+PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in GN excel
+CO2 = 370           # value used in Amitranos excel
+H = 12              # Amitrano 2020 table 2
+T_LIGHT = 24.35105263 # AVG from amitranos GN exp
+T_DARK = 24.35105263
+RH = 0.810470947      # AVG from amitranos GN exp
 P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 
 ##################################################
@@ -270,6 +270,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) # boscheri eq 4
         print(t, "Error: Utilizing CQY and CUE values without definitions")
         break
+    ALPHA = A*CQY*CUE_24
+    BETA = A*CQY
     HCG = a*CUE_24*A*CQY*PPFD*I      # boscheri eq 2  
     HCGR = HCG*MWC*(BCF)**(-1)       # boscheri eq 6
     ######## SEE WBF FOR ASSUMPTION #############
@@ -292,6 +294,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'Timestep': [t],
         'Day': [day],
         'diurnal': [I],
+        'ALPHA': [ALPHA],
+        'BETA': [BETA],
         'A': [A],
         'CQY': [CQY],
         'CUE_24': [CUE_24],
@@ -308,15 +312,15 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 
         }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    df_day_sum = df_records.groupby(['Day']).sum()
+    df_day = df_records.groupby(['Day']).sum()
     df_day_avg = df_records.groupby(['Day']).mean()
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
 # print(df_records)                    # prints a copy of output in the terminal
-# print(df_day_sum)                           # prints the output summed by the day!
-# print(df_day_avg)
-# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Boscheri/BOS_CAV_OUT.csv') # exports final data frame to a CSV
+# print(df_day)                           # prints the output summed by the day!
+df_day.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_CAV_OUT_comp.csv') # exports final data frame to a CSV
+df_day_avg.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_CAV_OUT_AVG_comp.csv') # exports final data frame to a CSV
 
 
 ############################################################

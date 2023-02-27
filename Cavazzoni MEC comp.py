@@ -20,12 +20,12 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 314.54          # umol/m^2/sec, needs to accept inputs
-CO2 = 370         # umol CO2 / mol air,needs to accept  inputs
-H = 12              # photoperiod defined as 16 in Cavazonni 2001
-T_LIGHT = 24        # Light Cycle Average Temperature ewert table 4-111 or user input
-T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
-RH = .675           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
+PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in GN excel
+CO2 = 370           # value used in Amitranos excel
+H = 12              # Amitrano 2020 table 2
+T_LIGHT = 24.35105263 # AVG from amitranos GN 
+T_DARK = 24.35105263
+RH = 0.810470947      # AVG from amitranos GN exp
 P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
 
 ##################################################
@@ -43,7 +43,7 @@ XFRT = 0.95         # edible biomass fraction ewert table 4-112
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 g_A = 2.5           # atmospheric aerodynamic conductance ewert eq 4-27 no citations
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
-t_M = 23            # time at harvest/maturity ewert table 4-112
+t_M = 30            # time at harvest/maturity ewert table 4-112
 t_Q = 50            # onset of senescence placeholder value ewert table 4-112
 t_E = 1             # time at onset of organ formation ewert table 4-112
 MW_W = 18.015       # Molecular weight of water, ewert table 4-110
@@ -249,6 +249,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
         print("Error: Utilizing CQY and CUE values without definitions")
         break
+    ALPHA = A*CQY*CUE_24
+    BETA = A*CQY
     DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
     DOP = OPF*DCG                    # ewert eq 4-18
     CGR = 12.01*(DCG/BCF)            # ewert eq 4-19 number is molecular weight of carbon
@@ -269,6 +271,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
     dfts = pd.DataFrame({
         'Timestep': [t],
+        'ALPHA': [ALPHA],
+        'BETA': [BETA],
         'A': [A],
         'CQY': [CQY],
         'CUE_24': [CUE_24],
@@ -295,9 +299,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     i += 1                           # increase matrix index counter
 
 # print(df_records)                    # prints a copy of output in the terminal
-# df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV
-print(df_records[['Timestep', 'DTR', 'g_C', 'g_S', 'P_NET']])
-df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAVCOMP_OUT.csv') # exports final data frame to a CSV
+df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv') # exports final data frame to a CSV
 
 
 ############################################################
@@ -306,10 +308,10 @@ df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavaz
 
 # full_chart = df_records.plot(x='Timestep', marker='o')
 # full_chart.set_ylabel('ALL THE UNITS!')
-# plt.title('CAV ALL THE DATA!')
+# plt.title('ALL THE DATA!')
 # plt.show()
 
-# ############### Canopy Development ########################
+################ Canopy Development ########################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
 # ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
@@ -319,10 +321,10 @@ df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavaz
 # ax2.set_ylabel('umol C / umol photons', color='red')
 # ax2.tick_params(axis='y',labelcolor='red')
 # fig.legend(['CQY', 'CUE_24', 'A'])
-# plt.title('CAV Canopy Development')
-# # plt.show()
+# plt.title('Canopy Development')
+# plt.show()
 
-# ##################### CARBON FLOW ######################
+###################### CARBON FLOW ######################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
 # ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
@@ -332,27 +334,26 @@ df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavaz
 # ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
 # ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
 # fig.legend(['TCB', 'TEB', 'DCG'])
-# plt.title('CAV Carbon Flow')
+# plt.title('Carbon Flow')
 # plt.show()
 
 
-
-# #################### VAPOR PRESSURES ###################
+##################### VAPOR PRESSURES ###################
 # VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
 # VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
 # VP_chart.set_ylabel('kPa')
-# plt.title('CAV Vapor Pressures')
+# plt.title('Vapor Pressures')
 # plt.show()
 
-# ################# CODUCTANCE ###########################
+################### CODUCTANCE ###########################
 # conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
 # conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
 # conductance_chart.set_ylabel('moles of water / (m^2)*s')
-# plt.title(' CAV Conductances')
+# plt.title('Conductances')
 # plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
 # plt.show()
 
-# ################# PHOTOSYNTHESIS ###########################
+################### PHOTOSYNTHESIS ###########################
 # fig, ax = plt.subplots()
 # ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
 # ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
@@ -363,7 +364,7 @@ df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavaz
 # ax2.set_ylabel('grams / ((m^2)*Day)')
 # ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
 # fig.legend(['P_GROSS', 'P_NET', 'CGR'])
-# plt.title('CAV Carbon Flow')
+# plt.title('Carbon Flow')
 # plt.show()
 
 
