@@ -87,6 +87,7 @@ edible_mat = np.zeros(ts_to_harvest+1)   # matrix for TEB storage
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
+day = 0
 while t <= ts_to_harvest:                  # while time is less than harvest time
     if t<= t_D:                            # if timestep is before formation of edible organs
         alpha = amin_GN                    # amitrano 2020 eq 15
@@ -113,29 +114,31 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     DTR = 3600*H*(MW_W/d_W)*g_C*(VPD/P_ATM)
 
     dfts = pd.DataFrame({
-        'Timestep': [t],
-        'Photoperiod': [H],
-        'PPFD': [PPFD],
-        'alpha': [alpha],
-        'beta': [beta],
-        'DCG': [DCG],
-        'DOP': [DOP],
-        'CGR': [CGR],
-        'TEB': [TEB],
-        'P_GROSS': [P_GROSS],
-        'P_NET': [P_NET],
-        'T_LIGHT': [T_LIGHT],
-        'VP_SAT': [VP_SAT],
-        'VP_AIR': [VP_AIR],
-        'RH': [RH],
-        'VPD': [VPD], 
-        'g_S': [g_S],
-        'g_C': [g_C],
-        'DTR': [DTR],
-        'g_A': [g_A]
+        'AMI_Timestep': [t],
+        'Day': [day],
+        'AMI_Photoperiod': [H],
+        'AMI_PPFD': [PPFD],
+        'AMI_alpha': [alpha],
+        'AMI_beta': [beta],
+        'AMI_DCG': [DCG],
+        'AMI_DOP': [DOP],
+        'AMI_CGR': [CGR],
+        'AMI_TEB': [TEB],
+        'AMI_P_GROSS': [P_GROSS],
+        'AMI_P_NET': [P_NET],
+        'AMI_T_LIGHT': [T_LIGHT],
+        'AMI_VP_SAT': [VP_SAT],
+        'AMI_VP_AIR': [VP_AIR],
+        'AMI_RH': [RH],
+        'AMI_VPD': [VPD], 
+        'AMI_g_S': [g_S],
+        'AMI_g_C': [g_C],
+        'AMI_DTR': [DTR],
+        'AMI_g_A': [g_A]
     }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                         # advance timestep
+    day += 1
     i += 1                           # increase matrix index counter
 
 print(df_records)       # Prints entire dataframe

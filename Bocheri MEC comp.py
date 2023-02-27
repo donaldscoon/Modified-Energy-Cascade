@@ -291,36 +291,36 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     # Biomass_mat[i] = TCB            # matrix that stores past values of TCB
     # edible_mat[i] = TEB
     dfts = pd.DataFrame({
-        'Timestep': [t],
+        'BOS_AVG_Timestep': [t],
         'Day': [day],
-        'diurnal': [I],
-        'ALPHA': [ALPHA],
-        'BETA': [BETA],
-        'A': [A],
-        'CQY': [CQY],
-        'CUE_24': [CUE_24],
-        'HCG': [HCG],
-        'HCGR': [HCGR],
-        'HWCGR': [HWCGR],
-        'HOP': [HOP],
-        'HOC': [HOC],
-        'HTR': [HTR],
-        'HCO2C': [HCO2C],
-        'HCO2P': [HCO2P],
-        'HNC': [HNC], 
-        'HWC': [HWC],
+        'BOS_AVG_diurnal': [I],
+        'BOS_AVG_ALPHA': [ALPHA],
+        'BOS_AVG_BETA': [BETA],
+        'BOS_AVG_A': [A],
+        'BOS_AVG_CQY': [CQY],
+        'BOS_AVG_CUE_24': [CUE_24],
+        'BOS_AVG_DCG': [HCG],
+        'BOS_AVG_DCGR': [HCGR],
+        'BOS_AVG_DWCGR': [HWCGR],
+        'BOS_AVG_DOP': [HOP],
+        'BOS_AVG_DOC': [HOC],
+        'BOS_AVG_DTR': [HTR],
+        'BOS_AVG_DCO2C': [HCO2C],
+        'BOS_AVG_DCO2P': [HCO2P],
+        'BOS_AVG_DNC': [HNC], 
+        'BOS_AVG_DWC': [HWC],
 
         }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    df_day = df_records.groupby(['Day']).sum()
+    # df_day = df_records.groupby(['Day']).sum()
     df_day_avg = df_records.groupby(['Day']).mean()
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
 # print(df_records)                    # prints a copy of output in the terminal
 # print(df_day)                           # prints the output summed by the day!
-df_day.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_CAV_OUT_comp.csv') # exports final data frame to a CSV
-df_day_avg.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_CAV_OUT_AVG_comp.csv') # exports final data frame to a CSV
+# df_day.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_comp.csv') # exports final data frame to a CSV
+df_day_avg.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv') # exports final data frame to a CSV
 
 
 ############################################################

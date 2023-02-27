@@ -231,6 +231,7 @@ CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
+day = 0
 while t < ts_to_harvest:                 # while time is less than harvest time
     if t < t_A:                  # before canopy closure
         A = A_max*(t/t_A)**n         # Ewert eq 4-14
@@ -270,32 +271,34 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     g_C = (g_A*g_S)/(g_A+g_S)                               # canopy conductance ewert 4-26
     DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
     dfts = pd.DataFrame({
-        'Timestep': [t],
-        'ALPHA': [ALPHA],
-        'BETA': [BETA],
-        'A': [A],
-        'CQY': [CQY],
-        'CUE_24': [CUE_24],
-        'DCG': [DCG],
-        'CGR': [CGR],
-        'TCB': [TCB],
-        'TEB': [TEB],
-        'VP_SAT': [VP_SAT],
-        'VP_AIR': [VP_AIR],
-        'VPD': [VPD],
-        'P_GROSS': [P_GROSS],
-        'P_NET': [P_NET],
-        'g_S': [g_S],
-        'g_A': [g_A],
-        'g_C': [g_C],
-        'DTR': [DTR],
-        'T_LIGHT': [T_LIGHT],
-        'T_DARK': [T_DARK],
-        'RH': [RH],
-        'CO2': [CO2]
+        'CAV_Timestep': [t],
+        'Day': [day],
+        'CAV_ALPHA': [ALPHA],
+        'CAV_BETA': [BETA],
+        'CAV_A': [A],
+        'CAV_CQY': [CQY],
+        'CAV_CUE_24': [CUE_24],
+        'CAV_DCG': [DCG],
+        'CAV_CGR': [CGR],
+        'CAV_TCB': [TCB],
+        'CAV_TEB': [TEB],
+        'CAV_VP_SAT': [VP_SAT],
+        'CAV_VP_AIR': [VP_AIR],
+        'CAV_VPD': [VPD],
+        'CAV_P_GROSS': [P_GROSS],
+        'CAV_P_NET': [P_NET],
+        'CAV_g_S': [g_S],
+        'CAV_g_A': [g_A],
+        'CAV_g_C': [g_C],
+        'CAV_DTR': [DTR],
+        'CAV_T_LIGHT': [T_LIGHT],
+        'CAV_T_DARK': [T_DARK],
+        'CAV_RH': [RH],
+        'CAV_CO2': [CO2]
     }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                          # advance timestep
+    day += 1
     i += 1                           # increase matrix index counter
 
 # print(df_records)                    # prints a copy of output in the terminal
