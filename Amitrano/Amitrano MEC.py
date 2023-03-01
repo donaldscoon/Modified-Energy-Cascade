@@ -170,6 +170,19 @@ print(df_records)       # Prints entire dataframe
 # plt.title('ALL THE DATA!')
 # plt.show()
 
+###################### CARBON FLOW ######################
+# fig, ax = plt.subplots()
+# # ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
+# ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
+# ax.set_ylabel(' grams / meter^2', color = 'green')
+# ax.tick_params(axis='y', labelcolor='green')
+# ax2 = ax.twinx()
+# # ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
+# ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
+# fig.legend(['TCB', 'TEB', 'DCG'])
+# plt.title('Carbon Flow')
+# plt.show()
+
 # ############################################################
 # ##################### NOTES FOR LATER ######################
 # ############################################################

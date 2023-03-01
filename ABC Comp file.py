@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as mp
+import numpy as np
 
 ##################################################
 ################## MODEL INPUTS ##################
@@ -32,6 +32,9 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 
 
 
+''' AMI= green colors or 'o'
+     BOS= blue colors or 's'
+     CAV= yelllow colors or '^'  '''
 ##################################################
 ###############   Start Charting  ################
 ##################################################
@@ -40,10 +43,10 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # fig, ax = plt.subplots()
 # ax.plot(bigdf['Day'], bigdf['AMI_alpha'],       marker='o', color='lightgreen',     label='AMI α')
 # ax.plot(bigdf['Day'], bigdf['AMI_beta'],        marker='o', color='green',          label='AMI β')
-# ax.plot(bigdf['Day'], bigdf['BOS_AVG_ALPHA'],   marker='o', color='lightblue',      label='BOS α')
-# ax.plot(bigdf['Day'], bigdf['BOS_AVG_BETA'],    marker='o', color='blue',           label='BOS β')
-# ax.plot(bigdf['Day'], bigdf['CAV_ALPHA'],       marker='o', color='gold',           label='CAV α')
-# ax.plot(bigdf['Day'], bigdf['CAV_BETA'],        marker='o', color='goldenrod',      label='CAV β')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_ALPHA'],   marker='s', color='lightblue',      label='BOS α')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_BETA'],    marker='s', color='blue',           label='BOS β')
+# ax.plot(bigdf['Day'], bigdf['CAV_ALPHA'],       marker='^', color='gold',           label='CAV α')
+# ax.plot(bigdf['Day'], bigdf['CAV_BETA'],        marker='^', color='goldenrod',      label='CAV β')
 # ax.set_ylabel('Unsure about units')
 # ax.set_xlabel('Days After Emergence')
 # plt.figlegend(bbox_to_anchor=(-0.21, 0.39, 0.5, 0.5))
@@ -51,16 +54,17 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Alpha_Beta_Comparison.png') #there are many options for savefig
 # plt.show()
 
-# ####################### A, CQY, CUE, ###################################
+
+####################### A, CQY, CUE, ###################################
 # fig, ax = plt.subplots()
-# ax.plot(bigdf['Day'], bigdf['BOS_AVG_A'],      marker='o', color='lightblue',  label='BOS A')
-# ax.plot(bigdf['Day'], bigdf['BOS_AVG_CUE_24'], marker='o', color='blue',       label='BOS CUE')
-# ax.plot(bigdf['Day'], bigdf['CAV_A'],          marker='o', color='gold',       label='CAV A')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_A'],      marker='s', color='lightblue',  label='BOS A')
+# ax.plot(bigdf['Day'], bigdf['CAV_A'],          marker='^', color='gold',       label='CAV A')
+# ax.plot(bigdf['Day'], bigdf['BOS_AVG_CUE_24'], marker='s', color='blue',       label='BOS CUE')
 # ax.plot(bigdf['Day'], bigdf['CAV_CUE_24'],     marker='^', color='goldenrod',  label='CAV CUE')
 # ax.set_ylabel('Fractional')
 # ax2 = ax.twinx()
-# ax2.plot(bigdf['Day'], bigdf['BOS_AVG_CQY'],    marker='o', color='deepskyblue',label='BOS CQY')
-# ax2.plot(bigdf['Day'], bigdf['CAV_CQY'],        marker='^', color='khaki',  label='CAV CQY')
+# ax2.plot(bigdf['Day'], bigdf['BOS_AVG_CQY'],    marker='s', color='lightcoral',label='BOS CQY')
+# ax2.plot(bigdf['Day'], bigdf['CAV_CQY'],        marker='^', color='indianred',  label='CAV CQY')
 # ax2.set_facecolor('darkred')
 # ax2.set_ylabel('μmol$_{Carbon}$ μmol$_{Photon}^{-1}$', color='darkred')
 # ax2.tick_params(axis='y',labelcolor='darkred')
@@ -70,7 +74,7 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/A_CUE_CQY_Comparison.png', bbox_inches='tight') #there are many options for savefig
 # plt.show()
 
-# ########### Conductances #########################
+# ########## Conductances #########################
 # fig, ax = plt.subplots()
 # ax.plot(bigdf['Day'], bigdf['AMI_g_S'],     marker='o', color='green',      label='AMI g$_S$')
 # ax.plot(bigdf['Day'], bigdf['AMI_g_C'],     marker='o', color='lightgreen', label='AMI g$_C$')
@@ -85,7 +89,20 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Conductances_Comparison.png') #there are many options for savefig
 # plt.show()
 
-# ################### Photosynthesis #####################
+#################### Gas Exchanges ######################
+fig, ax= plt.subplots()
+ax.plot(bigdf['Day'], bigdf['AMI_DTR'],     marker='o', color='green',      label='AMI DTR')
+ax.plot(bigdf['Day'], bigdf['BOS_TOT_DTR'], marker='s', color='blue',       label='BOS DTR')
+ax.plot(bigdf['Day'], bigdf['CAV_DTR'],     marker='^', color='goldenrod',  label='CAV DTR')
+ax.set_ylabel('L$_{water}$ m$^{-2}$ day$^{-1}$')
+ax.set_xlabel('Days After Emergence')
+plt.figlegend(bbox_to_anchor=(-0.185, 0.39, 0.5, 0.5))
+plt.title('Gas Exchanges')
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Gas_Exchange_Comparison.png') #there are many options for savefig
+plt.show()
+
+
+# ################## Photosynthesis #####################
 # fig, ax = plt.subplots()
 # ax.plot(bigdf['Day'], bigdf['AMI_P_GROSS'],     marker='o', color='green',      label='AMI P$_{GROSS}$')
 # ax.plot(bigdf['Day'], bigdf['AMI_P_NET'],       marker='o', color='lightgreen', label='AMI P$_{NET}$')
@@ -99,10 +116,10 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Photosynthesis_Comparison.png') #there are many options for savefig
 # plt.show()
 
-####################### Daily Carbon Gain ###################################
+# ##################### Daily Carbon Gain ###################################
 # fig, ax = plt.subplots()
-# ax.plot(bigdf['Day'], bigdf['AMI_DCG'],      marker='o', color='green',  label='AMI DCG')
-# ax.plot(bigdf['Day'], bigdf['BOS_TOT_DCG'],  marker='s', color='blue',  label='BOS DCG')
+# ax.plot(bigdf['Day'], bigdf['AMI_DCG'],      marker='o', color='green',      label='AMI DCG')
+# ax.plot(bigdf['Day'], bigdf['BOS_TOT_DCG'],  marker='s', color='blue',       label='BOS DCG')
 # ax.plot(bigdf['Day'], bigdf['CAV_DCG'],      marker='^', color='goldenrod',  label='CAV DCG')
 # ax.set_xlabel('Days After Emergence')
 # ax.set_ylabel('mol$_{Carbon}$ m$^{-2}$ day$^{-1}$')
@@ -111,7 +128,7 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/DCG_Comparison.png') #there are many options for savefig
 # plt.show()
 
-####################### Crop Productivity ###################################
+# ##################### Crop Productivity ###################################
 # fig, ax = plt.subplots()
 # ax.plot(bigdf['Day'], bigdf['AMI_TEB'],      marker='o', color='darkgreen',  label='AMI TEB')
 # ax.plot(bigdf['Day'], bigdf['CAV_TEB'],      marker='^', color='green',      label='CAV TEB')
@@ -119,17 +136,14 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # ax.set_ylabel('grams m$^{-2}$', color='green')
 # ax.tick_params(axis='y', labelcolor='green')
 # ax2 = ax.twinx()
-# ax2.plot(bigdf['Day'], bigdf['AMI_CGR'],      marker='o', color='red',     label='AMI CGR')
+# ax2.plot(bigdf['Day'], bigdf['AMI_CGR'],      marker='o', color='lightcoral',     label='AMI CGR')
 # ax2.plot(bigdf['Day'], bigdf['BOS_TOT_DCGR'], marker='s', color='salmon',  label='BOS CGR')
-# ax2.plot(bigdf['Day'], bigdf['CAV_CGR'],      marker='^', color='darkred', label='CAV CGR')
-# ax2.set_ylabel('grams m$^{-2}$ day$^{-1}$', color='red')
-# ax2.tick_params(axis='y',labelcolor='red')
+# ax2.plot(bigdf['Day'], bigdf['CAV_CGR'],      marker='^', color='indianred', label='CAV CGR')
+# ax2.set_ylabel('grams m$^{-2}$ day$^{-1}$', color='darkred')
+# ax2.tick_params(axis='y',labelcolor='darkred')
 # ax.set_xlabel('Days After Emergence')
 # plt.figlegend(bbox_to_anchor=(-0.18, 0.39, 0.5, 0.5))
 # plt.title('Crop Productivity')
 # plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Crop_Productivity_Comparison.png') #there are many options for savefig
 # plt.show()
 
-''' AMI= green colors or 'o'
-    BOS= blue colors or 's'
-    CAV= yelllow colors or '^'  '''
