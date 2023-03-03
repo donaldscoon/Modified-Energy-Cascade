@@ -281,7 +281,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     P_NET = A*CQY*PPFD              # boscheri eq 13
     g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2) # boscheri unlabeled equation
     g_C = (g_A*g_S)*(g_A+g_S)**(-1) # boscheri unlabeled equation
-    HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
+    # HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
+    HTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM) # cavazzonis DTR equation
     HCO2C = HOP*MW_CO2*MW_O2**(-1)  # boscheri eq 14
     HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15 
     HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
@@ -300,6 +301,10 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'HWCGR': [HWCGR],
         'HOP': [HOP],
         'HOC': [HOC],
+        'g_S': [g_S],
+        'g_C': [g_C],
+        'VP_SAT': [VP_SAT],
+        'VPD': [VPD],
         'HTR': [HTR],
         'HCO2C': [HCO2C],
         'HCO2P': [HCO2P],
@@ -318,7 +323,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 # print(df_day_avg)
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Boscheri/BOS_CAV_OUT.csv') # exports final data frame to a CSV
 
-
+print(df_records[['Timestep','HTR','VPD', 'g_C', 'g_S']])
 ############################################################
 ##################### VISUALIZATIONS #######################
 ############################################################

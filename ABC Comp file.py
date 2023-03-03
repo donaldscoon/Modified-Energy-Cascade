@@ -2,9 +2,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-##################################################
-################## MODEL INPUTS ##################
-##################################################
+#################################################
+################# MODEL INPUTS ##################
+#################################################
 PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in GN excel
 CO2 = 370           # value used in Amitranos excel
 H = 12              # Amitrano 2020 table 2
@@ -35,18 +35,18 @@ p_W = 998.23        # density of water at 20 C, ewert table 4-110
 n = 2.5             # Ewert table 4-97 crop specific
 P_ATM = 101         # atmospheric pressure Number from Amitrano excel
 a = 0.0036          # boscheri table 4 similar to others but in 'a'
-b = 3600            # boscheri table 4
+b = 3600            # boscheri table 4 ????????????
 
 A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
 CQY_min = 0         # N/A minimum canopy quantum yield ewert table 4-99
 CUE_max = 0.625     # maximum carbon use efficiency ewert table 4-99
 CUE_min = 0         # N/A minimum carbon use efficiency ewert table 4-99
 
-#################################################
-############ SUPPLEMENTAL EQUATIONS #############
-#################################################
+################################################
+########### SUPPLEMENTAL EQUATIONS #############
+################################################
 """ Multipolynomial Regression Fits Ewert Table 4-100 """
-# used in the calculation of A_max and CQY_max
+########### used in the calculation of A_max and CQY_max
 
 c1 = (1/PPFD)*(1/CO2)
 c2 = (1/PPFD)
@@ -76,7 +76,7 @@ c25 = (PPFD**3)*(CO2**3)
 
 
 """ Canopy Closure t_A """
-# t_A coefficients (tac) values originate from EWert table 4-115 
+############ t_A coefficients (tac) values originate from EWert table 4-115 
 tac1 = 0
 tac2 = 1.0289*(10**4)
 tac3 = -3.7018
@@ -103,7 +103,7 @@ tac23 = 0
 tac24 = 0
 tac25 = 0
 
-# each term in the t_A Ewert eq 4-30
+############# each term in the t_A Ewert eq 4-30
 t_A_1 = tac1*c1
 t_A_2 = tac2*c2
 t_A_3 = tac3*c3
@@ -130,7 +130,7 @@ t_A_23 = tac23*c23
 t_A_24 = tac24*c24
 t_A_25 = tac25*c25
 
-# the calculation of canopy closure ewert eq 4-30
+############# the calculation of canopy closure ewert eq 4-30
 t_A = (t_A_1 + t_A_2 + t_A_3 + t_A_4 + t_A_5 + 
        t_A_6 + t_A_7 + t_A_8 + t_A_9 + t_A_10 + 
        t_A_11 + t_A_12 + t_A_13 + t_A_14 + t_A_15 + 
@@ -138,7 +138,7 @@ t_A = (t_A_1 + t_A_2 + t_A_3 + t_A_4 + t_A_5 +
        t_A_21 + t_A_22 + t_A_23 + t_A_24 + t_A_25)
 
 """ Canopy Quantum Yield Equation """
-# CQY_max Coefficients ewert table 4-102
+############# CQY_max Coefficients ewert table 4-102
 CQY_m_c_1 = 0
 CQY_m_c_2 = 0
 CQY_m_c_3 = 0
@@ -165,7 +165,7 @@ CQY_m_c_23 = 0
 CQY_m_c_24 = 0
 CQY_m_c_25 = 0
 
-# CQY_max Terms ewert eq 4-22
+########## CQY_max Terms ewert eq 4-22
 CQY_m_t_1 = CQY_m_c_1*c1
 CQY_m_t_2 = CQY_m_c_2*c2
 CQY_m_t_3 = CQY_m_c_3*c3
@@ -192,7 +192,7 @@ CQY_m_t_23 = CQY_m_c_23*c23
 CQY_m_t_24 = CQY_m_c_24*c24
 CQY_m_t_25 = CQY_m_c_25*c25
 
-# CQY_max Calculation ewert eq 4-22
+########### CQY_max Calculation ewert eq 4-22
 CQY_max = (CQY_m_t_1 + CQY_m_t_2 + CQY_m_t_3 + CQY_m_t_4 + CQY_m_t_5 +
            CQY_m_t_6 + CQY_m_t_7 + CQY_m_t_8 + CQY_m_t_9 + CQY_m_t_10 + 
            CQY_m_t_11 + CQY_m_t_12 + CQY_m_t_13 + CQY_m_t_14 + CQY_m_t_15 + 
@@ -391,8 +391,8 @@ df_CAV_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/M
 print('Exported Cavazzoni Data')
 
 '''#############################################################################
-   ############################# BOSCHERI MODEL CODE ###########################
-   #############################################################################'''
+   ############################ BOSCHERI MODEL CODE ###########################
+   ############################################################################'''
 
 print('Beginning Boscheri Model')
 
@@ -467,7 +467,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     P_NET = A*CQY*PPFD              # boscheri eq 13
     g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2) # boscheri unlabeled equation
     g_C = (g_A*g_S)*(g_A+g_S)**(-1) # boscheri unlabeled equation
-    HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
+#   HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
+    HTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM) # cavazzonis DTR equation
     HCO2C = HOP*MW_CO2*MW_O2**(-1)  # boscheri eq 14
     HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15 
     HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
@@ -490,6 +491,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'BOS_AVG_DWCGR': [HWCGR],
         'BOS_AVG_DOP': [HOP],
         'BOS_AVG_DOC': [HOC],
+        'BOS_AVG_VPD': [VPD],
         'BOS_AVG_DTR': [HTR],
         'BOS_AVG_DCO2C': [HCO2C],
         'BOS_AVG_DCO2P': [HCO2P],
@@ -514,6 +516,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
         'BOS_TOT_DWCGR': [HWCGR],
         'BOS_TOT_DOP': [HOP],
         'BOS_TOT_DOC': [HOC],
+        'BOS_TOT_VPD': [VPD],
         'BOS_TOT_DTR': [HTR],
         'BOS_TOT_DCO2C': [HCO2C],
         'BOS_TOT_DCO2P': [HCO2P],
@@ -532,30 +535,32 @@ df_day_AVG.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_O
 print('Exported Boscheri Data')
 
 '''#############################################################################
-   ############################# COMPARISON CODE ###############################
-   #############################################################################'''
+   ############################ COMPARISON CODE ###############################
+   ############################################################################'''
 
 print('Beginning Comparisons')
-##################################################
-################ Pull in the data ################
-##################################################
+#################################################
+############### Pull in the data ################
+#################################################
 
 ami =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_AMI_OUT_comp.csv")
 bos_tot = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_TOT_comp.csv")
 bos_avg = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv")
 cav =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv")
+obs =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_GN_OBSV_comp.csv")
+
 print('Data Imported')
-bigdf =   pd.merge(pd.merge(pd.merge(bos_avg, bos_tot, on='Day'), ami, on='Day'), cav, on='Day')
+bigdf =   pd.merge(pd.merge(pd.merge(pd.merge(bos_avg, bos_tot, on='Day'), ami, on='Day'), cav, on='Day'), obs, on='Day')
 bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.csv') # exports final data frame to a CSV
-# print(bigdf)
+print(bigdf)
 print('Dataframes Merged')
 
 ''' AMI= green colors or 'o'
      BOS= blue colors or 's'
      CAV= yelllow colors or '^'  '''
-# ##################################################
-# ###############   Start Charting  ################
-# ##################################################
+##################################################
+###############   Start Charting  ################
+##################################################
 
 ####### Alpha and Beta Comparison ##############
 fig, ax = plt.subplots()
@@ -592,7 +597,7 @@ plt.title('A CUE CQY Comparison')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/A_CUE_CQY_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
-########## Conductances #########################
+################ Conductances #########################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_g_S'],     marker='o', color='green',      label='AMI g$_S$')
 ax.plot(bigdf['Day'], bigdf['AMI_g_C'],     marker='o', color='lightgreen', label='AMI g$_C$')
@@ -600,36 +605,39 @@ ax.plot(bigdf['Day'], bigdf['BOS_AVG_g_S'], marker='s', color='blue',       labe
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_g_C'], marker='s', color='lightblue',  label='BOS g$_C$')
 ax.plot(bigdf['Day'], bigdf['CAV_g_S'],     marker='^', color='goldenrod',  label='CAV g$_S$')
 ax.plot(bigdf['Day'], bigdf['CAV_g_C'],     marker='^', color='gold',       label='CAV g$_C$')
+ax.plot(bigdf['Day'], bigdf['OBS_g_S'],     marker='.', color='black',       label='Observed g_S')
 ax.set_ylabel('mol$_{water}$ m$^{-2}$ second $^{-1}$')
 ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.185, 0.39, 0.5, 0.5))
+plt.figlegend(bbox_to_anchor=(-0.13, 0.39, 0.5, 0.5))
 plt.title('Conductances')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Conductances_Comparison.png') #there are many options for savefig
 plt.show()
 
-################### Gas Exchanges ######################
+################## Gas Exchanges ######################
 fig, ax= plt.subplots()
-ax.plot(bigdf['Day'], bigdf['AMI_DTR'],     marker='o', color='green',      label='AMI DTR')
-ax.plot(bigdf['Day'], bigdf['BOS_TOT_DTR'], marker='s', color='blue',       label='BOS DTR')
-ax.plot(bigdf['Day'], bigdf['CAV_DTR'],     marker='^', color='goldenrod',  label='CAV DTR')
+ax.plot(bigdf['Day'], bigdf['AMI_DTR'],     marker='o', color='darkgreen',   label='AMI DTR')
+ax.plot(bigdf['Day'], bigdf['BOS_AVG_DTR'], marker='s', color='green',       label='BOS DTR')
+ax.plot(bigdf['Day'], bigdf['CAV_DTR'],     marker='^', color='lightgreen',  label='CAV DTR')
+ax.plot(bigdf['Day'], bigdf['OBS_DTR'],     marker='.', color='black',  label='Observed')
 ax.set_ylabel('L$_{water}$ m$^{-2}$ day$^{-1}$')
 ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.185, 0.39, 0.5, 0.5))
+plt.figlegend(bbox_to_anchor=(-0.175, 0.39, 0.5, 0.5))
 plt.title('Gas Exchanges')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Gas_Exchange_Comparison.png') #there are many options for savefig
 plt.show()
 
 
-################## Photosynthesis #####################
+################ Photosynthesis #####################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_P_GROSS'],     marker='o', color='green',      label='AMI P$_{GROSS}$')
 ax.plot(bigdf['Day'], bigdf['AMI_P_NET'],       marker='o', color='lightgreen', label='AMI P$_{NET}$')
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_P_NET'],   marker='s', color='lightblue',  label='BOS P$_{NET}$')
 ax.plot(bigdf['Day'], bigdf['CAV_P_GROSS'],     marker='^', color='goldenrod',  label='CAV P$_{GROSS}$')
 ax.plot(bigdf['Day'], bigdf['CAV_P_NET'],       marker='^', color='gold',       label='CAV P$_{NET}$')
+ax.plot(bigdf['Day'], bigdf['OBS_P_N'],       marker='.', color='black',        label='Observed P$_{NET}$')
 ax.set_ylabel('μmol$_{Carbon}$ m$^{-2}$ second$^{-1}$')
 ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.16, 0.39, 0.5, 0.5))
+plt.figlegend(bbox_to_anchor=(-0.125, 0.39, 0.5, 0.5))
 plt.title('Photosynthesis')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Photosynthesis_Comparison.png') #there are many options for savefig
 plt.show()
@@ -646,11 +654,12 @@ plt.title('Daily Carbon Gain')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/DCG_Comparison.png') #there are many options for savefig
 plt.show()
 
-##################### Crop Productivity ###################################
+#################### Crop Productivity ###################################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_TEB'],      marker='o', color='darkgreen',  label='AMI TEB')
 ax.plot(bigdf['Day'], bigdf['CAV_TEB'],      marker='^', color='green',      label='CAV TEB')
 ax.plot(bigdf['Day'], bigdf['CAV_TCB'],      marker='^', color='lightgreen', label='CAV TCB')
+ax.plot(bigdf['Day'], bigdf['OBS_TEB'],      marker='.', color='black', label='Observed TEB')
 ax.set_ylabel('grams m$^{-2}$', color='green')
 ax.tick_params(axis='y', labelcolor='green')
 ax2 = ax.twinx()
@@ -660,7 +669,7 @@ ax2.plot(bigdf['Day'], bigdf['CAV_CGR'],      marker='^', color='indianred', lab
 ax2.set_ylabel('grams m$^{-2}$ day$^{-1}$', color='darkred')
 ax2.tick_params(axis='y',labelcolor='darkred')
 ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.18, 0.39, 0.5, 0.5))
+plt.figlegend(bbox_to_anchor=(-0.13, 0.39, 0.5, 0.5))
 plt.title('Crop Productivity')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Crop_Productivity_Comparison.png') #there are many options for savefig
 plt.show()
