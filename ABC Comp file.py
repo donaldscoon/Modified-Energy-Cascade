@@ -22,10 +22,11 @@ NC_FR = 0.034       # Hanford 2004 table 4.2.10, ugh boscheri just state the num
 OPF = 1.08          # Oxygen production fraction ewert table 4-113
 g_A = 2.5           # atmospheric aerodynamic conductance boscheri "for horizontal canopies"
 t_D = 1             # 1 for green, 8 for red initial time of development(days) Amirtrano 2020 CQY experiments
+T_T = 10            # time to transplant for amitranos model in days
 t_Mi = 16           # initial time of maturity (days) Amitrano 2020 table 2
-t_M = 30            # time at harvest/maturity ewert table 4-112
+t_M = 50            # time at harvest/maturity ewert table 4-112
 t_E = 1             # time at onset of organ formation ewert table 4-112
-t_Q = 50            # days onset of senescence placeholder value ewert table 4-112
+t_Q = 55            # days onset of senescence placeholder value ewert table 4-112
 D_PG = 24           # the plants diurnal cycle length assumed 24 in cavazzoni 2001
 MW_O2 = 31.9988     # molecular weight of O2 boscheri table 4
 MW_CO2 = 44.010     # molecular weight of CO2 boscheri table 4
@@ -232,6 +233,15 @@ TEB = 8.53                               # this is the only way I could make it 
 edible_mat = np.zeros(ts_to_harvest+1)   # matrix for TEB storage
 day = 0
 
+t = 0
+while t < T_T:
+    dfts = pd.DataFrame({
+        'AMI_Timestep': [t],
+        'Day': [day]})
+    df_AMI_records = pd.concat([df_AMI_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
+    t += res
+    day += 1
+t=0
 while t <= ts_to_harvest:                  # while time is less than harvest time
     if t<= t_D:                            # if timestep is before formation of edible organs
         alpha = amin_GN                    # amitrano 2020 eq 15
@@ -284,7 +294,7 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     t += res                         # advance timestep
     day += 1
     i += 1                           # increase matrix index counter
-
+# print(df_AMI_records)
 df_AMI_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_AMI_OUT_comp.csv') # exports final data frame to a CSV
 print('Exported Amitrano Data')
 
@@ -389,6 +399,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 
 df_CAV_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv') # exports final data frame to a CSV
 print('Exported Cavazzoni Data')
+print(day)
 
 '''#############################################################################
    ############################ BOSCHERI MODEL CODE ###########################
@@ -544,10 +555,15 @@ print('Beginning Comparisons')
 #################################################
 
 ami =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_AMI_OUT_comp.csv")
+print(ami[['Day']])
 bos_tot = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_TOT_comp.csv")
+print(bos_tot[['Day']])
 bos_avg = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv")
+print(bos_avg[['Day']])
 cav =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv")
+print(cav[['Day']])
 obs =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_GN_OBSV_comp.csv")
+print(obs[['Day']])
 
 print('Data Imported')
 bigdf =   pd.merge(pd.merge(pd.merge(pd.merge(bos_avg, bos_tot, on='Day'), ami, on='Day'), cav, on='Day'), obs, on='Day')
@@ -555,14 +571,16 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 print(bigdf)
 print('Dataframes Merged')
 
+print(bigdf[['Day']])
+
 ''' AMI= green colors or 'o'
      BOS= blue colors or 's'
      CAV= yelllow colors or '^'  '''
-##################################################
-###############   Start Charting  ################
-##################################################
+#################################################
+##############   Start Charting  ################
+#################################################
 
-####### Alpha and Beta Comparison ##############
+###### Alpha and Beta Comparison ##############
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_alpha'],       marker='o', color='lightgreen',     label='AMI α')
 ax.plot(bigdf['Day'], bigdf['AMI_beta'],        marker='o', color='green',          label='AMI β')
@@ -578,7 +596,7 @@ plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison 
 plt.show()
 
 
-###################### A, CQY, CUE, ###################################
+##################### A, CQY, CUE, ###################################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_A'],      marker='s', color='lightblue',  label='BOS A')
 ax.plot(bigdf['Day'], bigdf['CAV_A'],          marker='^', color='gold',       label='CAV A')
@@ -597,7 +615,7 @@ plt.title('A CUE CQY Comparison')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/A_CUE_CQY_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
-################ Conductances #########################
+############### Conductances #########################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_g_S'],     marker='o', color='green',      label='AMI g$_S$')
 ax.plot(bigdf['Day'], bigdf['AMI_g_C'],     marker='o', color='lightgreen', label='AMI g$_C$')
@@ -613,7 +631,7 @@ plt.title('Conductances')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Conductances_Comparison.png') #there are many options for savefig
 plt.show()
 
-################## Gas Exchanges ######################
+################# Gas Exchanges ######################
 fig, ax= plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_DTR'],     marker='o', color='darkgreen',   label='AMI DTR')
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_DTR'], marker='s', color='green',       label='BOS DTR')
@@ -627,7 +645,7 @@ plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison 
 plt.show()
 
 
-################ Photosynthesis #####################
+############### Photosynthesis #####################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_P_GROSS'],     marker='o', color='green',      label='AMI P$_{GROSS}$')
 ax.plot(bigdf['Day'], bigdf['AMI_P_NET'],       marker='o', color='lightgreen', label='AMI P$_{NET}$')
@@ -642,7 +660,7 @@ plt.title('Photosynthesis')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Photosynthesis_Comparison.png') #there are many options for savefig
 plt.show()
 
-##################### Daily Carbon Gain ###################################
+#################### Daily Carbon Gain ###################################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_DCG'],      marker='o', color='green',      label='AMI DCG')
 ax.plot(bigdf['Day'], bigdf['BOS_TOT_DCG'],  marker='s', color='blue',       label='BOS DCG')
@@ -654,7 +672,7 @@ plt.title('Daily Carbon Gain')
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/DCG_Comparison.png') #there are many options for savefig
 plt.show()
 
-#################### Crop Productivity ###################################
+################### Crop Productivity ###################################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_TEB'],      marker='o', color='darkgreen',  label='AMI TEB')
 ax.plot(bigdf['Day'], bigdf['CAV_TEB'],      marker='^', color='green',      label='CAV TEB')

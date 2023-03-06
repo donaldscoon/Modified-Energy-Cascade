@@ -23,7 +23,7 @@ PPFD = 314.54       # found at Amitrano 2020 table 2 but used decimal value in G
 CO2 = 370           # value used in Amitranos excel
 H = 12              # Amitrano 2020 table 2
 T_LIGHT = 24        # placeholder value
-T_T = 10
+T_T = 10            # days to transplant, based on experimental design
 
 ##################################################
 ################# INTIALIZATION  #################
@@ -161,7 +161,6 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     t += res                         # advance timestep
     i += 1                           # increase matrix index counter
     l += 1                           # dang temp data counter
-    print(t,'post transplant')
 
 print(df_records)       # Prints entire dataframe
 # print(df_records[['Timestep', 'g_S', 'g_C', 'DTR']])                    # prints specific columns
