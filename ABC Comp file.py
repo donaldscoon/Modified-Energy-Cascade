@@ -1,6 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+# import sklearn as sklearn
+# from sklearn.metrics import mean_squared_error
+# from math import sqrt
 
 # #################################################
 # ################# MODEL INPUTS ##################
@@ -567,7 +570,6 @@ bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.c
 # # print(bigdf)
 print('Dataframes Merged')
 
-
 '''  
     perhaps I can write some kind of script to set these
     so I don't have to write it out completely each time?
@@ -588,9 +590,9 @@ print('Dataframes Merged')
         light red   = #FE989A
 '''
 
-#################################################
-##############   Start Charting  ################
-#################################################
+################################################
+#############   Start Charting  ################
+################################################
 
 ##### Alpha and Beta Comparison ##############
 fig, ax = plt.subplots()
@@ -601,10 +603,11 @@ ax.plot(bigdf['Day'], bigdf['AMI_beta'],        marker='o', color='#2A119B',    
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_BETA'],    marker='s', color='#5E46C6',    label='BOS β')
 ax.plot(bigdf['Day'], bigdf['CAV_BETA'],        marker='^', color='#A798EC',    label='CAV β')
 # ax.set_ylabel('Unsure about units')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.21, 0.39, 0.5, 0.5))
-plt.title('Alpha and Beta')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Alpha_Beta_Comparison.png') #there are many options for savefig
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.18, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Alpha and Beta', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Alpha_Beta_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
 #################### A, CQY, CUE, ###################################
@@ -613,15 +616,16 @@ ax.plot(bigdf['Day'], bigdf['BOS_AVG_A'],      marker='s', color='#2A119B',  lab
 ax.plot(bigdf['Day'], bigdf['CAV_A'],          marker='^', color='#A798EC',  label='CAV A')
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_CUE_24'], marker='s', color='#067300',  label='BOS CUE')
 ax.plot(bigdf['Day'], bigdf['CAV_CUE_24'],     marker='^', color='#96F391',  label='CAV CUE')
-ax.set_ylabel('Fractional')
+ax.set_ylabel('Fractional', fontsize= 14)
 ax2 = ax.twinx()
 ax2.plot(bigdf['Day'], bigdf['BOS_AVG_CQY'],    marker='s', color='#8C0004', label='BOS CQY')
 ax2.plot(bigdf['Day'], bigdf['CAV_CQY'],        marker='^', color='#FE989A',  label='CAV CQY')
-ax2.set_ylabel('μmol$_{Carbon}$ μmol$_{Photon}^{-1}$', color='#8C0004')
-ax2.tick_params(axis='y',labelcolor='#8C0004')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(0.40, -0.1, 0.5, 0.5))
-plt.title('A, CUE, and CQY')
+ax2.set_ylabel('μmol$_{Carbon}$ μmol$_{Photon}^{-1}$', color='#8C0004', fontsize= 14)
+ax2.tick_params(axis='y', labelcolor='#8C0004', labelsize=12)
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(0.40, -0.05, 0.5, 0.5), prop={'size': 12})
+plt.title('A, CUE, and CQY', fontsize= 16)
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/A_CUE_CQY_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
@@ -634,11 +638,12 @@ ax.plot(bigdf['Day'], bigdf['AMI_g_C'],     marker='o', color='#2A119B',     lab
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_g_C'], marker='s', color='#5E46C6',     label='BOS g$_C$')
 ax.plot(bigdf['Day'], bigdf['CAV_g_C'],     marker='^', color='#A798EC',     label='CAV g$_C$')
 ax.plot(bigdf['Day'], bigdf['OBS_g_S'],     marker='.', color='black',       label='Observed g$_S$')
-ax.set_ylabel('mol$_{water}$ m$^{-2}$ second $^{-1}$')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.13, 0.39, 0.5, 0.5))
-plt.title('Conductances')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Conductances_Comparison.png') #there are many options for savefig
+ax.set_ylabel('mol$_{water}$ m$^{-2}$ second $^{-1}$', fontsize= 14)
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.1, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Conductances', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Conductances_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
 ################ Gas Exchanges ######################
@@ -646,15 +651,16 @@ fig, ax= plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_DTR'],     marker='o', color='#067300',  label='AMI DTR')
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_DTR'], marker='s', color='#09B600',  label='BOS DTR')
 ax.plot(bigdf['Day'], bigdf['CAV_DTR'],     marker='^', color='#96F391',  label='CAV DTR')
-ax.plot(bigdf['Day'], bigdf['OBS_DTR'],     marker='.', color='black',    label='Observed')
-ax.set_ylabel('L$_{water}$ m$^{-2}$ day$^{-1}$')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.175, 0.39, 0.5, 0.5))
-plt.title('Gas Exchanges')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Gas_Exchange_Comparison.png') #there are many options for savefig
+ax.plot(bigdf['Day'], bigdf['OBS_DTR'],     marker='.', color='black',    label='Observed DTR')
+ax.set_ylabel('L$_{water}$ m$^{-2}$ day$^{-1}$', fontsize= 14)
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.075, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Daily Transpiration Rate', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Gas_Exchange_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
-############### Photosynthesis #####################
+############## Photosynthesis #####################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_P_GROSS'],     marker='o', color='#067300',      label='AMI P$_{GROSS}$')
 ax.plot(bigdf['Day'], bigdf['CAV_P_GROSS'],     marker='^', color='#09B600', label='CAV P$_{GROSS}$')
@@ -662,11 +668,12 @@ ax.plot(bigdf['Day'], bigdf['AMI_P_NET'],       marker='o', color='#2A119B',    
 ax.plot(bigdf['Day'], bigdf['BOS_AVG_P_NET'],   marker='s', color='#5E46C6',    label='BOS P$_{NET}$')
 ax.plot(bigdf['Day'], bigdf['CAV_P_NET'],       marker='^', color='#A798EC',    label='CAV P$_{NET}$')
 ax.plot(bigdf['Day'], bigdf['OBS_P_N'],         marker='.', color='black',      label='Observed P$_{NET}$')
-ax.set_ylabel('μmol$_{Carbon}$ m$^{-2}$ second$^{-1}$')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.125, 0.39, 0.5, 0.5))
-plt.title('Photosynthesis')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Photosynthesis_Comparison.png') #there are many options for savefig
+ax.set_ylabel('μmol$_{Carbon}$ m$^{-2}$ second$^{-1}$', fontsize= 14)
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.075, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Photosynthesis', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Photosynthesis_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
 #################### Daily Carbon Gain ###################################
@@ -674,30 +681,34 @@ fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_DCG'],      marker='o', color='#067300',   label='AMI DCG')
 ax.plot(bigdf['Day'], bigdf['BOS_TOT_DCG'],  marker='s', color='#09B600',       label='BOS DCG')
 ax.plot(bigdf['Day'], bigdf['CAV_DCG'],      marker='^', color='#96F391',  label='CAV DCG')
-ax.set_xlabel('Days After Emergence')
-ax.set_ylabel('mol$_{Carbon}$ m$^{-2}$ day$^{-1}$')
-plt.figlegend(bbox_to_anchor=(-0.18, 0.39, 0.5, 0.5))
-plt.title('Daily Carbon Gain')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/DCG_Comparison.png') #there are many options for savefig
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.set_ylabel('mol$_{Carbon}$ m$^{-2}$ day$^{-1}$', fontsize= 14)
+ax.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.14, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Daily Carbon Gain', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/DCG_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
 ################### Crop Productivity ###################################
 fig, ax = plt.subplots()
 ax.plot(bigdf['Day'], bigdf['AMI_TEB'],      marker='o', color='#067300',  label='AMI TEB')
+ax.plot(bigdf['Day'], bigdf['AMI_TEB'],      marker='o', color='#067300',  label='AMI TEB')
 ax.plot(bigdf['Day'], bigdf['CAV_TEB'],      marker='^', color='#09B600',  label='CAV TEB')
 ax.plot(bigdf['Day'], bigdf['CAV_TCB'],      marker='^', color='#96F391',  label='CAV TCB')
 ax.plot(bigdf['Day'], bigdf['OBS_TEB'],      marker='.', color='black',    label='Observed TEB')
-ax.set_ylabel('grams m$^{-2}$', color='#09B600')
+ax.set_ylabel('grams m$^{-2}$', color='#09B600', fontsize= 14)
 ax.tick_params(axis='y', labelcolor='#09B600')
 ax2 = ax.twinx()
 ax2.plot(bigdf['Day'], bigdf['AMI_CGR'],      marker='o', color='#8C0004', label='AMI CGR')
 ax2.plot(bigdf['Day'], bigdf['BOS_TOT_DCGR'], marker='s', color='#DF0006', label='BOS CGR')
 ax2.plot(bigdf['Day'], bigdf['CAV_CGR'],      marker='^', color='#FE989A', label='CAV CGR')
-ax2.set_ylabel('grams m$^{-2}$ day$^{-1}$', color='#DF0006')
+ax2.set_ylabel('grams m$^{-2}$ day$^{-1}$', color='#DF0006', fontsize= 14)
 ax2.tick_params(axis='y',labelcolor='#DF0006')
-ax.set_xlabel('Days After Emergence')
-plt.figlegend(bbox_to_anchor=(-0.13, 0.39, 0.5, 0.5))
-plt.title('Crop Productivity')
-plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Crop_Productivity_Comparison.png') #there are many options for savefig
+ax.set_xlabel('Days After Emergence', fontsize= 14)
+ax.tick_params(labelsize= 12)
+ax2.tick_params(labelsize= 12)
+plt.figlegend(bbox_to_anchor=(-0.08, 0.39, 0.5, 0.5), prop={'size': 12})
+plt.title('Crop Productivity', fontsize= 16)
+plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Crop_Productivity_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
 
