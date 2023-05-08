@@ -5,6 +5,7 @@ Going to try and run a small scale version of the MEC through GSUA before doing 
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 from SALib.test_functions import Ishigami
+import numpy as np
 
 
 ##########################################################
@@ -25,6 +26,11 @@ MEC = {
 
 param_values = saltelli.sample(MEC, 32)      # 2**5 = 32 for 256 samples
 # print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
+
+for i, X in enumerate(param_values):
+    print(i, X)
+    # this saves each of the 8192 sample parameters.
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/OO MEC/ENV-data.txt", param_values)
 
 ##########################################################
 ######################### Run Model ######################

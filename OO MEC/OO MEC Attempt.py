@@ -1,53 +1,41 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May 1 2023
+#! c:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/OO-MEC/
 
+"""
+Created on Mon May 8 2023
 @author: donal
-
 Written to recreate the MEC authored by Boscheri using Object Oriented Programming. 
-
 End goal is global sensitivity and uncertainty analysis of this version and comparison against others. 
-
 """
 
+import os
+import re
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+# --------------------------------------------------
+def get_env_data():
+   """This is specifically for GSUA data"""
+   # Convert text file to a dataframe
+   data = pd.read_csv('c:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/OO MEC/ENV-data.txt', sep= ' ')
+   env_df = pd.DataFrame(data)
+   
+   # Assign column names to the DataFrame
+   column_names = ['Temperature', 'Humidity', 'CO2']
+   env_df.columns = column_names
+   
+   # print(env_df)
 
-t = 10
-res = 1
+   # hmm, would it be worth writing this to pull single columns at a time? Probably.
+   # I know there is no class statement for this one, but I am not sure how to write
+   # optional arguments yet. I'll move on and hopefully that isn't too difficult to 
+   # add later. :)
 
-class Timestep:
-    def __init__(self, TS, t, res):
-        self.TS = TS                # timestep trackers
-        self.t = t                  # number of days to run the model
-        self.res = res              # the division of 1 day to run the model
-        self.pretty_print_name()
-  
-    def pretty_print_name(self):
-        print("This Timestep is {}.".format(self.TS))
-
-my_objects = {}
-for i in range(1,11):
-    TS = 'TS_{}'.format(i)
-    my_objects[TS] = my_objects.get(TS, Timestep(TS = TS))
-
-
-
-
-
-
-# class Environment:
-#     def __init__(TS, T_LIGHT, T_DARK) -> None:
-#         TS.T_LIGHT = T_LIGHT        # Light Cycle Average Temperature ewert table 4-111 or user input
-#         TS.T_DARK  = T_DARK         # Dark Cycle Average Temperature ewert table 4-111 or user input
-
-#     def Show_Temp(self, T_LIGHT, T_DARK) -> None:
-#         print(f"When lights are on it is {self.T_Light}, when lights are off it is {self.T_Dark}")
-#         pass
-# TS = 0
-# T_LIGHT = 30
-# T_DARK = 25
-#     # add environment methods here
-# TS1 = Environment(T_LIGHT, T_DARK)
-# print(Environment.
+# --------------------------------------------------
+def main():
+   get_env_data()
+   for
+   print('Give me something')
+   
+# --------------------------------------------------
+main()
