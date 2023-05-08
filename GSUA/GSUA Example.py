@@ -43,7 +43,34 @@ mathematical or computational model. If the model is
 written in Python, then generally you will loop over each 
 sample input and evaluate the model:"""
 
+"""I think the structure of this example is wonk. This Y= 
+seems to be whats running the model, the loop is simply 
+assembling the data files."""
 Y = np.zeros([param_values.shape[0]])
+Y = Ishigami.evaluate(param_values)
+print(Y)
+
+# goodness gracious. I can't get this to work. :(
 
 for i, X in enumerate(param_values):
-    Y[i] = evaluate_model(X)
+    # print(i, X, Y[i])
+    # this saves each of the 8192 model outputs for that sample. If its working correctly.
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/outputs.txt", Y)
+
+    # this saves each of the 8192 samples of the parameters to a text file
+    # np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/param_values.txt", param_values)
+    
+    #idk if this is useful.
+    # Y = np.loadtxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/outputs.txt", float)
+    
+    
+    # Y[i] = evaluate_model(X) #this blasted thing better not be important!!
+
+
+
+##########################################################
+#################### Perform Analysis ####################
+##########################################################
+
+Si = sobol.analyze(problem, Y)
+print(Si['S1'])
