@@ -73,4 +73,15 @@ for i, X in enumerate(param_values):
 ##########################################################
 
 Si = sobol.analyze(problem, Y)
-print(Si['S1'])
+
+print("x1-x2:", Si['S2'][0,1])
+print("x1-x3:", Si['S2'][0,2])
+print("x2-x3:", Si['S2'][1,2])
+
+total_Si, first_Si, second_Si = Si.to_df() # function to convert the output to as pd.df
+
+# Note that if the sample was created with `calc_second_order=False`
+# Then the second order sensitivities will not be returned
+# total_Si, first_Si = Si.to_df()
+
+Si.plot()
