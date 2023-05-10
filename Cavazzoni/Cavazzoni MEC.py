@@ -307,18 +307,18 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 # plt.title('ALL THE DATA!')
 # plt.show()
 
-################ Canopy Development ########################
-# fig, ax = plt.subplots()
-# ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
-# ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
-# ax.set_ylabel('Fractional')
-# ax2=ax.twinx()
-# ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
-# ax2.set_ylabel('umol C / umol photons', color='red')
-# ax2.tick_params(axis='y',labelcolor='red')
-# fig.legend(['CQY', 'CUE_24', 'A'])
-# plt.title('Canopy Development')
-# plt.show()
+############### Canopy Development ########################
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
+ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
+ax.set_ylabel('Fractional')
+ax2=ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
+ax2.set_ylabel('umol C / umol photons', color='red')
+ax2.tick_params(axis='y',labelcolor='red')
+fig.legend(['CQY', 'CUE_24', 'A'])
+plt.title('Canopy Development')
+plt.show()
 
 ###################### CARBON FLOW ######################
 # fig, ax = plt.subplots()
