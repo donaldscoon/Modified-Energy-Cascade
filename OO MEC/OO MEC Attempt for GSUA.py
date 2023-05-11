@@ -61,21 +61,35 @@ class data:
       df_records = pd.DataFrame({})       # the empty dataframe ofor entire simultation
       return df_records, t, res, i
 
+   def update_df():
+      t=0?????????????????????? check chat gpt history
+      dfts = pd.DataFrame({
+        'Timestep': [t],
+        'VP_SAT': [VP_SAT],
+        'VP_AIR': [VP_AIR],
+        'VPD': [VPD],
+        'P_NET': [P_NET],
+        'g_S': [g_S],
+        'T_LIGHT': [T_LIGHT],
+        'T_DARK': [T_DARK],
+        'RH': [RH],
+        'CO2': [CO2]
+      }) # creates a dataframe of all variables/outputs for each timestep. 
+      df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
+      return dfts
 # --------------------------------------------------
 def main():
    #there needs to be a way to specify baseline or input data or sensor data when running the program
    PPFD, CO2, H, T_LIGHT, T_DARK, RH, P_ATM = env.baseline()      # sets the environmental baselines for the entire simultaion
    env_df = env.GSUA_data()                                         # pulls in the GSUA sample data frame
    df_records, t, res, i = data.init_df()
-   print(df_records)
-   # P_NET = 5 # just a constant for testing
-   # VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
-   # VP_AIR = VP_SAT*RH                                       # Atmo Vapor Pressure ewewrt eq 4-23
-   # VPD = VP_SAT - VP_AIR                                    # Vapor Pressure Deficit ewert eq 4-23
-   # g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
-   # print(g_S)
-   print(df_records)
-
-   print(df_rec)
+   P_NET = 5 # just a constant for testing
+   VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
+   VP_AIR = VP_SAT*RH                                       # Atmo Vapor Pressure ewewrt eq 4-23
+   VPD = VP_SAT - VP_AIR                                    # Vapor Pressure Deficit ewert eq 4-23
+   g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
+   print(g_S)
+   dfts = data.update_df()
+   
 # --------------------------------------------------
 main()
