@@ -4,8 +4,7 @@
 """
 Created on Mon May 8 2023
 @author: donal
-Written to recreate the MEC authored by Boscheri using Object Oriented Programming. 
-End goal is global sensitivity and uncertainty analysis of this version and comparison against others. 
+End goal is global sensitivity and uncertainty analysis
 """
 
 import os
@@ -58,12 +57,48 @@ class data:
       t = 0               # time in days
       res = 1             # model resolution (in days)
       i = 0               # matrix/loop counter
-      df_records = pd.DataFrame({})       # the empty dataframe ofor entire simultation
+      df_records = pd.DataFrame({
+        'Timestep': [],
+        'VP_SAT': [],
+        'VP_AIR': [],
+        'VPD': [],
+        'P_NET': [],
+        'g_S': [],
+        'T_LIGHT': [],
+        'T_DARK': [],
+        'RH': [],
+        'CO2': []})       # the empty dataframe ofor entire simultation
       return df_records, t, res, i
 
-   def update_df():
-      t=0?????????????????????? check chat gpt history
-      dfts = pd.DataFrame({
+   def update_df(df_records, df_timestep):
+      # df_timestep = pd.DataFrame({
+      #   'Timestep': [t],
+      #   'VP_SAT': [VP_SAT],
+      #   'VP_AIR': [VP_AIR],
+      #   'VPD': [VPD],
+      #   'P_NET': [P_NET],
+      #   'g_S': [g_S],
+      #   'T_LIGHT': [T_LIGHT],
+      #   'T_DARK': [T_DARK],
+      #   'RH': [RH],
+      #   'CO2': [CO2]}) 
+      df_records = df_records.append(df_timestep, ignore_index= True)
+      return df_records, df_timestep
+
+# --------------------------------------------------
+def main():
+   #there needs to be a way to specify baseline or input data or sensor data when running the program
+   PPFD, CO2, H, T_LIGHT, T_DARK, RH, P_ATM = env.baseline()      # sets the environmental baselines for the entire simultaion
+   env_df = env.GSUA_data()                                         # pulls in the GSUA sample data frame
+   df_records, t, res, i = data.init_df()
+
+   for i in range(5):
+      P_NET = 5 # just a constant for testing
+      VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
+      VP_AIR = VP_SAT*RH                                       # Atmo Vapor Pressure ewewrt eq 4-23
+      VPD = VP_SAT - VP_AIR                                    # Vapor Pressure Deficit ewert eq 4-23
+      g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
+      df_timestep = pd.DataFrame({
         'Timestep': [t],
         'VP_SAT': [VP_SAT],
         'VP_AIR': [VP_AIR],
@@ -73,23 +108,11 @@ class data:
         'T_LIGHT': [T_LIGHT],
         'T_DARK': [T_DARK],
         'RH': [RH],
-        'CO2': [CO2]
-      }) # creates a dataframe of all variables/outputs for each timestep. 
-      df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-      return dfts
-# --------------------------------------------------
-def main():
-   #there needs to be a way to specify baseline or input data or sensor data when running the program
-   PPFD, CO2, H, T_LIGHT, T_DARK, RH, P_ATM = env.baseline()      # sets the environmental baselines for the entire simultaion
-   env_df = env.GSUA_data()                                         # pulls in the GSUA sample data frame
-   df_records, t, res, i = data.init_df()
-   P_NET = 5 # just a constant for testing
-   VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
-   VP_AIR = VP_SAT*RH                                       # Atmo Vapor Pressure ewewrt eq 4-23
-   VPD = VP_SAT - VP_AIR                                    # Vapor Pressure Deficit ewert eq 4-23
-   g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2)        # stomatal conductance the numbers came from monje 1998, only for planophile canopies equation from ewert 4-27
-   print(g_S)
-   dfts = data.update_df()
-   
+        'CO2': [CO2]})
+      df_records = df_records.append(df_timestep, ignore_index= True)      
+      i += res
+      t += 1
+   print(df_records)
+
 # --------------------------------------------------
 main()
