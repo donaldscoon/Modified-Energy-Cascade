@@ -77,7 +77,6 @@ df_records = pd.DataFrame({})
 
 ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
 TEB = 8.53                               # this is the only way I could make it match excel WHERE IT FROM??
-edible_mat = np.zeros(ts_to_harvest+1)   # matrix for TEB storage
 
 """Amitranos Model used a variable temp in the excel
     so the following list is used to make this model 
@@ -103,7 +102,7 @@ RH_LIST =[0.7907, 0.825178571, 0.815595238, 0.823440476,
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
-while t < T_T:
+while t < T_T:                                      # this loop is for skipping the transplant stage
     dfts = pd.DataFrame({
         'Timestep': [t]})
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
@@ -126,7 +125,6 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     CGR = MWC*DCG/BCF                      # amitrano 2020 eq 6
     if t > t_E:                            # if edible organ formation has begun
         TEB = CGR+TEB                      # Amitrano 2020 GN excel column I
-    edible_mat[i] = TEB                    # matrix that stores past values of TEB
     P_GROSS = beta*PPFD                    # amitrano 2020 eq 8
     VP_SAT = 0.611*np.exp(1)**(17.4*T_LEAF/(T_LEAF+239)) # Same as ewert and cavazzoni, though likely from Monje 1998
     VP_AIR = VP_SAT*RH                     # Same as ewert and cavazzoni, though likely from Monje 1998

@@ -230,7 +230,6 @@ df_AMI_records = pd.DataFrame({})
 
 ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
 TEB = 8.53                               # this is the only way I could make it match excel WHERE IT FROM??
-edible_mat = np.zeros(ts_to_harvest+1)   # matrix for TEB storage
 day = 0
 
 t = 0
@@ -257,7 +256,6 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     CGR = MWC*DCG/BCF                      # amitrano 2020 eq 6
     if t > t_E:                            # if edible organ formation has begun
         TEB = CGR+TEB                      # Amitrano 2020 GN excel column I
-    edible_mat[i] = TEB                    # matrix that stores past values of TEB
     P_GROSS = beta*PPFD                    # amitrano 2020 eq 8
     VP_SAT = 0.611*np.exp(1)**(17.4*T_LIGHT/(T_LIGHT+239)) # Same as ewert and cavazzoni, though likely from Monje 1998
     VP_AIR = VP_SAT*RH                     # Same as ewert and cavazzoni, though likely from Monje 1998
@@ -295,7 +293,7 @@ while t <= ts_to_harvest:                  # while time is less than harvest tim
     day += 1
     i += 1                           # increase matrix index counter
 # print(df_AMI_records)
-df_AMI_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_AMI_OUT_comp.csv') # exports final data frame to a CSV
+df_AMI_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/MEC_AMI_OUT_comp.csv') # exports final data frame to a CSV
 print('Exported Amitrano Data')
 
 '''#############################################################################
@@ -315,15 +313,9 @@ i = 0               # matrix/loop counter
 ################ Data Management #################
 ##################################################
 df_CAV_records = pd.DataFrame({})
-
-"""These matrices may need to become obsolete with
-   the new dataframes I'm about to introduce. :) """
 ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
-matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
-Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
-edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
 
 #################################################
 ################ THE MODEL LOOP #################
@@ -355,10 +347,6 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     TCB += CGR                       # ewert eq 4-20
     if t > t_E:                      # accumilate edible biomass when organ formation begins
         TEB += XFRT*CGR              # ewert eq 4-21
-    Biomass_mat[i] = TCB             # matrix that stores past values of TCB
-    '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
-    '''now it works more, but only if the it results in a whole number'''
-    edible_mat[i] = TEB
     VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
     VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
     VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
@@ -397,9 +385,11 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     day += 1
     i += 1                           # increase matrix index counter
 
-df_CAV_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv') # exports final data frame to a CSV
+df_CAV_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/MEC_CAV_OUT_comp.csv') # exports final data frame to a CSV
 print('Exported Cavazzoni Data')
-print(day)
+
+
+
 
 '''#############################################################################
    ############################ BOSCHERI MODEL CODE ###########################
@@ -428,11 +418,8 @@ df_BOS_AVG_records = pd.DataFrame({})
 """These matrices may need to become obsolete with
    the new dataframes I'm about to introduce. :) """
 ts_to_harvest = int(t_M*24/res)             # calcs the timesteps needed to set up the matrix for each ts
-matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
-Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
-edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
 
 ##################################################
 ################# THE MODEL LOOP #################
@@ -541,8 +528,8 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     t += res                          # advance timestep
     i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
-df_day_TOT.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_TOT_comp.csv') # exports final data frame to a CSV
-df_day_AVG.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv') # exports final data frame to a CSV
+df_day_TOT.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/BOS_OUT_TOT_comp.csv') # exports final data frame to a CSV
+df_day_AVG.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/BOS_OUT_AVG_comp.csv') # exports final data frame to a CSV
 print('Exported Boscheri Data')
 
 '''#############################################################################
@@ -554,16 +541,16 @@ print('Beginning Comparisons')
 ############## Pull in the data ################
 ################################################
 
-ami =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_AMI_OUT_comp.csv")
-bos_tot = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_TOT_comp.csv")
-bos_avg = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/BOS_OUT_AVG_comp.csv")
-cav =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_CAV_OUT_comp.csv")
-obs =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/MEC_GN_OBSV_comp.csv")
+ami =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/MEC_AMI_OUT_comp.csv")
+bos_tot = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/BOS_OUT_TOT_comp.csv")
+bos_avg = pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/BOS_OUT_AVG_comp.csv")
+cav =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/MEC_CAV_OUT_comp.csv")
+obs =     pd.read_csv("C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/MEC_GN_OBSV_comp.csv")
 
 
 print('Data Imported')
 bigdf =   pd.merge(pd.merge(pd.merge(pd.merge(bos_avg, bos_tot, on='Day'), ami, on='Day'), cav, on='Day'), obs, on='Day')
-bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_comp.csv') # exports final data frame to a CSV
+bigdf.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/ABC_Comps/ABC_comp.csv') # exports final data frame to a CSV
 # print(bigdf)
 print('Dataframes Merged')
 
@@ -708,7 +695,3 @@ plt.figlegend(bbox_to_anchor=(-0.08, 0.39, 0.5, 0.5), prop={'size': 12})
 plt.title('Crop Productivity', fontsize= 16)
 plt.savefig('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Comparison Charts/Crop_Productivity_Comparison.png', bbox_inches='tight') #there are many options for savefig
 plt.show()
-
-##################################################
-################ SOME STATISTICS #################
-##################################################

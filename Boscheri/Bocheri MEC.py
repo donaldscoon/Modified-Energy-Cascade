@@ -76,11 +76,8 @@ df_records = pd.DataFrame({})
 """These matrices may need to become obsolete with
    the new dataframes I'm about to introduce. :) """
 ts_to_harvest = int(t_M*24/res)             # calcs the timesteps needed to set up the matrix for each ts
-matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
-Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
-edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
 
 ##################################################
 ############# SUPPLEMENTAL EQUATIONS #############
@@ -287,8 +284,6 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15 
     HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
     HWC = HTR+HOP+HCO2P+HWCGR-HOC-HCO2C-HNC # boscheri eq 16
-    # Biomass_mat[i] = TCB            # matrix that stores past values of TCB
-    # edible_mat[i] = TEB
     dfts = pd.DataFrame({
         'Timestep': [t],
         'Day': [day],

@@ -20,8 +20,8 @@ import pandas as pd
 ##################################################
 ################## MODEL INPUTS ##################
 ##################################################
-PPFD = 560          # umol/m^2/sec, needs to accept inputs
-CO2 = 419.5         # umol CO2 / mol air,needs to accept  inputs
+PPFD = 314.54          # umol/m^2/sec, Amitrano 2020 Table 2
+CO2 = 419.5         # umol CO2 / mol air
 H = 16              # photoperiod defined as 16 in Cavazonni 2001
 T_LIGHT = 23        # Light Cycle Average Temperature ewert table 4-111 or user input
 T_DARK = 23         # Dark Cycle Average Temperature ewert table 4-111 or user input
@@ -63,11 +63,11 @@ df_records = pd.DataFrame({})
 """These matrices may need to become obsolete with
    the new dataframes I'm about to introduce. :) """
 ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
-matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
+# matrix = range(ts_to_harvest) + np.ones(ts_to_harvest)      # only works with whole numbers of ts_to_harvest
 TCB = 0                                 # starting crop biomass
-Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
+# Biomass_mat = np.zeros(ts_to_harvest)             # matrix for TCB storage
 TEB = 0                                 # starting total edible biomass
-edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
+# edible_mat = np.zeros(ts_to_harvest)              # matrix for TEB storage
 
 
 
@@ -255,10 +255,10 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     TCB += CGR                       # ewert eq 4-20
     if t > t_E:                      # accumilate edible biomass when organ formation begins
         TEB += XFRT*CGR              # ewert eq 4-21
-    Biomass_mat[i] = TCB             # matrix that stores past values of TCB
+    # Biomass_mat[i] = TCB             # matrix that stores past values of TCB
     '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
     '''now it works more, but only if the it results in a whole number'''
-    edible_mat[i] = TEB
+    # edible_mat[i] = TEB
     VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
     VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
     VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
@@ -269,6 +269,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
     dfts = pd.DataFrame({
         'Timestep': [t],
+        'Days': [DAY],
         'A': [A],
         'CQY': [CQY],
         'CUE_24': [CUE_24],
@@ -308,30 +309,30 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 # plt.show()
 
 ############### Canopy Development ########################
-fig, ax = plt.subplots()
-ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
-ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
-ax.set_ylabel('Fractional')
-ax2=ax.twinx()
-ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
-ax2.set_ylabel('umol C / umol photons', color='red')
-ax2.tick_params(axis='y',labelcolor='red')
-fig.legend(['CQY', 'CUE_24', 'A'])
-plt.title('Canopy Development')
-plt.show()
+# fig, ax = plt.subplots()
+# ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
+# ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
+# ax.set_ylabel('Fractional')
+# ax2=ax.twinx()
+# ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
+# ax2.set_ylabel('umol C / umol photons', color='red')
+# ax2.tick_params(axis='y',labelcolor='red')
+# fig.legend(['CQY', 'CUE_24', 'A'])
+# plt.title('Canopy Development')
+# plt.show()
 
 ###################### CARBON FLOW ######################
-# fig, ax = plt.subplots()
-# ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
-# ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
-# ax.set_ylabel(' grams / meter^2', color = 'green')
-# ax.tick_params(axis='y', labelcolor='green')
-# ax2 = ax.twinx()
-# ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
-# ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
-# fig.legend(['TCB', 'TEB', 'DCG'])
-# plt.title('Carbon Flow')
-# plt.show()
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['TCB'], marker='o', color='lightgreen')
+ax.plot(df_records['Timestep'], df_records['TEB'], marker='o', color='green')
+ax.set_ylabel(' grams / meter^2', color = 'green')
+ax.tick_params(axis='y', labelcolor='green')
+ax2 = ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['DCG'], marker='o', color='black')
+ax2.set_ylabel(' mol carbon / ((m^2)*Day)')
+fig.legend(['TCB', 'TEB', 'DCG'])
+plt.title('Carbon Flow')
+plt.show()
 
 
 ##################### VAPOR PRESSURES ###################
