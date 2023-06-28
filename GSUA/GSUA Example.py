@@ -50,18 +50,16 @@ Y = np.zeros([param_values.shape[0]])
 Y = Ishigami.evaluate(param_values)
 print(Y)
 
-# goodness gracious. I can't get this to work. :(
-
 for i, X in enumerate(param_values):
     # print(i, X, Y[i])
     # this saves each of the 8192 model outputs for that sample. If its working correctly.
-    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/outputs.txt", Y)
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/test_outputs.txt", Y)
 
     # this saves each of the 8192 samples of the parameters to a text file
-    # np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/param_values.txt", param_values)
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/test_param_values.txt", param_values)
     
     #idk if this is useful.
-    # Y = np.loadtxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/outputs.txt", float)
+    Y = np.loadtxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/test_outputs.txt", float)
     
     
     # Y[i] = evaluate_model(X) #this blasted thing better not be important!!

@@ -269,7 +269,7 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
     dfts = pd.DataFrame({
         'Timestep': [t],
-        'Days': [DAY],
+        # 'Days': [DAY],
         'A': [A],
         'CQY': [CQY],
         'CUE_24': [CUE_24],
@@ -309,17 +309,17 @@ while t < ts_to_harvest:                 # while time is less than harvest time
 # plt.show()
 
 ############### Canopy Development ########################
-# fig, ax = plt.subplots()
-# ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
-# ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
-# ax.set_ylabel('Fractional')
-# ax2=ax.twinx()
-# ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
-# ax2.set_ylabel('umol C / umol photons', color='red')
-# ax2.tick_params(axis='y',labelcolor='red')
-# fig.legend(['CQY', 'CUE_24', 'A'])
-# plt.title('Canopy Development')
-# plt.show()
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['CQY'], label='CQY', marker= 'o', color = 'blue')
+ax.plot(df_records['Timestep'], df_records['CUE_24'], label='CUE_24', marker= 'o', color = 'green')
+ax.set_ylabel('Fractional')
+ax2=ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['A'], label='A', marker='o', color = 'red')
+ax2.set_ylabel('umol C / umol photons', color='red')
+ax2.tick_params(axis='y',labelcolor='red')
+fig.legend(['CQY', 'CUE_24', 'A'])
+plt.title('Canopy Development')
+plt.show()
 
 ###################### CARBON FLOW ######################
 fig, ax = plt.subplots()
@@ -336,33 +336,33 @@ plt.show()
 
 
 ##################### VAPOR PRESSURES ###################
-# VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
-# VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
-# VP_chart.set_ylabel('kPa')
-# plt.title('Vapor Pressures')
-# plt.show()
+VP_chart_data = df_records[['Timestep', 'VP_AIR', 'VP_SAT', 'VPD']]
+VP_chart = VP_chart_data.plot(x='Timestep', marker='o')
+VP_chart.set_ylabel('kPa')
+plt.title('Vapor Pressures')
+plt.show()
 
 ################### CODUCTANCE ###########################
-# conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
-# conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
-# conductance_chart.set_ylabel('moles of water / (m^2)*s')
-# plt.title('Conductances')
-# plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
-# plt.show()
+conductance_chart_data = df_records[['Timestep', 'g_S', 'g_A', 'g_C']]
+conductance_chart = conductance_chart_data.plot(x='Timestep', marker='o')
+conductance_chart.set_ylabel('moles of water / (m^2)*s')
+plt.title('Conductances')
+plt.legend(['Stomatal', 'Atmo', 'Canopy'], loc='center right')
+plt.show()
 
 ################### PHOTOSYNTHESIS ###########################
-# fig, ax = plt.subplots()
-# ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
-# ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
-# ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
-# ax.tick_params(axis='y', labelcolor='green')
-# ax2 = ax.twinx()
-# ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
-# ax2.set_ylabel('grams / ((m^2)*Day)')
-# ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
-# fig.legend(['P_GROSS', 'P_NET', 'CGR'])
-# plt.title('Carbon Flow')
-# plt.show()
+fig, ax = plt.subplots()
+ax.plot(df_records['Timestep'], df_records['P_GROSS'], marker='o', color='lightgreen')
+ax.plot(df_records['Timestep'], df_records['P_NET'], marker='o', color='green')
+ax.set_ylabel('umol Carbon / (m^2)*s', color = 'green')
+ax.tick_params(axis='y', labelcolor='green')
+ax2 = ax.twinx()
+ax2.plot(df_records['Timestep'], df_records['CGR'], marker='o', color='black')
+ax2.set_ylabel('grams / ((m^2)*Day)')
+ax2.set_ybound(0, 35)           # This was so P_GROSS and CGR didn't overlap
+fig.legend(['P_GROSS', 'P_NET', 'CGR'])
+plt.title('Carbon Flow')
+plt.show()
 
 
 # ############################################################
