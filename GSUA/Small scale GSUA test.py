@@ -7,51 +7,75 @@ from SALib.analyze import sobol
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import MEC_CAV_GSUA
+
 
 ##########################################################
 ############## Defining the Model Inputs #################
 ##########################################################
 
 problem = {
-    'num_vars': 3,
-    'names': ['Temp','Humi','CO2'],
-    'bounds': [[20,40],       # bounds of Temperature variable
-               [60, 90],      # Humidity variable
-               [300, 500]]    # CO2 variable
-}
+    'num_vars': 5,
+    'names': ['Temp','RH','CO2', 'PPFD', 'H'],
+    'bounds': [[20,40],       # Temperature
+               [60, 90],      # Relative Humidity
+               [300, 500],    # Atmo CO2 Concentration
+               [200,500],     # PPFD Level
+               [0,24]]        # Photoperiod
+               }
+
+mec_outputs = ["CQY","CUE_24","DCG",
+               "CGR","TCB","TEB",
+               "VP_SAT","VP_AIR","VPD",
+               "P_GROSS","P_NET","g_S",
+               "g_A","g_C","DTR",
+               "T_LIGHT","T_DARK","RH",
+               "CO2"]
 
 ##########################################################
 ############## Generate the Samples ######################
 ##########################################################
+""" 
+    If needed this step of generating parameters may be skipped
+    once generated and the simulations performed. The output 
+    files will be able to be used for the analysis and charting
+"""
 
-param_values = saltelli.sample(problem, 2**5)      # 2**5 = 32 for 256 samples
+# param_values = saltelli.sample(problem, 2**5)      # 2**5 = 32 for 256 samples
 # # print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
 # df_sims = pd.DataFrame({})
 # for i, X in enumerate(param_values):
 #     # print(i, X)
 #     # this saves each of the 8192 sample parameters.
-#     # Columns are Temp, Humidity, CO2
-#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/ENV-data.txt", param_values)
+#     # Columns are Temp, Humidity, CO2, PPFD, H
+#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", param_values)
 #     SIM_TEMP = X[0]
 #     SIM_RH   = X[1]
 #     SIM_CO2  = X[2]
+#     SIM_PPFD = X[3]
+#     SIM_H    = X[4]
 #     SIM_NUM = i
 
-# ##########################################################
-# ######################### Run Model ######################
-# ##########################################################
+##########################################################
+######################### Run Model ######################
+##########################################################
+
+if __name__ == '__main__':
+    MEC_CAV_GSUA.RUN_CAV()      # Runs the Cavazzoni utilizing the GSUA_parameters.txt
+
+
 #     """This was copy and pasted directly from the CAV model with the variable inputs 
 #     adjusted to accept the param values generated with the saltelli sampler"""
 #     ##################################################
 #     ################## MODEL INPUTS ##################
 #     ##################################################
-#     PPFD = 314.54       # umol/m^2/sec, Amitrano 2020 Table 2
-#     CO2 = SIM_CO2        # umol CO2 / mol air
-#     H = 16              # photoperiod defined as 16 in Cavazonni 2001
-#     T_LIGHT = SIM_TEMP        # Light Cycle Average Temperature ewert table 4-111 or user input
-#     T_DARK = SIM_TEMP         # Dark Cycle Average Temperature ewert table 4-111 or user input
+#     PPFD = SIM_PPFD       # umol/m^2/sec, Amitrano 2020 Table 2
+#     CO2 = SIM_CO2         # umol CO2 / mol air
+#     H = SIM_H             # photoperiod defined as 16 in Cavazonni 2001
+#     T_LIGHT = SIM_TEMP    # Light Cycle Average Temperature ewert table 4-111 or user input
+#     T_DARK = SIM_TEMP     # Dark Cycle Average Temperature ewert table 4-111 or user input
 #     RH = SIM_RH           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
-#     P_ATM = 101         # atmospheric pressure placeholder is gainesville FL value
+#     P_ATM = 101           # atmospheric pressure placeholder is gainesville FL value
 
 #     ##################################################
 #     ################# INTIALIZATION  #################
@@ -314,17 +338,18 @@ param_values = saltelli.sample(problem, 2**5)      # 2**5 = 32 for 256 samples
 #         # i += 1                           # increase matrix index counter
 #     # print(df_records)                    # prints a copy of output in the terminal
 #     df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
-#     df_sims.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Sim.csv') # exports entire final data frame to a CSV
-#     np.savetxt('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Sim.txt', df_sims["DTR"]) # exports a single output to a text file
+#     df_sims.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Simulations.csv') # exports entire final data frame to a CSV
+#     for output in mec_outputs:      # This loop runs create text files for each output of the MEC!
+#         np.savetxt(f'C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_out/GSUA_data_{output}.txt', df_sims[[f'{output}']])
 
 ###########################################################
 #################### Analysis #############################
 ###########################################################
-df_sims = pd.read_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Sim.csv') # Added to avoid running simulation everytime I want to change something
-Y = np.loadtxt('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Sim.txt') # done to match the SALib example, imports the text file result
-# print(df_sims)
+# df_sims = pd.read_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Simulations.csv') # Added to avoid running simulation everytime I want to change something
+# Y = np.loadtxt('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/GSUA/GSUA_Simulations.txt') # done to match the SALib example, imports the text file result
+# # print(df_sims)
 
-Si = sobol.analyze(problem, Y)
+# Si = sobol.analyze(problem, Y)
 # print(Si)
 # Si.plot()
 
@@ -336,25 +361,25 @@ Si = sobol.analyze(problem, Y)
 #################### VISUALIZATIONS #######################
 ###########################################################
 
-"""This chart bulding stuff works!"""
-VIS_GSUA = df_sims[['Simulation', 'DTR', 'T_LIGHT', 'RH', 'CO2']]
-VIS_GSUA = VIS_GSUA.sort_values('RH', ascending=True)
-x = VIS_GSUA[['RH']]
-y = VIS_GSUA[['DTR']]
-fig, ax = plt.subplots()
-ax.scatter(x, y)
-ax.set_ylabel('Daily Transpiration Rate')
-ax.set_xlabel('Relative Humidity')
+# """This chart bulding stuff works!"""
+# VIS_GSUA = df_sims[['Simulation', 'DTR', 'T_LIGHT', 'RH', 'CO2']]
+# VIS_GSUA = VIS_GSUA.sort_values('RH', ascending=True)
+# x = VIS_GSUA[['RH']]
+# y = VIS_GSUA[['DTR']]
+# fig, ax = plt.subplots()
+# ax.scatter(x, y)
+# ax.set_ylabel('Daily Transpiration Rate')
+# ax.set_xlabel('Relative Humidity')
 
-# plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+# # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
 
-# calc the trendline
-z = np.polyfit(x.values.flatten(), y.values.flatten(), 1) # 1 is linear, 2 is quadratic! the flatten converts the df to a 1D array
-p = np.poly1d(z)
-plt.plot(x,p(x),"r--")
+# # calc the trendline
+# z = np.polyfit(x.values.flatten(), y.values.flatten(), 1) # 1 is linear, 2 is quadratic! the flatten converts the df to a 1D array
+# p = np.poly1d(z)
+# plt.plot(x,p(x),"r--")
 
-# the line equation:
-print("y=%.6fx+(%.6f)"%(z[0],z[1]))
-plt.show()
+# # the line equation:
+# print("y=%.6fx+(%.6f)"%(z[0],z[1]))
+# plt.show()
 
 """Time for the GSUA Charts in the example"""
