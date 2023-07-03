@@ -54,6 +54,8 @@ problem = {
 
 # if __name__ == '__main__':
 #     MEC_CAV_GSUA.RUN_CAV()      # Runs the Cavazzoni utilizing the GSUA_parameters.txt
+# Boscheri Verison Placeholder
+# Amitrano Version Placeholder
 
 
 
@@ -62,13 +64,13 @@ problem = {
 ###########################################################
 
 # Create dataframes for each models GSUA runs
-df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/GSUA_CAV_Simulations.csv')
+df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 # Boscheri Verison Placeholder
 # Amitrano Version Placeholder
 
 # Loading specific outputs for GSUA analysis 
 """Perhaps I can make a fancy loop here to generate everything needed, then dump them all into charts?"""
-Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
+Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
 
 # Si = sobol.analyze(problem, Y)
 # print(Si)
@@ -87,7 +89,7 @@ Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSU
 
 u = "\u00B5"        # unicode for the micro symbol
 # This list of lists defines the short name, full name and units for the inputs/outputs used in charts.
-mec_labels = [  
+mec_ouputs = [  
             ["A", "Absorption", ""],
             ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
             ["CUE_24", "Carbon Use Efficiency", ""],
@@ -103,59 +105,57 @@ mec_labels = [
             ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
             ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
             ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"],
+            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
+]
+
+mec_inputs = [
             ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
             ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
             ["RH", "Relative Humidity", "%"],
-            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"]
-            ]
+            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
+            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{fixed}$ m$^{-2}$ second$^{-1}$"],
+            ["H", "Photoperiod", "hours day$^{-1}$"]
+]
 
-for label in mec_labels:
-    short_name = label[0]
-    long_name = label[1]
-    unit = label[2]
-    # print(short, long, unit)
-    fig, ax = plt.subplots()
-    ax.set_xlabel(short_name, fontsize= 14)
-    ax.set_ylabel(unit, fontsize= 14)
-    ax.tick_params(labelsize= 12)
-    plt.title(long_name, fontsize= 16)
-    plt.show()
+for item in mec_inputs:        # this allows easy injection of labels into chart elements
+    input_short_name = item[0]
+    input_long_name = item[1]
+    input_unit = item[2]
+    for label in mec_ouputs:
+        output_short_name = label[0]
+        output_long_name = label[1]
+        output_unit = label[2]
 
+        """This chart bulding stuff works!"""
+        VIS_GSUA = df_CAV_sims[['Simulation', output_short_name, input_short_name]]
+        VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+        x = VIS_GSUA[[input_short_name]]
+        x = x.values.flatten()
+        y = VIS_GSUA[[output_short_name]]
+        y = y.values.flatten()
+        fig, ax = plt.subplots()
+        ax.scatter(x, y)
+        ax.set_ylabel(output_long_name)
+        ax.set_xlabel(input_long_name)
+        plt.title(f'{input_short_name} x {output_short_name}')
+        # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
 
+        # calc the trendline
+        z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic! the flatten converts the df to a 1D array
+        p = np.poly1d(z)
+        plt.plot(x,p(x),"red")
 
-# """This chart bulding stuff works!"""
-# VIS_GSUA = df_CAV_sims[['Simulation', 'DTR', 'T_LIGHT', 'RH', 'CO2']]
-# VIS_GSUA = VIS_GSUA.sort_values('RH', ascending=True)
-# x = VIS_GSUA[['RH']]
-# x = x.values.flatten()
-# y = VIS_GSUA[['DTR']]
-# y = y.values.flatten()
-# fig, ax = plt.subplots()
-# ax.scatter(x, y)
-# ax.set_ylabel('Daily Transpiration Rate')
-# ax.set_xlabel('Relative Humidity')
+        # fit a linear curve and estimate its y-values and their error.
+        # a, b = np.polyfit(x, y, deg=1)
+        # y_err = x.std() * np.sqrt(1/len(x) + (x - x.mean())**2 / np.sum((x - x.mean())**2))
 
-# # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+        # trying to add a shaded region to represent XX quantity of the simulations
 
-# # calc the trendline
-# z = np.polyfit(x, y, 1) # 1 is linear, 2 is quadratic! the flatten converts the df to a 1D array
-# p = np.poly1d(z)
-# plt.plot(x,p(x),"red")
+        # plt.plot(x,p(x)*(1.95),"green")
+        # plt.plot(x,p(x)*(.05),"green")
+        # the line equation:
+        # print("y=%fx+(%f)"%(z[0],z[1]))
 
-# # fit a linear curve and estimate its y-values and their error.
-# a, b = np.polyfit(x, y, deg=1)
-# y_err = x.std() * np.sqrt(1/len(x) + (x - x.mean())**2 / np.sum((x - x.mean())**2))
-
-# # trying to add a shaded region to represent XX quantity of the simulations
-# fig, ax = plt.subplots()
-# ax.plot(x, y, '-')
-# ax.fill_between(x, y - y_err, y + y_err, alpha=0.2)
-# ax.plot(x, y, 'o', color='tab:brown')
-
-
-# # plt.plot(x,p(x)*(1.95),"green")
-# # plt.plot(x,p(x)*(.05),"green")
-# # the line equation:
-# print("y=%fx+(%f)"%(z[0],z[1]))
-# plt.show()
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/{input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+        # in the likely rare event all of these need to be viewed...
+        # plt.show()
