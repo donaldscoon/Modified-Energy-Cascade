@@ -293,7 +293,6 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     }) # creates a dataframe of all variables/outputs for each timestep. 
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
     t += res                          # advance timestep
-    i += 1                           # increase matrix index counter
 
 # print(df_records)                    # prints a copy of output in the terminal
 # df_records.to_csv('C:/Users/donal/Documents/Github/Modified-Energy-Cascade/Cavazzoni/MEC_CAV_OUT.csv') # exports final data frame to a CSV

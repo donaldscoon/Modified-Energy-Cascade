@@ -318,7 +318,6 @@ while t < ts_to_harvest:                 # while time is less than harvest time
     # df_day = df_records.groupby(['Day']).sum()
     df_day_avg = df_records.groupby(['Day']).mean()
     t += res                          # advance timestep
-    i += 1                           # increase matrix index counter
     pp_count += 1                    # photoperiod counter + 1
 # print(df_records)                    # prints a copy of output in the terminal
 # print(df_day)                           # prints the output summed by the day!
