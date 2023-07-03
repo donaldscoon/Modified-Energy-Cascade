@@ -3,7 +3,8 @@ This version of the Cavazzoni Model is meant to run GSUA
 and has been altered for...
     *being called from another program
     *keeping track of the simulation number
-    *exporting data for GSUA as a .txtfile
+    *exporting data for GSUA as .txt files
+    *creating every possible version of charts needed
 '''
 
 import numpy as np
@@ -54,7 +55,7 @@ def RUN_CAV():     # used to package this version of the MEC as a function calla
         CO2 = SIM_CO2         # umol CO2 / mol air
         H = SIM_H             # photoperiod defined as 16 in Cavazonni 2001
         T_LIGHT = SIM_TEMP    # Light Cycle Average Temperature ewert table 4-111 or user input
-        T_DARK = SIM_TEMP     # Dark Cycle Average Temperature ewert table 4-111 or user input
+        T_DARK = T_LIGHT - 4  # Dark Cycle Average. Instead of creating a range for this I simply subtract from T_LIGHT
         RH = SIM_RH           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
         P_ATM = 101           # atmospheric pressure placeholder is gainesville FL value
 
@@ -325,6 +326,90 @@ def RUN_CAV():     # used to package this version of the MEC as a function calla
             np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_{output}.txt', df_sims[[f'{output}']])
 
     print("Cavazzoni Simulations Complete")
+##########################################################
+############### VISUALIZATIONS ###########################
+##########################################################
+
+df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
+
+u = "\u00B5"        # unicode for the micro symbol
+# This list of lists defines the short name, full name and units for the input/output labels used in charts.
+mec_ouputs = [  
+            ["A", "Absorption", ""],
+            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
+            ["CUE_24", "Carbon Use Efficiency", ""],
+            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
+            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
+            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
+            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
+            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
+            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
+            ["VPD", "Vapor Pressure Deficit", "kPa"],
+            ["P_GROSS", "Gross Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
+            ["P_NET", "Net Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
+            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
+]
+
+mec_inputs = [
+            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
+            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
+            ["RH", "Relative Humidity", "%"],
+            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
+            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{fixed}$ m$^{-2}$ second$^{-1}$"],
+            ["H", "Photoperiod", "hours day$^{-1}$"]
+]
+
+for item in mec_inputs:        # this allows easy injection of labels into chart elements
+    input_short_name = item[0]
+    input_long_name = item[1]
+    input_unit = item[2]
+    for item in mec_ouputs:
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
+
+        """This chart bulding stuff works!"""
+        VIS_GSUA = df_CAV_sims[['Simulation', output_short_name, input_short_name]]
+        VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+        x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+        y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+        fig, ax = plt.subplots()
+        ax.scatter(x, y)
+        ax.set_ylabel(output_long_name)
+        ax.set_xlabel(input_long_name)
+        plt.title(f'{input_short_name} x {output_short_name}')
+        # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+
+        # calc the trendline
+        z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+        p = np.poly1d(z)
+        plt.plot(x,p(x),"red")
+
+        # fit a linear curve and estimate its y-values and their error.
+        # a, b = np.polyfit(x, y, deg=1)
+        # y_err = x.std() * np.sqrt(1/len(x) + (x - x.mean())**2 / np.sum((x - x.mean())**2))
+
+        # trying to add a shaded region to represent XX quantity of the simulations
+        ax.plot(x, np.mean(y), label="Mean", color='red')
+        prediction_interval = 95        # in percent
+        # ax.fill_between(x,
+        #                 np.percentile(y, 50 - prediction_interval/2.),
+        #                 np.percentile(y, 50 + prediction_interval/2.),
+        #                 alpha=0.5, color='red',
+        #                 label=f"{prediction_interval} % prediction interval")
+
+        # plt.plot(x,p(x)*(1.95),"green")
+        # plt.plot(x,p(x)*(.05),"green")
+        # the line equation:
+        # print("y=%fx+(%f)"%(z[0],z[1]))
+
+        # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/{input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+        # in the likely rare event all of these need to be viewed...
+        plt.show()
 
 # Executes this program/function
 if __name__ ==('__main__'):
