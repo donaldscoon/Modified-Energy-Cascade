@@ -52,8 +52,11 @@ problem = {
 ######################### Run Model ######################
 ##########################################################
 
-# if __name__ == '__main__':
-#     MEC_CAV_GSUA.RUN_CAV()      # Runs the Cavazzoni utilizing the GSUA_parameters.txt
+if __name__ == '__main__':
+    MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
+    MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
+    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+
 # Boscheri Verison Placeholder
 # Amitrano Version Placeholder
 
