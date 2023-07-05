@@ -13,6 +13,11 @@ import MEC_CAV_GSUA
 ##########################################################
 ############## Defining the Model Inputs #################
 ##########################################################
+models = [
+         ["AMI"], 
+         ["BOS"], 
+         ["CAV"]
+         ]
 
 problem = {
     'num_vars': 5,
@@ -49,16 +54,24 @@ problem = {
 #     SIM_NUM = i
 
 ##########################################################
-######################### Run Model ######################
+######################### Run Models #####################
 ##########################################################
 
+
 if __name__ == '__main__':
-    MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
-    MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
+    # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
+    # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
     MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
 
-# Boscheri Verison Placeholder
-# Amitrano Version Placeholder
+# # Boscheri Verison Placeholder
+#     MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
+#     MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
+#     MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
+
+# # Amitrano Version Placeholder
+#     MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
+#     MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
+#     MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
 
 
 
@@ -75,12 +88,14 @@ df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 """Perhaps I can make a fancy loop here to generate everything needed, then dump them all into charts?"""
 Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
 
-# Si = sobol.analyze(problem, Y)
+Si = sobol.analyze(problem, Y)
 # print(Si)
 # """Still need a way to save these results..."""
 
-# Si.plot()
-# plt.show()
+Si.plot()
+plt.show()
+plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/CAV_Box_and_Whisker.png', bbox_inches='tight') #there are many options for savefig
+
 
 # print("Temp-RH:", Si['S2'][0,1])
 # print("Temp-CO2:", Si['S2'][0,2])

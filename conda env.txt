@@ -1,0 +1,2 @@
+PS C:\Users\donal\Documents\GitHub\Modified-Energy-Cascade> C:/Users/donal/Anaconda3/Scripts/activate
+PS C:\Users\donal\Documents\GitHub\Modified-Energy-Cascade> conda activate C:\Users\donal\mambaforge\envs\mec
