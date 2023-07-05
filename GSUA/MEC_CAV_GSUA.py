@@ -440,6 +440,7 @@ def RUN_FULL():
     RUN_CHART()
     time = datetime.now()-start
     print(f"Full Cavazzoni run completed. It took {time} seconds.")
+    
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_FULL()
