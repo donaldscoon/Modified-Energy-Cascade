@@ -71,7 +71,7 @@ mec_inputs = [
 #         SIM_PPFD = X[3]
 #         SIM_H    = X[4]
 #         SIM_NUM = i
-
+#         SIM_LENGTH = 30
 
 #         ##################################################
 #         ################## MODEL INPUTS ##################
@@ -82,6 +82,7 @@ mec_inputs = [
 #         T_LIGHT = SIM_TEMP    # Light Cycle Average Temperature ewert table 4-111 or user input
 #         T_DARK = T_LIGHT - 4  # Dark Cycle Average Temperature ewert table 4-111 or user input
 #         RH = SIM_RH           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
+#         t_M = SIM_LENGTH            # days  at harvest/maturity ewert table 4-112
 #         P_ATM = 101           # atmospheric pressure placeholder is gainesville FL value
 
 #         ##################################################
@@ -103,7 +104,6 @@ mec_inputs = [
 #         OPF = 1.08          # Oxygen production fraction ewert table 4-113
 #         g_A = 2.5           # atmospheric aerodynamic conductance boscheri "for horizontal canopies"
 #         A_max = 0.93        # maximum fraction of PPF Absorbtion ewert pg 180
-#         t_M = 30            # days  at harvest/maturity ewert table 4-112
 #         t_Q = 50            # days onset of senescence placeholder value ewert table 4-112
 #         t_E = 1             # time at onset of organ formation ewert table 4-112
 #         MW_W = 18.0153      # Molecular weight of water, boscheri table 4
@@ -386,7 +386,7 @@ mec_inputs = [
 #     print("NOTE: Boscheri did not calculate P_GROSS, VP_AIR, TCB, TEB")
 #     print("Boscheri Simulations Complete")
 #     time = datetime.now()-start
-#     print(f"Simulations took {time} seconds.")
+#     print(f"Simulations took {time}")
 
 # # Executes this program/function
 # if __name__ ==('__main__'):
@@ -453,7 +453,7 @@ def RUN_CHART():
 
     print("Boscheri Visulizations Complete")
     time = datetime.now()-start
-    print(f"Charting took {time} seconds.")
+    print(f"Charting took {time}")
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_CHART()
@@ -464,7 +464,7 @@ def RUN_FULL():
     RUN_SIM()
     RUN_CHART()
     time = datetime.now()-start
-    print(f"Full Boscheri run completed. It took {time} seconds.")
+    print(f"Full Boscheri run completed. It took {time}")
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_FULL()

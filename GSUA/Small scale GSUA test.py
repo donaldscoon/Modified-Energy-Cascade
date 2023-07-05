@@ -53,15 +53,19 @@ problem = {
 #     SIM_H    = X[4]
 #     SIM_NUM = i
 
+""" I would like to find a way to state the length of
+the simulations here that is fed into the models automatically."""
+
+
 ##########################################################
 ######################### Run Models #####################
 ##########################################################
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
-    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+    # MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
 
 # # Boscheri Verison Placeholder
 #     MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
@@ -85,12 +89,14 @@ df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 # Amitrano Version Placeholder
 
 # Loading specific outputs for GSUA analysis 
-"""Perhaps I can make a fancy loop here to generate everything needed, then dump them all into charts?"""
+
+# Perhaps I can make a fancy loop here to generate everything needed, then dump them all into charts?
+
 Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
 
 Si = sobol.analyze(problem, Y)
 # print(Si)
-# """Still need a way to save these results..."""
+# Still need a way to save these results...
 
 Si.plot()
 plt.show()
@@ -105,5 +111,4 @@ plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_
 #################### VISUALIZATIONS #######################
 ###########################################################
 
-"""use the completed visualizations for each model version to create an overlay of all three here
-"""
+# use the completed visualizations for each model version to create an overlay of all three here

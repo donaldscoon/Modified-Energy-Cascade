@@ -102,7 +102,7 @@ RH_LIST =[0.7907, 0.825178571, 0.815595238, 0.823440476,
 ##################################################
 ################# THE MODEL LOOP #################
 ##################################################
-while t < T_T:                                      # this loop is for skipping the transplant stage
+while t < T_T:         # this loop is for the seedling stage
     dfts = pd.DataFrame({
         'Timestep': [t]})
     df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
