@@ -10,6 +10,7 @@ and has been altered for...
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+from datetime import datetime
 
 #########################################################
 ############### Some Data Structuring ###################
@@ -50,7 +51,7 @@ mec_inputs = [
 ]
 
 def RUN_SIM():     # used to package this version of the MEC as a function callable by other programs
-
+    start=datetime.now()
     print("Begining Cavazzoni Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
@@ -334,6 +335,7 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
                 'CGR': [CGR],
                 'TCB': [TCB],
                 'TEB': [TEB],
+                'DOP': [DOP],
                 'VP_SAT': [VP_SAT],
                 'VP_AIR': [VP_AIR],
                 'VPD': [VPD],
@@ -358,6 +360,8 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
             np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_{output[0]}.txt', df_sims[[f'{output[0]}']])
 
     print("Cavazzoni Simulations Complete")
+    time = datetime.now()-start
+    print(f"Simulations took {time} seconds.")
 
 # Executes this program/function
 if __name__ ==('__main__'):
@@ -368,11 +372,10 @@ if __name__ ==('__main__'):
 ##########################################################
 
 def RUN_CHART():
+    start=datetime.now()
     print("Begining Cavazzoni Visulizations")
 
     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
-    Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
-
 
     for item in mec_inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
@@ -392,7 +395,7 @@ def RUN_CHART():
             ax.scatter(x, y)
             ax.set_ylabel(f'{output_long_name} ({output_unit})')
             ax.set_xlabel(f'{input_long_name} ({input_unit})')
-            plt.title(f'{input_short_name} x {output_short_name}')
+            plt.title(f'CAV {input_short_name} x {output_short_name}')
             # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
 
             # calc the trendline
@@ -418,19 +421,25 @@ def RUN_CHART():
             # the line equation:
             # print("y=%fx+(%f)"%(z[0],z[1]))
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/{input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # in the likely rare event all of these need to be viewed...
             # plt.show()
 
     print("Cavazzoni Visulizations Complete")
+    time = datetime.now()-start
+    print(f"Charting took {time} seconds.")
 
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_CHART()
 
 def RUN_FULL():
+    print("Running Cavazzoni Simulations and Charting Functions")
+    start=datetime.now()
     RUN_SIM()
     RUN_CHART()
+    time = datetime.now()-start
+    print(f"Full Cavazzoni run completed. It took {time} seconds.")
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_FULL()
