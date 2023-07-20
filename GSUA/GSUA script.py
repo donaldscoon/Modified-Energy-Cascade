@@ -4,6 +4,7 @@ Going to try and run a small scale version of the MEC through GSUA before doing 
 
 from SALib.sample import saltelli
 from SALib.analyze import sobol
+from SALib import ProblemSpec
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -17,21 +18,70 @@ import MEC_CAV_GSUA
 ##########################################################
 ############## Defining the Model Inputs #################
 ##########################################################
+# -------------------------------------------------------------------------------------
+""" YO YO YO YO YO YO BIG CODING GENIUS
+I Think you should make the models/inputs/ouputs defining and lists a function...
+go for it buddy! """
+# -------------------------------------------------------------------------------------
+
 models = [
          ["AMI"], 
          ["BOS"], 
          ["CAV"]
          ]
 
-problem = {
-    'num_vars': 5,
-    'names': ['Temp','RH','CO2', 'PPFD', 'H'],
+# problem = {
+#     'num_vars': 5,
+#     'names': ['Temp','RH','CO2', 'PPFD', 'H'],
+#     'bounds': [[5,40],       # Temperature
+#                [35,100],      # Relative Humidity
+#                [330,1300],    # Atmo CO2 Concentration
+#                [0,1100],     # PPFD Level
+#                [0,24]]        # Photoperiod
+#                }
+
+u = "\u00B5"        # unicode for the micro symbol
+
+mec_outputs = [  
+            ["A", "Absorption", ""],
+            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
+            ["CUE_24", "Carbon Use Efficiency", ""],
+            ["ALPHA", "A*CQY*CUE_24", ""],
+            ["BETA", "A*CQY", ""],
+            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
+            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
+            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
+            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
+            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
+            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
+            ["VPD", "Vapor Pressure Deficit", "kPa"],
+            ["P_GROSS", "Gross Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
+            ["P_NET", "Net Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
+            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
+            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
+]
+
+mec_inputs = [
+            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
+            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
+            ["RH", "Relative Humidity", "%"],
+            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
+            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{fixed}$ m$^{-2}$ second$^{-1}$"],
+            ["H", "Photoperiod", "hours day$^{-1}$"]
+]
+
+sp = ProblemSpec({
+    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
     'bounds': [[5,40],       # Temperature
                [35,100],      # Relative Humidity
                [330,1300],    # Atmo CO2 Concentration
                [0,1100],     # PPFD Level
-               [0,24]]        # Photoperiod
-               }
+               [0,24]],        # Photoperiod
+    'outputs': ['Y']
+})
+
 
 ##########################################################
 ############## Generate the Samples ######################
@@ -41,21 +91,23 @@ problem = {
     once generated and the simulations performed. The output 
     files will be able to be used for the analysis and charting
 """
+# param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
 
-param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
-# print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
-df_sims = pd.DataFrame({})
-for i, X in enumerate(param_values):
-    # print(i, X)
-    # this saves each of the 8192 sample parameters.
-    # Columns are Temp, Humidity, CO2, PPFD, H
-    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/full_GSUA_parameters.txt", param_values)
-    SIM_TEMP = X[0]
-    SIM_RH   = X[1]
-    SIM_CO2  = X[2]
-    SIM_PPFD = X[3]
-    SIM_H    = X[4]
-    SIM_NUM = i
+
+# param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
+# # print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
+# df_sims = pd.DataFrame({})
+# for i, X in enumerate(param_values):
+#     # print(i, X)
+#     # this saves each of the sample parameters.
+#     # Columns are Temp, Humidity, CO2, PPFD, H
+#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/full_GSUA_parameters.txt", param_values)
+#     SIM_TEMP = X[0]
+#     SIM_RH   = X[1]
+#     SIM_CO2  = X[2]
+#     SIM_PPFD = X[3]
+#     SIM_H    = X[4]
+#     SIM_NUM = i
 
 """ I would like to find a way to state the length of
 the simulations here that is fed into the models automatically."""
@@ -65,21 +117,21 @@ the simulations here that is fed into the models automatically."""
 ######################### Run Models #####################
 ##########################################################
 
-if __name__ == '__main__':
-    sim_start=datetime.now()
-    # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
-    # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
-    # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
+# if __name__ == '__main__':
+#     sim_start=datetime.now()
+#     # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
+#     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
+#     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
 
-    # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
-    # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
-    # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
+#     # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
+#     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
+#     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
-    MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
-    MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
-    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
-    sim_time = datetime.now()-sim_start
-    print(f"All three models completed. It took {sim_time}")
+#     MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
+#     MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
+#     MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+#     sim_time = datetime.now()-sim_start
+#     print(f"All three models completed. It took {sim_time}")
 
 ###########################################################
 #################### Analysis #############################
@@ -90,27 +142,64 @@ df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/full_GSUA_BOS_Simulations.csv')
 df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/full_GSUA_CAV_Simulations.csv')
 
-# Loading specific outputs for GSUA analysis 
-
-# Perhaps I can make a fancy loop here to generate everything needed, then dump them all into charts?
-
-# Y = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_DTR.txt') # done to match the SALib example, imports the text file result
+for MEC, in models:
+    model_name = MEC
+    for item in mec_inputs:        # this allows easy injection of labels into chart elements
+        input_short_name = item[0]
+        input_long_name = item[1]
+        input_unit = item[2]
+        for item in mec_outputs:
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            # print(model_name, input_short_name, output_short_name)
+            # Loading specific outputs for GSUA analysis 
+            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_name}_out/data/full_GSUA_{model_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+            # print(Y)
+            sp.set_results(Y)
+            if Y[0] == Y[20]: # identifying constant outputs
+                # if identified here it does not mean that they are constant throughout the simulation
+                # just that the final value is constant such as CUE_24 which hits a max  
+                constant_out = f'{model_name} {output_short_name}'
+                f.close()                   # closes said file!
+                # np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/full_GSUA_constant_outputs.txt", constant_out)
+                continue
 
 # Si = sobol.analyze(problem, Y)
-# # print(Si)
-# # Still need a way to save these results...
+# print(Si)
+            sp.set_results(Y)
+            sp.analyze_sobol()
+            # print(model_name, output_short_name)
+            # print(sp)
+            # except UserWarning:
+            #     print('found bad data, skipping')
+            #     pass
+            # axes = sp.plot()
+            # axes[0].set_yscale('log')
+            # fig = plt.gcf()  # get current figure
+            # fig.set_size_inches(10, 4)
+            # plt.tight_layout()
+            # sp.heatmap()
+            # plt.show()
+            # Still need a way to save these results...
 
 # Si.plot()
 # plt.show()
 # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/CAV_Box_and_Whisker.png', bbox_inches='tight') #there are many options for savefig
 
-
-# print("Temp-RH:", Si['S2'][0,1])
-# print("Temp-CO2:", Si['S2'][0,2])
-# print("RH-CO2:", Si['S2'][1,2])
-
 ###########################################################
 #################### VISUALIZATIONS #######################
 ###########################################################
 
-# use the completed visualizations for each model version to create an overlay of all three here
+# axes = sp.plot()
+# axes[0].set_yscale('log')
+# fig = plt.gcf()  # get current figure
+# fig.set_size_inches(10, 4)
+# plt.tight_layout()
+# sp.heatmap()
+
+###########################################
+############ To Do ########################
+###########################################
+
+# line 21 and line 160
