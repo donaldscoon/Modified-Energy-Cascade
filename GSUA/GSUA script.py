@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+import os
 
 import MEC_AMI_GSUA
 import MEC_BOS_GSUA
@@ -25,9 +26,9 @@ go for it buddy! """
 # -------------------------------------------------------------------------------------
 
 models = [
-         ["AMI"], 
-         ["BOS"], 
-         ["CAV"]
+         ["AMI", "Amitrano"], 
+         ["BOS", "Boscheri"], 
+         ["CAV", "Cavazzoni"]
          ]
 
 # problem = {
@@ -142,64 +143,54 @@ df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/full_GSUA_BOS_Simulations.csv')
 df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/full_GSUA_CAV_Simulations.csv')
 
-for MEC, in models:
-    model_name = MEC
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
-        input_short_name = item[0]
-        input_long_name = item[1]
-        input_unit = item[2]
-        for item in mec_outputs:
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
-            # print(model_name, input_short_name, output_short_name)
-            # Loading specific outputs for GSUA analysis 
-            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_name}_out/data/full_GSUA_{model_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-            # print(Y)
-            sp.set_results(Y)
+for item in models:                 # loop for model names
+    model_short_name = item[0]
+    model_long_name = item[1]
+    for item in mec_outputs:        # loop for output names
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
+        # Loading specific outputs for GSUA analysis 
+        Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/full_GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+        # print(Y)
+        sp.set_results(Y)
+
+        # this file may not truly overwrite itself completely, delete to be sure
+        with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
             if Y[0] == Y[20]: # identifying constant outputs
                 # if identified here it does not mean that they are constant throughout the simulation
                 # just that the final value is constant such as CUE_24 which hits a max  
-                constant_out = f'{model_name} {output_short_name}'
-                f.close()                   # closes said file!
-                # np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/full_GSUA_constant_outputs.txt", constant_out)
+                f.write(f'{model_short_name} {output_short_name} \n')    # writing them to a text file
                 continue
+        f.close()
 
-# Si = sobol.analyze(problem, Y)
-# print(Si)
+        # this saving the results part is still pretty garbage. better than nothing though. 
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'a') as f:
             sp.set_results(Y)
             sp.analyze_sobol()
-            # print(model_name, output_short_name)
-            # print(sp)
-            # except UserWarning:
-            #     print('found bad data, skipping')
-            #     pass
-            # axes = sp.plot()
-            # axes[0].set_yscale('log')
-            # fig = plt.gcf()  # get current figure
-            # fig.set_size_inches(10, 4)
-            # plt.tight_layout()
-            # sp.heatmap()
-            # plt.show()
-            # Still need a way to save these results...
+            results_df = sp.to_df()
+            f.write(str(results_df))
+        f.close
+        # print(model_short_name, output_short_name)
+        # print(sp)
 
-# Si.plot()
-# plt.show()
-# plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/CAV_Box_and_Whisker.png', bbox_inches='tight') #there are many options for savefig
+
 
 ###########################################################
 #################### VISUALIZATIONS #######################
 ###########################################################
 
-# axes = sp.plot()
-# axes[0].set_yscale('log')
-# fig = plt.gcf()  # get current figure
-# fig.set_size_inches(10, 4)
-# plt.tight_layout()
-# sp.heatmap()
+        # axes = sp.plot()
+        # axes[0].set_yscale('log')
+        # fig = plt.gcf()  # get current figure
+        # fig.set_size_inches(10, 4)
+        # plt.title(f'{model_long_name} {output_long_name}')
+        # plt.tight_layout()
+        # sp.heatmap()
+        # plt.show()
 
 ###########################################
 ############ To Do ########################
 ###########################################
 
-# line 21 and line 160
+# line 21
