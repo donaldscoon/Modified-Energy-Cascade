@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
-import os
 
 import MEC_AMI_GSUA
 import MEC_BOS_GSUA
@@ -31,6 +30,7 @@ models = [
          ["CAV", "Cavazzoni"]
          ]
 
+# this is leftover from before I figured out the better method
 # problem = {
 #     'num_vars': 5,
 #     'names': ['Temp','RH','CO2', 'PPFD', 'H'],
@@ -75,11 +75,16 @@ mec_inputs = [
 
 sp = ProblemSpec({
     'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'bounds': [[5,40],       # Temperature
-               [35,100],      # Relative Humidity
-               [330,1300],    # Atmo CO2 Concentration
-               [0,1100],     # PPFD Level
-               [0,24]],        # Photoperiod
+    'bounds': [[5,40,0.68571],      # Temperature
+               [35,100,0.92308],    # Relative Humidity
+               [330,1300,0.82474],  # Atmo CO2 Concentration
+               [0,1100,0.27273],    # PPFD Level
+               [0,24, 0.66667]],    # Photoperiod
+    'dists': ['triang',             # Temperature
+              'triang',             # Relative Humidity
+              'triang',             # Atmo CO2
+              'triang',             # PPFD
+              'triang'],            # Photoperiod
     'outputs': ['Y']
 })
 
@@ -92,24 +97,27 @@ sp = ProblemSpec({
     once generated and the simulations performed. The output 
     files will be able to be used for the analysis and charting
 """
-# param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
 
+sim_start=datetime.now()
+print("Generating the samples")
+param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
+# print(sp.samples)
 
 # param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
-# # print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
-# df_sims = pd.DataFrame({})
-# for i, X in enumerate(param_values):
-#     # print(i, X)
+# print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
+for i, X in enumerate(sp.samples):
+    # print(i, X)
 #     # this saves each of the sample parameters.
 #     # Columns are Temp, Humidity, CO2, PPFD, H
-#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/full_GSUA_parameters.txt", param_values)
-#     SIM_TEMP = X[0]
-#     SIM_RH   = X[1]
-#     SIM_CO2  = X[2]
-#     SIM_PPFD = X[3]
-#     SIM_H    = X[4]
-#     SIM_NUM = i
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sp.samples)
+    SIM_TEMP = X[0]
+    SIM_RH   = X[1]
+    SIM_CO2  = X[2]
+    SIM_PPFD = X[3]
+    SIM_H    = X[4]
+    SIM_NUM = i
 
+print('sobol sampling completed, proceeding to the simulations')
 """ I would like to find a way to state the length of
 the simulations here that is fed into the models automatically."""
 
@@ -118,8 +126,7 @@ the simulations here that is fed into the models automatically."""
 ######################### Run Models #####################
 ##########################################################
 
-# if __name__ == '__main__':
-#     sim_start=datetime.now()
+if __name__ == '__main__':
 #     # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
 #     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
@@ -128,20 +135,22 @@ the simulations here that is fed into the models automatically."""
 #     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
-#     MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
-#     MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
-#     MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
-#     sim_time = datetime.now()-sim_start
-#     print(f"All three models completed. It took {sim_time}")
+    MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
+    MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
+    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+    sim_time = datetime.now()-sim_start
+    print(f"All three models have run. It took {sim_time}")
 
 ###########################################################
 #################### Analysis #############################
 ###########################################################
+print("Beginning Analysis of simulations")
+analysis_start=datetime.now()
 
 # Create dataframes for each models GSUA runs
-df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/full_GSUA_AMI_Simulations.csv')
-df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/full_GSUA_BOS_Simulations.csv')
-df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/full_GSUA_CAV_Simulations.csv')
+df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
 for item in models:                 # loop for model names
     model_short_name = item[0]
@@ -151,7 +160,7 @@ for item in models:                 # loop for model names
         output_long_name = item[1]
         output_unit = item[2]
         # Loading specific outputs for GSUA analysis 
-        Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/full_GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+        Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
         # print(Y)
         sp.set_results(Y)
 
@@ -174,6 +183,8 @@ for item in models:                 # loop for model names
         # print(model_short_name, output_short_name)
         # print(sp)
 
+analysis_time = datetime.now()-sim_start
+print(f"All three models analyzed. It took {analysis_time}")
 
 
 ###########################################################
