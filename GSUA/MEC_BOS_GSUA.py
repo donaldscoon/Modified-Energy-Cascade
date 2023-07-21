@@ -44,7 +44,7 @@ mec_inputs = [
             ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
             ["RH", "Relative Humidity", "%"],
             ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
-            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{fixed}$ m$^{-2}$ second$^{-1}$"],
+            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
             ["H", "Photoperiod", "hours day$^{-1}$"]
 ]
 

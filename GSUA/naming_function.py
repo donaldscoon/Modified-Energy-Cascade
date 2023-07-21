@@ -67,7 +67,6 @@ def mec_output_names():     # Iterates through the output names
         output_unit = item[2]
         print(output_short_name)
 
-i=0
 def all_names():            # Iterates every combination of model x input x output
     while i < 3:
         model_names()
