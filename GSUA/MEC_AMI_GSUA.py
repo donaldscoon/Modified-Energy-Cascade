@@ -157,7 +157,7 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
                 BETA = bmax_GN                     # amitrano 2020 eq 15
             DCG = 0.0036*H*ALPHA*PPFD              # amitrano 2020 eq 4
             DOP = OPF*DCG                          # amitrano 2020 eq 5
-            CGR = MWC*DCG/BCF                      # amitrano 2020 eq 6
+            CGR = MWC*(DCG/BCF)                      # amitrano 2020 eq 6
             if t > t_E:                            # if edible organ formation has begun
                 TEB = CGR+TEB                      # Amitrano 2020 GN excel column I
             P_GROSS = BETA*PPFD                    # amitrano 2020 eq 8
@@ -267,7 +267,7 @@ def RUN_FULL():
     print("Running Amitrano Simulations and Charting Functions")
     start=datetime.now()
     RUN_SIM()
-    # RUN_CHART()
+    RUN_CHART()
     time = datetime.now()-start
     print(f"Full Amitrano run completed. It took {time}")
 

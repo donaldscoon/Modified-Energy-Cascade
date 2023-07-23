@@ -101,7 +101,7 @@ sp = ProblemSpec({
 
 sim_start=datetime.now()
 print("Generating the samples")
-param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
+param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
 # print(sp.samples)
 
 # param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
@@ -187,8 +187,8 @@ for item in models:                 # loop for model names
             results_df = sp.to_df()
             f.write(str(results_df))
         f.close
-        print(model_short_name, output_short_name)
-        print(sp)
+        # print(model_short_name, output_short_name)
+        # print(sp)
 
 analysis_time = datetime.now()-sim_start
 print(f"All three models analyzed. It took {analysis_time}")

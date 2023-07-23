@@ -145,4 +145,4 @@ def GSUA_CHARTS():
 
 # Executes this program/function
 if __name__ ==('__main__'):
-    RUN_GSUA_CHARTS()
+    GSUA_CHARTS()
