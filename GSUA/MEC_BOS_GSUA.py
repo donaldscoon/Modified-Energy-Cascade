@@ -375,97 +375,99 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
                 'PPFD': [PPFD],
                 }) # creates a dataframe of all variables/outputs for each timestep. 
             df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-            # df_day_sum = df_records.groupby(['Day']).sum()
             df_day_avg = df_records.groupby(['Day']).mean()
+            df_day_sum = df_records.groupby(['Day']).sum()
             t += res                          # advance timestep
-            pp_count += 1                    # photoperiod counter + 1
-
-    #     df_sims = pd.concat([df_sims, df_day_avg.iloc[-1:]], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-    #     df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv') # exports entire final data frame to a CSV
-    #     for output in mec_outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-    #         np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', df_sims[[f'{output[0]}']])
-    # print("NOTE: Boscheri did not calculate P_GROSS, VP_AIR, TCB, TEB")
-    # print("Boscheri Simulations Complete")
-    # time = datetime.now()-start
-    # print(f"Simulations took {time}")
+            pp_count += 1                     # photoperiod counter + 1
+        df_avg_sims = pd.concat([df_sims, df_day_avg.iloc[-1:]], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
+        df_sum_sims = pd.concat([df_sims, df_day_sum.iloc[-1:]], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
+        df_sims = df_avg_sims
+        df_sims['DCG'] = df_sum_sims['DCG']
+        df_sims['CGR'] = df_sum_sims['CGR']
+        df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv') # exports entire final data frame to a CSV
+        for output in mec_outputs:      # This loop runs create text files for each /inputoutput of the MEC!
+            np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', df_sims[[f'{output[0]}']])
+    print("NOTE: Boscheri did not calculate P_GROSS, VP_AIR, TCB, TEB")
+    print("Boscheri Simulations Complete")
+    time = datetime.now()-start
+    print(f"Simulations took {time}")
 
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_SIM()
 
-# ###########################################################
-# #################### VISUALIZATIONS #######################
-# ###########################################################
-# def RUN_CHART():
-#     start=datetime.now()
+###########################################################
+#################### VISUALIZATIONS #######################
+###########################################################
+def RUN_CHART():
+    start=datetime.now()
 
-#     print("Begining Boscheri Visulizations")
+    print("Begining Boscheri Visulizations")
 
-#     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
 
-#     for item in mec_inputs:        # this allows easy injection of labels into chart elements
-#         input_short_name = item[0]
-#         input_long_name = item[1]
-#         input_unit = item[2]
-#         for item in mec_outputs:
-#             output_short_name = item[0]
-#             output_long_name = item[1]
-#             output_unit = item[2]
+    for item in mec_inputs:        # this allows easy injection of labels into chart elements
+        input_short_name = item[0]
+        input_long_name = item[1]
+        input_unit = item[2]
+        for item in mec_outputs:
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
 
-#             """This chart bulding stuff works!"""
-#             VIS_GSUA = df_BOS_sims[['Simulation', output_short_name, input_short_name]]
-#             VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
-#             x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-#             y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-#             fig, ax = plt.subplots()
-#             ax.scatter(x, y)
-#             ax.set_ylabel(f'{output_long_name} ({output_unit})')
-#             ax.set_xlabel(f'{input_long_name} ({input_unit})')
-#             plt.title(f'BOS {input_short_name} x {output_short_name}')
-#             # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+            """This chart bulding stuff works!"""
+            VIS_GSUA = df_BOS_sims[['Simulation', output_short_name, input_short_name]]
+            VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+            x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+            y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+            fig, ax = plt.subplots()
+            ax.scatter(x, y)
+            ax.set_ylabel(f'{output_long_name} ({output_unit})')
+            ax.set_xlabel(f'{input_long_name} ({input_unit})')
+            plt.title(f'BOS {input_short_name} x {output_short_name}')
+            # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
 
-#             # calc the trendline
-#             z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
-#             p = np.poly1d(z)
-#             plt.plot(x,p(x),"red")
+            # calc the trendline
+            z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+            p = np.poly1d(z)
+            plt.plot(x,p(x),"red")
 
-#             # fit a linear curve and estimate its y-values and their error.
-#             # a, b = np.polyfit(x, y, deg=1)
-#             # y_err = x.std() * np.sqrt(1/len(x) + (x - x.mean())**2 / np.sum((x - x.mean())**2))
+            # fit a linear curve and estimate its y-values and their error.
+            # a, b = np.polyfit(x, y, deg=1)
+            # y_err = x.std() * np.sqrt(1/len(x) + (x - x.mean())**2 / np.sum((x - x.mean())**2))
 
-#             # trying to add a shaded region to represent XX quantity of the simulations
-#             # ax.plot(x, np.mean(y), label="Mean", color='red')
-#             # prediction_interval = 95        # in percent
-#             # ax.fill_between(x,
-#             #                 np.percentile(y, 50 - prediction_interval/2.),
-#             #                 np.percentile(y, 50 + prediction_interval/2.),
-#             #                 alpha=0.5, color='red',
-#             #                 label=f"{prediction_interval} % prediction interval")
+            # trying to add a shaded region to represent XX quantity of the simulations
+            # ax.plot(x, np.mean(y), label="Mean", color='red')
+            # prediction_interval = 95        # in percent
+            # ax.fill_between(x,
+            #                 np.percentile(y, 50 - prediction_interval/2.),
+            #                 np.percentile(y, 50 + prediction_interval/2.),
+            #                 alpha=0.5, color='red',
+            #                 label=f"{prediction_interval} % prediction interval")
 
-#             # plt.plot(x,p(x)*(1.95),"green")
-#             # plt.plot(x,p(x)*(.05),"green")
-#             # the line equation:
-#             # print("y=%fx+(%f)"%(z[0],z[1]))
+            # plt.plot(x,p(x)*(1.95),"green")
+            # plt.plot(x,p(x)*(.05),"green")
+            # the line equation:
+            # print("y=%fx+(%f)"%(z[0],z[1]))
 
-#             plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#             # in the likely rare event all of these need to be viewed...
-#             # plt.sho
-#             # w()
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            # in the likely rare event all of these need to be viewed...
+            # plt.sho
 
-#     print("Boscheri Visulizations Complete")
-#     time = datetime.now()-start
-#     print(f"Charting took {time}")
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     RUN_CHART()
+    print("Boscheri Visulizations Complete")
+    time = datetime.now()-start
+    print(f"Charting took {time}")
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_CHART()
 
-# def RUN_FULL():
-#     print("Running Boscheri Simulations and Charting Functions")
-#     start=datetime.now()
-#     RUN_SIM()
-#     RUN_CHART()
-#     time = datetime.now()-start
-#     print(f"Full Boscheri run completed. It took {time}")
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     RUN_FULL()
+def RUN_FULL():
+    print("Running Boscheri Simulations and Charting Functions")
+    start=datetime.now()
+    RUN_SIM()
+    RUN_CHART()
+    time = datetime.now()-start
+    print(f"Full Boscheri run completed. It took {time}")
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_FULL()
