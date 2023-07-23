@@ -67,7 +67,8 @@ df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 # AMI= 'o' blue
 # BOS= 's' green
 # CAV= '^' red
-# colors differentiate parameters from paletton.com
+
+# colors differentiate from paletton.com
 #     dark blue   = #2A119B
 #     blue        = #5E46C6
 #     light blue  = #A798EC
@@ -79,7 +80,7 @@ df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 #     light red   = #FE989A
 
 ##############################################
-########### Input  Historgram ########
+########### Input  Historgram ################
 ##############################################
 for item in mec_inputs:        # loop for inputs
     input_short_name = item[0]
@@ -138,5 +139,6 @@ for item in mec_inputs:        # loop for inputs
         plt.plot(xB,pB(xB),"darkgreen")
         plt.plot(xC,pC(xC),"darkred")
         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+        plt.show()
         plt.close()
-        # plt.show()
+
