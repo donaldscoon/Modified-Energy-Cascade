@@ -13,6 +13,7 @@ from datetime import datetime
 import MEC_AMI_GSUA
 import MEC_BOS_GSUA
 import MEC_CAV_GSUA
+import GSUA_visulization
 
 
 ##########################################################
@@ -98,26 +99,26 @@ sp = ProblemSpec({
     files will be able to be used for the analysis and charting
 """
 
-# sim_start=datetime.now()
-# print("Generating the samples")
-# param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
-# # print(sp.samples)
+sim_start=datetime.now()
+print("Generating the samples")
+param_values = sp.sample_sobol(2**6, calc_second_order=True) # an alternate sampling technique I can't figure out how to use
+# print(sp.samples)
 
-# # param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
-# # print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
-# for i, X in enumerate(sp.samples):
-#     # print(i, X)
-# #     # this saves each of the sample parameters.
-# #     # Columns are Temp, Humidity, CO2, PPFD, H
-#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sp.samples)
-#     SIM_TEMP = X[0]
-#     SIM_RH   = X[1]
-#     SIM_CO2  = X[2]
-#     SIM_PPFD = X[3]
-#     SIM_H    = X[4]
-#     SIM_NUM = i
+# param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
+# print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
+for i, X in enumerate(sp.samples):
+    # print(i, X)
+#     # this saves each of the sample parameters.
+#     # Columns are Temp, Humidity, CO2, PPFD, H
+    np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sp.samples)
+    SIM_TEMP = X[0]
+    SIM_RH   = X[1]
+    SIM_CO2  = X[2]
+    SIM_PPFD = X[3]
+    SIM_H    = X[4]
+    SIM_NUM = i
 
-# print('sobol sampling completed, proceeding to the simulations')
+print('sobol sampling completed, proceeding to the simulations')
 # """ I would like to find a way to state the length of
 # the simulations here that is fed into the models automatically."""
 
@@ -126,7 +127,7 @@ sp = ProblemSpec({
 ######################### Run Models #####################
 ##########################################################
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 #     # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
 #     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
@@ -135,17 +136,17 @@ sp = ProblemSpec({
 #     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
-    # MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
-    # MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
-    # MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
-    # sim_time = datetime.now()-sim_start
-    # print(f"All three models have run. It took {sim_time}")
+    MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
+    MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
+    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+    sim_time = datetime.now()-sim_start
+    print(f"All three models have run. It took {sim_time}")
 
 ###########################################################
 #################### Analysis #############################
 ###########################################################
-# print("Beginning Analysis of simulations")
-# analysis_start=datetime.now()
+print("Beginning Analysis of simulations")
+analysis_start=datetime.now()
 
 # Create dataframes for each models GSUA runs
 df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
@@ -175,28 +176,29 @@ for item in models:                 # loop for model names
 
         sp.set_results(Y)
         sp.analyze_sobol()
-        print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
+        # print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
         # print(f'{model_short_name}_{output_short_name}_S1', sp.analysis['S1'])
         # print(f'{model_short_name}_{output_short_name}_S2', sp.analysis['S2'])
 
         # this saving the results part is still pretty garbage. better than nothing though. 
-        # with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'a') as f:
-        #     sp.set_results(Y)
-        #     sp.analyze_sobol()
-        #     results_df = sp.to_df()
-        #     f.write(str(results_df))
-        # f.close
-        # print(model_short_name, output_short_name)
-        # print(sp)
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'a') as f:
+            sp.set_results(Y)
+            sp.analyze_sobol()
+            results_df = sp.to_df()
+            f.write(str(results_df))
+        f.close
+        print(model_short_name, output_short_name)
+        print(sp)
 
-# analysis_time = datetime.now()-sim_start
-# print(f"All three models analyzed. It took {analysis_time}")
+analysis_time = datetime.now()-sim_start
+print(f"All three models analyzed. It took {analysis_time}")
 
 
 ###########################################################
 #################### VISUALIZATIONS #######################
 ###########################################################
 
+GSUA_visulization.GSUA_CHARTS()
 
 ###########################################
 ############ To Do ########################
