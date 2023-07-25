@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 models = [
-         ["AMI", "Amitrano"], 
-         ["BOS", "Boscheri"], 
+         ["AMI", "Amitrano"],
+         ["BOS", "Boscheri"],
          ["CAV", "Cavazzoni"]
          ]
 
 u = "\u00B5"        # unicode for the micro symbol
 
-mec_outputs = [  
+mec_outputs = [
             ["A", "Absorption", ""],
             ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
             ["CUE_24", "Carbon Use Efficiency", ""],
@@ -37,7 +37,7 @@ mec_inputs = [
             ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius", 'TEMP'],
             ["RH", "Relative Humidity", "%", 'RH'],
             ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$", 'CO2'],
-            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$", 'PPFD'],
+            ["PPFD", "Photosynthetic Photon Flux Density", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$", 'PPFD'],
             ["H", "Photoperiod", "hours day$^{-1}$", 'H']
 ]
 
@@ -78,80 +78,86 @@ cav_c = '#8C0004'
 #     red         = #DF0006
 #     light red   = #FE989A
 
-# def GSUA_CHARTS():
-#     model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H'])
-#     df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-#     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-#     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+def GSUA_CHARTS():
+    model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H'])
+    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
-#     ##############################################
-#     ########### Input  Historgram ################
-#     ##############################################
-#     for item in mec_inputs:        # loop for inputs
-#         input_short_name = item[0]
-#         input_long_name = item[1]
-#         input_unit = item[2]
-#         input_sample_name = item[3]
-#         fig, ax = plt.subplots()
-#         ax.hist(model_inputs[f'{input_sample_name}'], 15, density=True, histtype='bar', color='#2A119B', edgecolor='black')
-#         ax.set_ylabel('Frequency')
-#         ax.set_xlabel(f'{input_unit}')
-#         ax.set_title(f'{input_long_name}')
-#         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_Histogram_{input_sample_name}', bbox_inches='tight') #there are many options for savefig
-#         # plt.show()
+    ##############################################
+    ########### Input  Historgram ################
+    ##############################################
+    for item in mec_inputs:        # loop for inputs
+        input_short_name = item[0]
+        input_long_name = item[1]
+        input_unit = item[2]
+        input_sample_name = item[3]
+        fig, ax = plt.subplots()
+        ax.hist(model_inputs[f'{input_sample_name}'], 15, density=True, histtype='bar', color='#2A119B', edgecolor='white')
+        ax.set_ylabel('Frequency')
+        ax.set_xlabel(f'{input_unit}')
+        ax.set_title(f'{input_long_name} Frequency')
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_Histogram_{input_sample_name}', bbox_inches='tight') #there are many options for savefig
+        # plt.show()
 
-#     #####################################################
-#     ############## Input x Output #######################
-#     #####################################################
 
-#     for item in mec_inputs:        # loop for inputs
-#         input_short_name = item[0]
-#         input_long_name = item[1]
-#         input_unit = item[2]
-#         for item in mec_outputs:   # loop for outputs
-#             output_short_name = item[0]
-#             output_long_name = item[1]
-#             output_unit = item[2]
-#             """This chart bulding stuff works!, but is there a better way?"""
-#             AMI_DATA = df_AMI_sims[['Simulation', output_short_name, input_short_name]]
-#             BOS_DATA = df_BOS_sims[['Simulation', output_short_name, input_short_name]]
-#             CAV_DATA = df_CAV_sims[['Simulation', output_short_name, input_short_name]]
-#             AMI_DATA = AMI_DATA.sort_values(input_short_name, ascending=True)
-#             BOS_DATA = BOS_DATA.sort_values(input_short_name, ascending=True)
-#             CAV_DATA = CAV_DATA.sort_values(input_short_name, ascending=True)
-#             xA = AMI_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-#             yA = AMI_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-#             xB = BOS_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-#             yB = BOS_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-#             xC = CAV_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-#             yC = CAV_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-#             fig, ax = plt.subplots()
-#             ax.scatter(xA, yA, marker='o', label='AMI', color=ami_c)
-#             ax.scatter(xB, yB, marker='s', label='BOS', color=bos_c)
-#             ax.scatter(xC, yC, marker='^', label='CAV', color=cav_c)
-#             ax.set_ylabel(f'{output_long_name} ({output_unit})')
-#             ax.set_xlabel(f'{input_long_name} ({input_unit})')
-#             # plt.title(f'{input_long_name} x {output_long_name}')
 
-#             # calc the trendline
-#             zA = np.polyfit(xA, yA, 2) # 1 is linear, 2 is quadratic!
-#             zB = np.polyfit(xB, yB, 2) # 1 is linear, 2 is quadratic!
-#             zC = np.polyfit(xC, yC, 2) # 1 is linear, 2 is quadratic!
-#             pA = np.poly1d(zA)
-#             pB = np.poly1d(zB)
-#             pC = np.poly1d(zC)
-#             plt.plot(xA,pA(xA),"blue")
-#             plt.plot(xB,pB(xB),"green")
-#             plt.plot(xC,pC(xC),"red")
-#             plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#             # plt.show()
-#             plt.close()
 
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     GSUA_CHARTS()
+    #####################################################
+    ############## Input x Output #######################
+    #####################################################
 
-"""God this is painful. I need to find a way to parse the output. """ 
+    for item in mec_inputs:        # loop for inputs
+        input_short_name = item[0]
+        input_long_name = item[1]
+        input_unit = item[2]
+        for item in mec_outputs:   # loop for outputs
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            """This chart bulding stuff works!, but is there a better way?"""
+            AMI_DATA = df_AMI_sims[['Simulation', output_short_name, input_short_name]]
+            BOS_DATA = df_BOS_sims[['Simulation', output_short_name, input_short_name]]
+            CAV_DATA = df_CAV_sims[['Simulation', output_short_name, input_short_name]]
+            AMI_DATA = AMI_DATA.sort_values(input_short_name, ascending=True)
+            BOS_DATA = BOS_DATA.sort_values(input_short_name, ascending=True)
+            CAV_DATA = CAV_DATA.sort_values(input_short_name, ascending=True)
+            xA = AMI_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+            yA = AMI_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+            xB = BOS_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+            yB = BOS_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+            xC = CAV_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+            yC = CAV_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+            fig, ax = plt.subplots()
+            ax.scatter(xA, yA, marker='o', label='AMI', color='#A798EC')
+            ax.scatter(xB, yB, marker='s', label='BOS', color='#96F391')
+            ax.scatter(xC, yC, marker='^', label='CAV', color='#FE989A')
+            ax.set_ylabel(f'{output_long_name} ({output_unit})')
+            ax.set_xlabel(f'{input_long_name} ({input_unit})')
+            # plt.title(f'{input_long_name} x {output_long_name}')
+
+            # calc the trendline
+            zA = np.polyfit(xA, yA, 2) # 1 is linear, 2 is quadratic!
+            zB = np.polyfit(xB, yB, 2) # 1 is linear, 2 is quadratic!
+            zC = np.polyfit(xC, yC, 2) # 1 is linear, 2 is quadratic!
+            pA = np.poly1d(zA)
+            pB = np.poly1d(zB)
+            pC = np.poly1d(zC)
+
+            plt.plot(xA,pA(xA), color="#0000FF")
+            plt.plot(xB,pB(xB), color="darkgreen")
+            plt.plot(xC,pC(xC), color="#FF0000")
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            # plt.show()
+            plt.close()
+
+
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    GSUA_CHARTS()
+
+"""God this is painful. I need to find a way to parse the output. """
 
 #####################
 ###### P_NET ########
@@ -476,6 +482,84 @@ plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD',
                                              'CO2xH',   'PPFDxH'), rotation = 90)
 plt.title('2nd Order Effects on Daily Transpiration Rate')
 plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S2_DTR.png", bbox_inches='tight')
+# plt.show()
+
+#########################################
+############# TEB #######################
+#########################################
+
+'''Total order interactions'''
+xA = [.8, 1.8, 2.8, 3.8, 4.8]
+# xB = [1, 2, 3, 4, 5]
+xC = [1.2, 2.2, 3.2, 4.2, 5.2]
+yA = [0, 0, 0, 0.675554, 0.408258]
+ciA= [0, 0, 0, 0.21016, 0.162826]
+# yB = []
+# ciB= []
+yC = [0, 0, 0.01271, 0.817626, 0.298098]
+ciC= [0, 0, 0.007627, 0.232201, 0.133595]
+
+fig, ax = plt.subplots()
+ax.scatter(xA, yA)
+ax.scatter(xC, yC)
+plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=ami_c)
+plt.errorbar(xC, yC, yerr=ciC, fmt = 'o', label = "CAV", color=cav_c)
+plt.legend()
+plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+plt.title('Total Order Effects on Total Edible Biomass')
+# plt.show()
+plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_ST_TEB.png", bbox_inches='tight')
+
+
+'''First order interactions'''
+xA = [.8, 1.8, 2.8, 3.8, 4.8]
+# xB = [1, 2, 3, 4, 5]
+xC = [1.2, 2.2, 3.2, 4.2, 5.2]
+yA = [0, 0, 0, 0.599574, 0.432014]
+ciA= [0, 0, 0, 0.311351, 0.19895]
+# yB = []
+# ciB= []
+yC = [0, 0, 0.01949, 0.735811, 0.28511]
+ciC= [0, 0, 0.031709, 0.343739, 0.189536]
+
+fig, ax = plt.subplots()
+ax.scatter(xA, yA)
+# ax.scatter(xB, yB)
+ax.scatter(xC, yC)
+plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=ami_c)
+# plt.errorbar(xB, yB, yerr=ciB, fmt = 'o', label = "BOS", color=bos_c)
+plt.errorbar(xC, yC, yerr=ciC, fmt = 'o', label = "CAV", color=cav_c)
+plt.legend()
+plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+plt.title('1st Order Effects on Total Edible Biomass')
+# plt.show()
+plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S1_TEB.png", bbox_inches='tight')
+
+
+'''2nd Order Effects on Net Photosythesis'''
+xA = [.8, 1.8, 2.8, 3.8, 4.8, 5.8, 6.8, 7.8, 8.8, 9.8]
+# xB = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+xC = [1.2, 2.2, 3.2, 4.2, 5.2, 6.2, 7.2, 8.2, 9.2, 10.2]
+yA = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.082964]
+ciA= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.498697]
+# yB = []
+# ciB= []
+yC = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.006686, 0.000273, 0.123295]
+ciC= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.080871, 0.058927, 0.474082]
+
+fig, ax = plt.subplots()
+ax.scatter(xA, yA)
+# ax.scatter(xB, yB)
+ax.scatter(xC, yC)
+plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=ami_c)
+# plt.errorbar(xB, yB, yerr=ciB, fmt = 'o', label = "BOS", color=bos_c)
+plt.errorbar(xC, yC, yerr=ciC, fmt = 'o', label = "CAV", color=cav_c)
+plt.legend()
+plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+                                             'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
+                                             'CO2xH',   'PPFDxH'), rotation = 90)
+plt.title('2nd Order Effects on Total Energy Biomass')
+plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S2_TEB.png", bbox_inches='tight')
 # plt.show()
 
 ###########################
