@@ -1,1 +1,2 @@
 create a function for the file name so I don't have to manually rewrite it everytime
+add the close() function to the individual model charting functions
