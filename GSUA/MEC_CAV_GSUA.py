@@ -293,15 +293,15 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
                 CQY = CQY_max                # ewert eq 4-15
                 CUE_24 = CUE_max             # ewert eq 4-16
             else: 
+                CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # ewert eq 4-15
+                CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
+                print("Error: Utilizing CQY and CUE values without definitions")
+                break
                 """For lettuce the values of CQY_min and CUE_min 
                 are n/a due to the assumption that the canopy does
                 not senesce before harvest. I coded them anyways, it
                 makes it complete for all the other crops too. For 
                 crops other than lettuce remove the break statement."""
-                CQY = CQY_max - (CQY_max - CQY_min)*((t-t_Q)/(t_M-t_Q)) # ewert eq 4-15
-                CUE_24 = CUE_max - (CUE_max - CUE_min)*((t-t_Q)/(t_M-t_Q)) #ewert eq 4-16
-                print("Error: Utilizing CQY and CUE values without definitions")
-                break
             ALPHA = A*CQY*CUE_24
             BETA = A*CQY
             DCG = 0.0036*H*CUE_24*A*CQY*PPFD # ewert eq 4-17 number is related to seconds in an hour
@@ -310,10 +310,6 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
             TCB += CGR                       # ewert eq 4-20
             if t > t_E:                      # accumilate edible biomass when organ formation begins
                 TEB += XFRT*CGR              # ewert eq 4-21
-            # Biomass_mat[i] = TCB             # matrix that stores past values of TCB
-            '''^^^^this will probably be fixed by making t divisable by dt^^^^'''
-            '''now it works more, but only if the it results in a whole number'''
-            # edible_mat[i] = TEB
             VP_SAT = 0.611*np.exp(1)**((17.4*T_LIGHT)/(T_LIGHT+239)) # assumes leaf tempp=air temp. Saturated Vapor Pressure. ewert eq 4-23 numbers likely from Monje 1998
             VP_AIR = VP_SAT*RH               # Atmo Vapor Pressure ewewrt eq 4-23
             VPD = VP_SAT - VP_AIR            # Vapor Pressure Deficit ewert eq 4-23
