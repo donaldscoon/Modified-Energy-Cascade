@@ -351,6 +351,7 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
             df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
             t += res                          # advance timestep
         # print(df_records)                    # prints a copy of output in the terminal
+            print(df_records['DTR'], dfts['DTR'])
         df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
         df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out//data/GSUA_CAV_Simulations.csv') # exports entire final data frame to a CSV
         for output in mec_outputs:      # This loop runs create text files for each /inputoutput of the MEC!
