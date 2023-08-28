@@ -76,11 +76,14 @@ mec_inputs = [
 
 sp = ProblemSpec({
     'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'bounds': [[5,40,0.68571],      # Temperature
-               [35,100,0.92308],    # Relative Humidity
-               [330,1300,0.82474],  # Atmo CO2 Concentration
-               [0,1100,0.27273],    # PPFD Level
-               [0,24, 0.66667]],    # Photoperiod
+    # Notation [min, max, peak as % of that range]
+    # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
+    # which would actually give a peak at 24 since the range starts at 5.
+    'bounds': [[5,40,0.54286],      # Temperature Peak at 24 
+               [35,100,0.38461],    # Relative Humidity Peak at 60
+               [330,1300,0.48453],  # Atmo CO2 Concentration Peak at 800
+               [0,1100,0.27273],    # PPFD Level Peak at 300
+               [0,24, 0.66667]],    # Photoperiod Peak at 16
     'dists': ['triang',             # Temperature
               'triang',             # Relative Humidity
               'triang',             # Atmo CO2
