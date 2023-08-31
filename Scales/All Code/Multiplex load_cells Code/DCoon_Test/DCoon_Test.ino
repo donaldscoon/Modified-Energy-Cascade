@@ -25,9 +25,9 @@ void setup() {
   scale2.begin(DOUT2, CLK2);
   scale3.begin(DOUT3, CLK3);
   
-  scale1.set_scale(-498.9);//This value is obtained by using the SparkFun_HX711_Calibration sketch
-  scale2.set_scale(-464.6);//This value is obtained by using the SparkFun_HX711_Calibration sketch
-  scale3.set_scale(-497.1);
+  scale1.set_scale(-468.16);//This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale2.set_scale(-498.9693);//This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale3.set_scale(-497.12);
 
   scale1.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
   scale2.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
