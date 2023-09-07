@@ -1,0 +1,47 @@
+Default Truncations:
+0.001	0.999
+
+5 Distributions:
+Triangular
+TEMP
+
+1	5	24	40
+
+Triangular
+RH
+
+1	35	60	100
+
+Triangular
+CO2
+
+1	330	800	1300
+
+Triangular
+PPFD
+
+1	0	300	1100
+
+Triangular
+H
+
+1	0	16	24
+
+Correlation information
+0 -1 0 
+0 -1 0 
+0 -1 0 
+0 -1 0 
+0 -1 0 
+Correlation Matrix:
+1	0	0	0	0	
+0	1	0	0	0	
+0	0	1	0	0	
+0	0	0	1	0	
+0	0	0	0	1	
+Stein Information:
+
+0
+0
+0
+2
