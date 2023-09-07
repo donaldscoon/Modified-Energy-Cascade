@@ -177,8 +177,9 @@ for item in models:                 # loop for model names
                 continue
         f.close()
 
-        sp.set_results(Y)
-        sp.analyze_sobol()
+##################################### Sobol Analysis ###############################################
+        # sp.set_results(Y)
+        # sp.analyze_sobol()
         # print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
         # print(f'{model_short_name}_{output_short_name}_S1', sp.analysis['S1'])
         # print(f'{model_short_name}_{output_short_name}_S2', sp.analysis['S2'])
@@ -193,7 +194,12 @@ for item in models:                 # loop for model names
         # print(model_short_name, output_short_name)
         # print(sp)
 
+################################# Morris Elementary Effects Anlaysis ##################################
+
+
 analysis_time = datetime.now()-sim_start
+
+
 print(f"All three models analyzed. It took {analysis_time}")
 
 
