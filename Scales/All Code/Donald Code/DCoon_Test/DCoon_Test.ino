@@ -7,8 +7,8 @@ const int DOUT1 = 2;
 const int CLK1 = 3;   
 const int DOUT2 = 4;   
 const int CLK2 = 5;    
-const int DOUT3 = 9;
-const int CLK3 = 8;
+const int DOUT3 = 7;
+const int CLK3 = 6;
 
 int Runs=0;
  
@@ -25,8 +25,8 @@ void setup() {
   scale2.begin(DOUT2, CLK2);
   scale3.begin(DOUT3, CLK3);
   
-  scale1.set_scale(-468.16);//This value is obtained by using the SparkFun_HX711_Calibration sketch
-  scale2.set_scale(-498.9693);//This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale1.set_scale(-498.9693);//This value is obtained by using the SparkFun_HX711_Calibration sketch
+  scale2.set_scale(-468.16);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale3.set_scale(-497.12);
 
   scale1.tare(); //Assuming there is no weight on the scale at start up, reset the scale to 0
