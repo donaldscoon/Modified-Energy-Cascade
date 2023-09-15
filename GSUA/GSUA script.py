@@ -131,13 +131,13 @@ sp = ProblemSpec({
 ##########################################################
 
 # if __name__ == '__main__':
-#     # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
-#     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
-#     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
+    # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
+    # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
+    # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
 
-#     # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
-#     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
-#     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
+    # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
+    # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
+    # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
     # MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
     # MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
@@ -156,6 +156,8 @@ df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
 df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
+sobol_out_df = pd.DataFrame()
+
 for item in models:                 # loop for model names
     model_short_name = item[0]
     model_long_name = item[1]
@@ -167,8 +169,7 @@ for item in models:                 # loop for model names
         Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
         # print(Y)
         sp.set_results(Y)
-
-        # this file may not truly overwrite itself completely, delete to be sure
+        # this file may not truly overwrite itself completely, delete to be sure. I can't figure out why or how to avoid that
         with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
             if Y[0] == Y[20]: # identifying constant outputs
                 # if identified here it does not mean that they are constant throughout the simulation
@@ -180,24 +181,43 @@ for item in models:                 # loop for model names
 ##################################### Sobol Analysis ###############################################
         # sp.set_results(Y)
         # sp.analyze_sobol()
-        # print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
-        # print(f'{model_short_name}_{output_short_name}_S1', sp.analysis['S1'])
-        # print(f'{model_short_name}_{output_short_name}_S2', sp.analysis['S2'])
 
         # this saving the results part is still pretty garbage. better than nothing though. 
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'a') as f:
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'w') as f:
             sp.set_results(Y)
             sp.analyze_sobol()
             results_df = sp.to_df()
+            # print(f"{model_short_name}_{output_short_name}", results_df)
             f.write(str(results_df))
+            # print(f'{model_short_name}_{output_short_name}_S1', sp.analysis['S1'])
+            # print(f'{model_short_name}_{output_short_name}_S2', sp.analysis['S2'])
         f.close
+        ST_output_key = f'{model_short_name}_{output_short_name}_ST'
+        CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
+        if ST_output_key in sobol_out_df:
+            print(f"found: {ST_output_key}")
+            # sobol_out_df[ST_output_key] = results_df
+        else:
+            print(f"Adding: {ST_output_key}")
+            # data = sp.analysis['ST'].flatten().tolist()
+            # print(data)
+            # print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
+            # sobol_out_df[ST_output_key] = {f'{model_short_name}_{output_short_name}': sp.analysis['ST']}
+            sobol_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
+            print(sobol_out_df)
+sobol_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/test_sobol_out.csv', index=False) # exports entire final data frame to a CSV
+
+# print(sobol_out_df)
+        # print(ST_output_key, CONF_output_key)   
+        # print(f'{model_short_name}_{output_short_name}_ST_conf', sp.analysis['ST_conf'])
         # print(model_short_name, output_short_name)
         # print(sp)
 
 ################################# Morris Elementary Effects Anlaysis ##################################
 
 
-analysis_time = datetime.now()-sim_start
+analysis_time = datetime.now()-analysis_start
+
 
 
 print(f"All three models analyzed. It took {analysis_time}")

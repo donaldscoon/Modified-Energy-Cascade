@@ -10,11 +10,14 @@ const int CLK2 = 5;
 const int DOUT3 = 7;
 const int CLK3 = 6;
 
+
 int Runs=0;
  
 HX711 scale1;
 HX711 scale2;
 HX711 scale3;
+HX711 scale4;
+
 
 const int timeZoneOffset = 4; // Replace with your time zone offset
 
@@ -24,7 +27,8 @@ void setup() {
   scale1.begin(DOUT1, CLK1);
   scale2.begin(DOUT2, CLK2);
   scale3.begin(DOUT3, CLK3);
-  
+  scale4.being(DOUT4, CLK4);
+
   scale1.set_scale(-498.9693);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale2.set_scale(-468.16);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale3.set_scale(-497.12);

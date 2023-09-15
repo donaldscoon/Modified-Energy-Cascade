@@ -28,7 +28,7 @@
 * pull in the output file `GSUA_MODEL_Simulations.csv`
   * parse this file to create individual output files `GSUA_MODEL_data_OUTPUT.txt`
   * write names of constant outputs to `results/constant_outputs.txt`
-    * this simply identifies them for easy removal. The file should be deleted before each run otherwise it appends new data with each run.
+    * this simply identifies them for easy removal. The file should be deleted before each run otherwise it appends new data with each run. (A future fix if possible)
 * Perform Sobol Analysis with SALib functions
   * save results to `results/MODEL_OUTPUT_results.txt`
 * `GSUA_visulization.GSUA_CHARTS()`
