@@ -1,5 +1,9 @@
 # How Donald ran the GSUA
 
+For this document, anything that is in {curly brackets} is not constant. This means it can be any of the models, inputs, or outputs specified within. This is done with f strings and loops to iterate through every possible combination of charts/analysis to avoid needing to specify which ones to perform. 
+
+Full filepaths are not written, ideally these would not be hardcoded in, but that is just how it is for now, sorry me or other people. `*/` is used to represent the file path into the GSUA folder.
+
 ## Generate Samples
 
 * Set the parameters in `GSUA script.py` for use by SALib
@@ -16,31 +20,33 @@
 
 ## Run the Models
 * Split into three sets of functions, all initially commented out. Uncomment the selection you want to use.
-* `MEC_MODEL.RUN_SIM()` functions run the selected model version through each set of parameters from `GSUA_parameters.txt`
-  * saves compiled results for each model to `GSUA_MODEL_out/data/GSUA_MODEL_Simulation.csv`
-* `MEC_MODEL.RUN_CHART()` charts model outputs using output file from `GSUA_MODEL_out/data`
-  * generates and saves charts for each model individual model output to `GSUA_MODEL_out/figures`
-* `MEC_MODEL.RUN_FULL()` runs both the simulation and charting functions
+* `MEC_{MODEL}_GSUA.RUN_SIM()` functions run the selected model version through each set of parameters from `GSUA_parameters.txt`
+  * saves compiled results for each model to `*/GSUA_{MODEL}_out/data/GSUA_{MODE}L_Simulation.csv`
+* `MEC_{MODEL}_GSUA.RUN_CHART()` charts model outputs using output file from `*/GSUA_{MODEL}_out/data`
+  * generates and saves charts for each model individual model output to `*/GSUA_{MODEL}_out/figures`
+* `MEC_{MODEL}_GSUA.RUN_FULL()` runs both the simulation and charting functions
 
 ## Analyze the models
 
 ### Sobol Analysis
-* pull in the output file `GSUA_MODEL_Simulations.csv`
-  * parse this file to create individual output files `GSUA_MODEL_data_OUTPUT.txt`
-  * write names of constant outputs to `results/constant_outputs.txt`
+* pull in the output file `GSUA_{MODEL}_Simulations.csv`
+  * parse this file to create individual output files `GSUA_{MODEL}_data_{OUTPUT}.txt`
+  * write names of constant outputs to `*/results/constant_outputs.txt`
     * this simply identifies them for easy removal. The file should be deleted before each run otherwise it appends new data with each run. (A future fix if possible)
 * Perform Sobol Analysis with SALib functions
-  * save results to `results/MODEL_OUTPUT_results.txt`
+  * save messy text file results to `*/results/full_out/{MODEL_OUTPUT}_results.txt`
+  * Create dataframes for the S1, S2, and ST effects individually saved to the easier to work with `*/results` as CSV's
 * `GSUA_visulization.GSUA_CHARTS()`
   * lines 89-103 generate histograms of the model parameters from the Sobol sampling. 
   * lines 1-172 generate charts of each output for each model on the same charts. Both histograms and scatter plots.
-    * saved to `GSUA/figures/MEC_Scatter_INPUT_X_OUTPUT.png`
-    * saved to `GSUA/figures/MEC_Histogram_OUTPUT.png`
-* Utilize the scatter plots and histograms to identify outputs of interest for sobol analysis
-  * in this case it was P_NET, g_S, g_C, DTR, TEB
-  * this is a painful bit I couldn't automate due to the output structure of the SALib sobol analysis.
-  * Take the text files of the files of interest, place into excel to parse/organize the data of interest, copy and paste into the `GSUA_visualization.py` charting functions in lines beyond the main statement.
-    * Cry slightly
+    * saved to `*/GSUA/figures/MEC_Scatter_{INPUT}_X_{OUTPUT}.png`
+    * saved to `*/GSUA/figures/MEC_Histogram_{OUTPUT}.png`
+  
+# TO DO LIST, after completeing the EE analysis
+* Recreate the Sobol charts using automation. 
+* Package the Sobol analysis into a function.
+* Package each charting type into a function. 
+
 
 ### Elementary Effects and Sensitivity Analysis 
 * Download Simlab, EE measures, and EE Ploting from carpenas site.

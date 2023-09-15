@@ -156,7 +156,10 @@ df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Casca
 df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
 df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
-sobol_out_df = pd.DataFrame()
+sobol_ST_out_df = pd.DataFrame()
+sobol_S1_out_df = pd.DataFrame()
+sobol_S2_out_df = pd.DataFrame()
+S1_ST_index = ["TEMP", "RH", "CO2", "PPFD", "H"]
 
 for item in models:                 # loop for model names
     model_short_name = item[0]
@@ -179,39 +182,38 @@ for item in models:                 # loop for model names
         f.close()
 
 ##################################### Sobol Analysis ###############################################
-        # sp.set_results(Y)
-        # sp.analyze_sobol()
+        sp.analyze_sobol()
 
-        # this saving the results part is still pretty garbage. better than nothing though. 
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/{model_short_name}_{output_short_name}_results.txt', 'w') as f:
-            sp.set_results(Y)
-            sp.analyze_sobol()
+        # this saving the results part is still pretty garbage, 
+        # diverted them to a special folder just in case though. 
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_results.txt', 'w') as f:
             results_df = sp.to_df()
-            # print(f"{model_short_name}_{output_short_name}", results_df)
             f.write(str(results_df))
-            # print(f'{model_short_name}_{output_short_name}_S1', sp.analysis['S1'])
-            # print(f'{model_short_name}_{output_short_name}_S2', sp.analysis['S2'])
         f.close
-        ST_output_key = f'{model_short_name}_{output_short_name}_ST'
-        CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
-        if ST_output_key in sobol_out_df:
-            print(f"found: {ST_output_key}")
-            # sobol_out_df[ST_output_key] = results_df
-        else:
-            print(f"Adding: {ST_output_key}")
-            # data = sp.analysis['ST'].flatten().tolist()
-            # print(data)
-            # print(f'{model_short_name}_{output_short_name}_ST', sp.analysis['ST'])
-            # sobol_out_df[ST_output_key] = {f'{model_short_name}_{output_short_name}': sp.analysis['ST']}
-            sobol_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
-            print(sobol_out_df)
-sobol_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/test_sobol_out.csv', index=False) # exports entire final data frame to a CSV
 
-# print(sobol_out_df)
-        # print(ST_output_key, CONF_output_key)   
-        # print(f'{model_short_name}_{output_short_name}_ST_conf', sp.analysis['ST_conf'])
-        # print(model_short_name, output_short_name)
-        # print(sp)
+        # First Order Analysis
+        S1_output_key = f'{model_short_name}_{output_short_name}_S1'
+        S1_CONF_output_key = f'{model_short_name}_{output_short_name}_S1_conf'
+        sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
+        sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
+
+        # Second Order Analysis
+        S2_output_key = f'{model_short_name}_{output_short_name}_S2'
+        S2_CONF_output_key = f'{model_short_name}_{output_short_name}_S2_conf'
+        sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
+        sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
+
+        # Total Order Analysis
+        ST_output_key = f'{model_short_name}_{output_short_name}_ST'
+        ST_CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
+        sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
+        sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
+
+# Saving all of these to CSV's
+sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv', index=S1_ST_index) # exports entire final data frame to a CSV
+sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
+sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+
 
 ################################# Morris Elementary Effects Anlaysis ##################################
 
