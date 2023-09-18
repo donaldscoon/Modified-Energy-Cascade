@@ -93,6 +93,5 @@ for item in models:                 # loop for model names
         output_long_name = item[1]
         output_unit = item[2]
         # Loading specific outputs for Morris EE analysis 
-        print(problem)
         Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-        Si = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, print_to_console=True, num_levels=4)
+        EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=4) # analyzes the Elementary effects for each models ouput
