@@ -77,21 +77,33 @@ problem = ProblemSpec({
 ###########################################################
 #################### Analysis #############################
 ###########################################################
+def SAMPLE():
+    MORRIS_parameters = morris.sample(problem, 128, num_levels=4) # this is set to 128 so the array = 768 to match the ourputs of the model
 
-# Create dataframes for each models GSUA runs
-df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+# Executes this program/function
+if __name__ ==('__main__'):
+    SAMPLE()
 
-X = morris.sample(problem, 128, num_levels=4) # this is set to 128 so the array = 768 to match the ourputs of the model
 
-for item in models:                 # loop for model names
-    model_short_name = item[0]
-    model_long_name = item[1]
-    for item in mec_outputs:        # loop for output names
-        output_short_name = item[0]
-        output_long_name = item[1]
-        output_unit = item[2]
-        # Loading specific outputs for Morris EE analysis 
-        Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-        EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=4) # analyzes the Elementary effects for each models ouput
+def ANALYZE():
+
+    # Create dataframes for each models GSUA runs
+    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+
+
+    for item in models:                 # loop for model names
+        model_short_name = item[0]
+        model_long_name = item[1]
+        for item in mec_outputs:        # loop for output names
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            # Loading specific outputs for Morris EE analysis 
+            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+            EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=4) # analyzes the Elementary effects for each models ouput
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    ANALYZE()

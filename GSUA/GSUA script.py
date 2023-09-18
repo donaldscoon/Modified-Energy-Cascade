@@ -106,37 +106,24 @@ sp = ProblemSpec({
     once generated and the simulations performed. The output 
     files will be able to be used for the analysis and charting
 """
+if __name__ == '__main__':
 
-# sim_start=datetime.now()
-# print("Generating the samples")
-# param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
-# # print(sp.samples)
+    # sim_start=datetime.now()
+    # print("Generating the samples")
 
-# param_values = saltelli.sample(problem, 2**6)      # according to an equation from meeting with carpena I need 768 this outs 768 samples
-# print(param_values.shape)                    # The samples generates N*((2*D)+2) samples
-# for i, X in enumerate(sp.samples):
-#     # print(i, X)
-# #     # this saves each of the sample parameters.
-# #     # Columns are Temp, Humidity, CO2, PPFD, H
-#     np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_parameters.txt", sp.samples)
-#     SIM_TEMP = X[0]
-#     SIM_RH   = X[1]
-#     SIM_CO2  = X[2]
-#     SIM_PPFD = X[3]
-#     SIM_H    = X[4]
-#     SIM_NUM = i
+    # SOBOL_ANALYSIS.SAMPLE()
+    # # Morris_EE.SAMPLE()
 
-# print('sobol sampling completed, proceeding to the simulations')
-# """ I would like to find a way to state the length of
-# the simulations here that is fed into the models automatically."""
+    # print('sobol sampling completed, proceeding to the simulations')
+
 
 
 ##########################################################
 ######################### Run Models #####################
 ##########################################################
 
-if __name__ == '__main__':
-    # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
+
+    MEC_AMI_GSUA.RUN_SIM('morris')      # Runs just the simulations for the Amitrano Model
     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
 
@@ -153,19 +140,20 @@ if __name__ == '__main__':
 ###########################################################
 #################### Analysis #############################
 ###########################################################
-    print("Beginning Analysis of simulations")
-    analysis_start=datetime.now()
+#     print("Beginning Analysis of simulations")
+#     analysis_start=datetime.now()
 
-    SOBOL_ANALYSIS.ANALYZE()
+#     SOBOL_ANALYSIS.ANALYZE()
+#     # Morris_EE.ANALYZE()
 
-################################# Morris Elementary Effects Anlaysis ##################################
-
-
-    analysis_time = datetime.now()-analysis_start
+# ################################# Morris Elementary Effects Anlaysis ##################################
 
 
+#     analysis_time = datetime.now()-analysis_start
 
-    print(f"All three models analyzed. It took {analysis_time}")
+
+
+    # print(f"All three models analyzed. It took {analysis_time}")
 
 
 ###########################################################
