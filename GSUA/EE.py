@@ -151,39 +151,36 @@ def CHART():
     EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv')
 
     # mu star by sigma with a 1/1 line
-
-    mu_values = EE_out_df['AMI_DTR_mu_star']
-    sigma_values = EE_out_df['AMI_DTR_sigma']
+    X = EE_out_df['AMI_DTR_mu_star']
+    Y = EE_out_df['AMI_DTR_sigma']
     
-    mu_temp        = mu_values[0]
-    sigma_temp  = sigma_values[0]
+    # define which points correspond to which inputs
+    mu_star_temp = X[0]
+    mu_star_rh   = X[1]
+    mu_star_CO2  = X[2]
+    mu_star_PPFD = X[3]
+    mu_star_H    = X[4]
 
-    mu_rh        = mu_values[1]
-    sigma_rh  = sigma_values[1]
-
-    mu_CO2        = mu_values[2]
-    sigma_CO2  = sigma_values[2]
-
-    mu_PPFD        = mu_values[3]
-    sigma_PPFD  = sigma_values[3]
-
-    mu_H        = mu_values[4]
-    sigma_H  = sigma_values[4]
+    sigma_temp   = Y[0]
+    sigma_rh     = Y[1]
+    sigma_CO2    = Y[2]
+    sigma_PPFD   = Y[3]
+    sigma_H      = Y[4]
 
     # Create the scatter plot
-    plt.scatter(mu_temp, sigma_temp,    s=50, color='red', label= "TEMP")
-    plt.scatter(mu_rh, sigma_rh,        s=50, color='blue', label= "RH")
-    plt.scatter(mu_CO2, sigma_CO2,      s=50, color='green', label= "CO2")
-    plt.scatter(mu_PPFD, sigma_PPFD,    s=50, color='yellow', label= "PPFD")
-    plt.scatter(mu_H, sigma_H,          s=50, color='black', label= "H")
+    plt.scatter(mu_star_temp, sigma_temp,    s=50, color='red', label= "TEMP")
+    plt.scatter(mu_star_rh, sigma_rh,        s=50, color='blue', label= "RH")
+    plt.scatter(mu_star_CO2, sigma_CO2,      s=50, color='green', label= "CO2")
+    plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, color='yellow', label= "PPFD")
+    plt.scatter(mu_star_H, sigma_H,          s=50, color='black', label= "H")
 
     # Add a dashed line for the 1-to-1 relationship
-    plt.plot([min(mu_values), max(mu_values)], [min(sigma_values), max(sigma_values)], 'k--')
+    plt.plot([min(X), max(X)], [min(Y), max(Y)], 'k--')
 
     # Set the labels and title
-    plt.xlabel('mu')
+    plt.xlabel('mu*')
     plt.ylabel('sigma')
-    plt.title('Scatter Plot of mu vs sigma')
+    plt.title('Scatter Plot of mu* vs sigma')
     plt.legend()
     plt.show()
 
