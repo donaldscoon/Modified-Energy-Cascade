@@ -108,13 +108,12 @@ sp = ProblemSpec({
 """
 if __name__ == '__main__':
 
-    # sim_start=datetime.now()
-    # print("Generating the samples")
+    sim_start=datetime.now()
+    print("Generating the samples")
 
-    # SOBOL_ANALYSIS.SAMPLE()
-    # # Morris_EE.SAMPLE()
+    SOBOL_ANALYSIS.SAMPLE()
 
-    # print('sobol sampling completed, proceeding to the simulations')
+    print('sobol sampling completed, proceeding to the simulations')
 
 
 
