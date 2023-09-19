@@ -48,10 +48,10 @@ Full filepaths are not written, ideally these would not be hardcoded in, but tha
   * Defines the model names, inputs, outputs, and problem statement.
   * `analyze()`
     * pull in the output files `GSUA_{MODEL}_Simulations.csv`
-    * generate the input samples with the morris method, store in variable `X`. Set to 128 so that the final number of samples matches the outputs of the simulations. (may need to revisit this, see carpena question)
+    * use the same samples as the sobol analysis
     * Enter the results loop
       * load each output file one at a time from `*/GSUA_{MODEL}_out/data/GSUA_{MODEL}_data_{OUTPUT}.txt'`
-      * run morris analysis using `problem`, `X`, `Y`.
+      * run morris analysis using `problem`, `X`, `Y`, 128 levels (unique levels per input essentially).
 
 
 
@@ -64,5 +64,5 @@ Full filepaths are not written, ideally these would not be hardcoded in, but tha
   * EE to EE function
   
 # Questions for Carpena
-* Should I use the same samples/model outputs from the python portion to run the EE programs?
-  * Right now it appears to generate the inputs in "levels", which appears important.
+* I used the sobol parameters (which had 128 unique levels) for the EE testing, is that alright?
+* Would it be important to include the previous output as an input for each sobol/EE test?

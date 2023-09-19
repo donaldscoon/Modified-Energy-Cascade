@@ -151,38 +151,48 @@ def CHART():
     EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv')
 
     # mu star by sigma with a 1/1 line
-    X = EE_out_df['AMI_DTR_mu_star']
-    Y = EE_out_df['AMI_DTR_sigma']
-    
-    # define which points correspond to which inputs
-    mu_star_temp = X[0]
-    mu_star_rh   = X[1]
-    mu_star_CO2  = X[2]
-    mu_star_PPFD = X[3]
-    mu_star_H    = X[4]
+    for item in mec_outputs:   # loop for outputs
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
 
-    sigma_temp   = Y[0]
-    sigma_rh     = Y[1]
-    sigma_CO2    = Y[2]
-    sigma_PPFD   = Y[3]
-    sigma_H      = Y[4]
+        for item in models:                 # loop for model names
+            model_short_name = item[0]
+            model_long_name = item[1]
 
-    # Create the scatter plot
-    plt.scatter(mu_star_temp, sigma_temp,    s=50, color='red', label= "TEMP")
-    plt.scatter(mu_star_rh, sigma_rh,        s=50, color='blue', label= "RH")
-    plt.scatter(mu_star_CO2, sigma_CO2,      s=50, color='green', label= "CO2")
-    plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, color='yellow', label= "PPFD")
-    plt.scatter(mu_star_H, sigma_H,          s=50, color='black', label= "H")
+            print(model_short_name, output_short_name)
 
-    # Add a dashed line for the 1-to-1 relationship
-    plt.plot([min(X), max(X)], [min(Y), max(Y)], 'k--')
+            X = EE_out_df[f'{model_short_name}_{output_short_name}_mu_star']
+            Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
+            # define which points correspond to which inputs
+            mu_star_temp = X[0]
+            mu_star_rh   = X[1]
+            mu_star_CO2  = X[2]
+            mu_star_PPFD = X[3]
+            mu_star_H    = X[4]
 
-    # Set the labels and title
-    plt.xlabel('mu*')
-    plt.ylabel('sigma')
-    plt.title('Scatter Plot of mu* vs sigma')
-    plt.legend()
-    plt.show()
+            sigma_temp   = Y[0]
+            sigma_rh     = Y[1]
+            sigma_CO2    = Y[2]
+            sigma_PPFD   = Y[3]
+            sigma_H      = Y[4]
+
+            # Create the scatter plot
+            plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= ami_c, label= "TEMP")
+            plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= ami_c, label= "RH")
+            plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= ami_c, label= "CO2")
+            plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= ami_c, label= "PPFD")
+            plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= ami_c, label= "H")
+
+            # Add a dashed line for the 1-to-1 relationship
+            plt.plot([min(X), max(X)], [min(Y), max(Y)], 'k--')
+
+            # Set the labels and title
+            plt.xlabel('mu*')
+            plt.ylabel('sigma')
+            plt.title(f'EE of {output_short_name}')
+            plt.legend()
+            plt.show()
 
     # mu by sigma with the V
 # Executes this program/function
