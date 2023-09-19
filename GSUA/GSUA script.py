@@ -123,7 +123,7 @@ if __name__ == '__main__':
 ##########################################################
 
 
-    MEC_AMI_GSUA.RUN_SIM('morris')      # Runs just the simulations for the Amitrano Model
+    # MEC_AMI_GSUA.RUN_SIM()      # Runs just the simulations for the Amitrano Model
     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
 

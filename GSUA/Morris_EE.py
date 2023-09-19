@@ -10,7 +10,9 @@ import SALib as SALib
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import warnings
 
+warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 models = [
          ["AMI", "Amitrano"], 
@@ -77,12 +79,6 @@ problem = ProblemSpec({
 ###########################################################
 #################### Analysis #############################
 ###########################################################
-def SAMPLE():
-    MORRIS_parameters = morris.sample(problem, 128, num_levels=4) # this is set to 128 so the array = 768 to match the ourputs of the model
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    SAMPLE()
 
 
 def ANALYZE():
@@ -92,6 +88,9 @@ def ANALYZE():
     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
+    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
+
+    EE_out_df = pd.DataFrame()
 
     for item in models:                 # loop for model names
         model_short_name = item[0]
@@ -102,7 +101,24 @@ def ANALYZE():
             output_unit = item[2]
             # Loading specific outputs for Morris EE analysis 
             Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-            EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=4) # analyzes the Elementary effects for each models ouput
+            EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=128) # analyzes the Elementary effects for each models ouput
+
+            # with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
+            #     results_df = EE.to_df()
+            #     f.write(str(results_df))
+            # f.close
+
+            # create a big ol honking dataframe
+            mu_output_key = f'{model_short_name}_{output_short_name}_mu'
+            mu_star_output_key = f'{model_short_name}_{output_short_name}_mu_star'
+            mu_star_conf_output_key = f'{model_short_name}_{output_short_name}__mu_star_conf'
+            sigma_output_key = f'{model_short_name}_{output_short_name}_sigma'
+
+            EE_out_df[mu_output_key] = EE['mu']
+            EE_out_df[mu_star_output_key] = EE['mu_star']
+            EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
+            EE_out_df[sigma_output_key] = EE['sigma']
+    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv', index=False)
 
 # Executes this program/function
 if __name__ ==('__main__'):

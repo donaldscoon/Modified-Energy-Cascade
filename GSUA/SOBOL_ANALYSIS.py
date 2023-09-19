@@ -143,11 +143,11 @@ def ANALYZE():
 
             # this saving the results part is still pretty garbage, 
             # diverted them to a special folder just in case though. 
-            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_results.txt', 'w') as f:
+            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
                 results_df = sp.to_df()
                 f.write(str(results_df))
             f.close
-
+# 
             # First Order Analysis
             S1_output_key = f'{model_short_name}_{output_short_name}_S1'
             S1_CONF_output_key = f'{model_short_name}_{output_short_name}_S1_conf'
@@ -167,7 +167,7 @@ def ANALYZE():
             sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
 
     # Saving all of these to CSV's
-    sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv', index=S1_ST_index) # exports entire final data frame to a CSV
+    sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
     sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
     sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
 
