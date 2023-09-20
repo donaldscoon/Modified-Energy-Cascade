@@ -156,43 +156,58 @@ def CHART():
         output_long_name = item[1]
         output_unit = item[2]
 
+        plt.figure() # creates the figure for each output type, which is then iterated by model.
         for item in models:                 # loop for model names
             model_short_name = item[0]
             model_long_name = item[1]
 
-            print(model_short_name, output_short_name)
-
+            # sets the color of each model for that loop.
+            if model_short_name == 'AMI':
+                color = ami_c
+            elif model_short_name == 'BOS':
+                color = bos_c
+            elif model_short_name == 'CAV':
+                color = cav_c
+            # print(model_short_name, output_short_name)
             X = EE_out_df[f'{model_short_name}_{output_short_name}_mu_star']
             Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
-            # define which points correspond to which inputs
-            mu_star_temp = X[0]
-            mu_star_rh   = X[1]
-            mu_star_CO2  = X[2]
-            mu_star_PPFD = X[3]
-            mu_star_H    = X[4]
 
-            sigma_temp   = Y[0]
-            sigma_rh     = Y[1]
-            sigma_CO2    = Y[2]
-            sigma_PPFD   = Y[3]
-            sigma_H      = Y[4]
+            # Check if both X and Y have all zero values
+            if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                    
+                # define which points correspond to which inputs
+                mu_star_temp = X[0]
+                mu_star_rh   = X[1]
+                mu_star_CO2  = X[2]
+                mu_star_PPFD = X[3]
+                mu_star_H    = X[4]
 
-            # Create the scatter plot
-            plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= ami_c, label= "TEMP")
-            plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= ami_c, label= "RH")
-            plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= ami_c, label= "CO2")
-            plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= ami_c, label= "PPFD")
-            plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= ami_c, label= "H")
+                sigma_temp   = Y[0]
+                sigma_rh     = Y[1]
+                sigma_CO2    = Y[2]
+                sigma_PPFD   = Y[3]
+                sigma_H      = Y[4]
 
-            # Add a dashed line for the 1-to-1 relationship
-            plt.plot([min(X), max(X)], [min(Y), max(Y)], 'k--')
+                # Create the scatter plot
+                plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= color, label= f"{model_short_name}_TEMP")
+                plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= color, label= f"{model_short_name}_RH")
+                plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= color, label= f"{model_short_name}_CO2")
+                plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= color, label= f"{model_short_name}_PPFD")
+                plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= color, label= f"{model_short_name}_H")
 
-            # Set the labels and title
-            plt.xlabel('mu*')
-            plt.ylabel('sigma')
-            plt.title(f'EE of {output_short_name}')
-            plt.legend()
-            plt.show()
+                # Add a 1:1 line
+                min_val = min(min(X), min(Y))
+                max_val = max(max(X), max(Y))
+                plt.plot([min_val, max_val], [min_val, max_val], color='gray', linestyle='-')
+
+        # Set the labels and title
+        plt.xlabel('mu*')
+        plt.ylabel('sigma')
+        plt.title(f'EE of {output_short_name}')
+        plt.legend()
+        # plt.show()
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+
 
     # mu by sigma with the V
 # Executes this program/function
