@@ -143,7 +143,7 @@ if __name__ == '__main__':
 #     analysis_start=datetime.now()
 
 #     SOBOL_ANALYSIS.ANALYZE()
-#     # Morris_EE.ANALYZE()
+#     EE.ANALYZE()
 
 # ################################# Morris Elementary Effects Anlaysis ##################################
 
@@ -160,6 +160,7 @@ if __name__ == '__main__':
 ###########################################################
 
 # GSUA_visulization.GSUA_CHARTS()
+# EE.CHARTS()
 
 ###########################################
 ############ To Do ########################
