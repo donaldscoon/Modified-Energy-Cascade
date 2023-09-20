@@ -2,8 +2,6 @@ from SALib.sample import saltelli
 from SALib.analyze import sobol
 from SALib.sample import morris
 from SALib import ProblemSpec
-from datetime import datetime
-from SALib.test_functions import Ishigami
 
 
 import SALib as SALib
@@ -91,7 +89,8 @@ def ANALYZE():
     N = 128 # number of unique levels resulting from the sobol sampling
     X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
 
-    EE_out_df = pd.DataFrame()
+    EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
+    EE_out_df.set_index('Index')
 
     for item in models:                 # loop for model names
         model_short_name = item[0]
