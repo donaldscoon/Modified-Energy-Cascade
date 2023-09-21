@@ -223,28 +223,53 @@ def CHART():
                 elif model_short_name == 'CAV':
                     color = cav_c
 
-                # # this if statment sets up loop for S1 and ST to share code
+                # # this if/else statment sets up loop for S1 and ST to share code
                 if sobol_short_name == 'S2':
-                    print('Later Gator!')
-                    '''##################################
-                    ############ DONT FORGET THIS###################
-                    ##########################################'''
-                else:
                    # Check if the column contains all NaN values
                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
-                    if not S1_ST_DF[column_name].isna().all():
+                    confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
+                    if not S2_df[column_name].isna().all():
                         fig, ax = plt.subplots()
-
-                        X = [1, 2, 3, 4, 5]
-                        Y = S1_ST_DF[column_name]
-                    # # # plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=color)
+                        
+                        X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                        Y = S2_df[column_name]
+                        ciY = S2_df[confidence]
+                        plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
 
                         ax.scatter(X, Y)
-                        plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+                        plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+                                                                    'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
+                                                                    'CO2xH',   'PPFDxH'), rotation = 90)                        
+                        plt.ylabel('What is this axis anyways?')
+                        plt.xlabel('Equation Inputs')
+                        plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
                         plt.show()
+                        # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                        # plt.close()
+                # else:
+                #    # Check if the column contains all NaN values
+                #     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
+                #     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
+                #     if not S1_ST_DF[column_name].isna().all():
+                #         fig, ax = plt.subplots()
+                        
+                #         X = [1, 2, 3, 4, 5]
+                #         Y = S1_ST_DF[column_name]
+                #         ciY = S1_ST_DF[confidence]
+                #         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
+
+                #         ax.scatter(X, Y)
+                #         plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+                #         plt.ylabel('What is this axis anyways?')
+                #         plt.xlabel('Equation Inputs')
+                #         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
+                #         plt.show()
+                #         # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                #         # plt.close()
+
                     else:
                         print(f"Skipping '{column_name}' because it contains all NaN values")
-                    # ax.scatter(X, Y)
+                # ax.scatter(X, Y)
 
 
 
