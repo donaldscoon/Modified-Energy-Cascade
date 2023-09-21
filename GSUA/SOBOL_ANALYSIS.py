@@ -202,6 +202,11 @@ def CHART():
 
     S1_ST_DF = pd.concat([S1_df, ST_df], axis=1) #combining the S1 and S2 dataframes for better looping
 
+    # this creates a dataframe of S2 results that exlcudes all the NaN output rows
+    index_list = [1,2,3,4,7,8,9,13,14,19]
+    S2_small_df = S2_df.loc[S2_df.index[index_list]]
+    # print(S2_small_df)
+    
     ''' ##########################################################
     SINGLE MODEL SOBOL OUTPUTS 
     ###########################################################'''
@@ -228,47 +233,53 @@ def CHART():
                    # Check if the column contains all NaN values
                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
                     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
-                    if not S2_df[column_name].isna().all():
+                    if not S2_small_df[column_name].isna().all():
+                        ####################################################################
+                        #### AMI_Alpha slipped through, had to manually make it all NaN ####
+                        ####################################################################
+                        # print(column_name)
                         fig, ax = plt.subplots()
                         
                         X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                        Y = S2_df[column_name]
-                        ciY = S2_df[confidence]
-                        plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
+                        Y = S2_small_df[column_name]
+                        ciY = S2_small_df[confidence]
+                        # print(Y, ciY)
+                        # ciY = [ciY.iloc[i] for i in range(len(ciY)) if mask[i]]
+                        # if ciY.isna().any():
+                        #     print("ciY contains NaN values. Handle or remove them before plotting.")
+                        plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color=color)
 
                         ax.scatter(X, Y)
-                        plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
-                                                                    'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
-                                                                    'CO2xH',   'PPFDxH'), rotation = 90)                        
+                        plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'RHxCO2',
+                                                                     'RHxPPFD', 'RHxH', 'CO2xPPFD', 'CO2xH', 'PPFDxH'), rotation = 90)
                         plt.ylabel('What is this axis anyways?')
                         plt.xlabel('Equation Inputs')
                         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
-                        plt.show()
-                        # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-                        # plt.close()
-                # else:
-                #    # Check if the column contains all NaN values
-                #     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
-                #     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
-                #     if not S1_ST_DF[column_name].isna().all():
-                #         fig, ax = plt.subplots()
+                        # plt.show()
+                        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                        plt.close()
+                else:
+                   # Check if the column contains all NaN values
+                    column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
+                    confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
+                    if not S1_ST_DF[column_name].isna().all():
+                        fig, ax = plt.subplots()
                         
-                #         X = [1, 2, 3, 4, 5]
-                #         Y = S1_ST_DF[column_name]
-                #         ciY = S1_ST_DF[confidence]
-                #         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
+                        X = [1, 2, 3, 4, 5]
+                        Y = S1_ST_DF[column_name]
+                        ciY = S1_ST_DF[confidence]
+                        plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
 
-                #         ax.scatter(X, Y)
-                #         plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
-                #         plt.ylabel('What is this axis anyways?')
-                #         plt.xlabel('Equation Inputs')
-                #         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
-                #         plt.show()
-                #         # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-                #         # plt.close()
-
+                        ax.scatter(X, Y)
+                        plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+                        plt.ylabel('What is this axis anyways?')
+                        plt.xlabel('Equation Inputs')
+                        plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
+                        # plt.show()
+                        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                        plt.close()
                     else:
-                        print(f"Skipping '{column_name}' because it contains all NaN values")
+                        print(f"Skipping {column_name} sobol charting because it contains all NaN values")
                 # ax.scatter(X, Y)
 
 
