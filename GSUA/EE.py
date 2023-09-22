@@ -9,75 +9,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
+import naming_function
 
 warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
-models = [
-         ["AMI", "Amitrano"], 
-         ["BOS", "Boscheri"], 
-         ["CAV", "Cavazzoni"]
-         ]
 
-# this is leftover from before I figured out the better method
-# problem = {
-#     'num_vars': 5,
-#     'names': ['Temp','RH','CO2', 'PPFD', 'H'],
-#     'bounds': [[5,40],       # Temperature
-#                [35,100],      # Relative Humidity
-#                [330,1300],    # Atmo CO2 Concentration
-#                [0,1100],     # PPFD Level
-#                [0,24]]        # Photoperiod
-#                }
+##########################################################
+############## Defining the Model Inputs #################
+##########################################################
 
-u = "\u00B5"        # unicode for the micro symbol
-
-mec_outputs = [  
-            ["A", "Absorption", ""],
-            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
-            ["CUE_24", "Carbon Use Efficiency", ""],
-            ["ALPHA", "A*CQY*CUE_24", ""],
-            ["BETA", "A*CQY", ""],
-            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
-            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
-            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
-            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
-            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
-            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
-            ["VPD", "Vapor Pressure Deficit", "kPa"],
-            ["P_GROSS", "Gross Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["P_NET", "Net Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
-]
-
-mec_inputs = [
-            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
-            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
-            ["RH", "Relative Humidity", "%"],
-            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
-            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
-            ["H", "Photoperiod", "hours day$^{-1}$"]
-]
-
-
-problem = ProblemSpec({
-    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'num_vars': 5,
-    'bounds': [[5,40,0.54286],      # Temperature Peak at 24 
-               [35,100,0.38461],    # Relative Humidity Peak at 60
-               [330,1300,0.48453],  # Atmo CO2 Concentration Peak at 800
-               [0,1100,0.27273],    # PPFD Level Peak at 300
-               [0,24, 0.66667]],    # Photoperiod Peak at 16
-    'dists': ['triang', 'triang', 'triang', 'triang', 'triang'],
-    # 'groups': None
-    })
+inputs = naming_function.mec_input_names()
+outputs = naming_function.mec_output_names()
+models = naming_function.model_names()
+sp = naming_function.prob_spec()
 
 ###########################################################
 #################### Analysis #############################
 ###########################################################
-
 
 def ANALYZE():
 
@@ -95,13 +43,13 @@ def ANALYZE():
     for item in models:                 # loop for model names
         model_short_name = item[0]
         model_long_name = item[1]
-        for item in mec_outputs:        # loop for output names
+        for item in outputs:        # loop for output names
             output_short_name = item[0]
             output_long_name = item[1]
             output_unit = item[2]
             # Loading specific outputs for Morris EE analysis 
             Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-            EE = SALib.analyze.morris.analyze(problem, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
+            EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
             with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
                 results_df = EE.to_df()
@@ -153,7 +101,7 @@ def CHART():
     '''##########################################################
      mu star by sigma with a 1/1 line MULTIMODEL
      #########################################################'''
-    for item in mec_outputs:   # loop for outputs
+    for item in outputs:   # loop for outputs
         output_short_name = item[0]
         output_long_name = item[1]
         output_unit = item[2]
@@ -217,7 +165,7 @@ def CHART():
     for item in models:                 # loop for model names
         model_short_name = item[0]
         model_long_name = item[1]
-        for item in mec_outputs:   # loop for outputs
+        for item in outputs:   # loop for outputs
             output_short_name = item[0]
             output_long_name = item[1]
             output_unit = item[2]
@@ -276,7 +224,7 @@ def CHART():
     mu by sigma with the V MULTIMODEL
     ###############################################################################'''
 
-    for item in mec_outputs:   # loop for outputs
+    for item in outputs:   # loop for outputs
         output_short_name = item[0]
         output_long_name = item[1]
         output_unit = item[2]
@@ -350,7 +298,7 @@ def CHART():
     for item in models:                 # loop for model names
         model_short_name = item[0]
         model_long_name = item[1]
-        for item in mec_outputs:   # loop for outputs
+        for item in outputs:   # loop for outputs
             output_short_name = item[0]
             output_long_name = item[1]
             output_unit = item[2]

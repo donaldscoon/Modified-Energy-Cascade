@@ -19,83 +19,16 @@ import MEC_BOS_GSUA
 import MEC_CAV_GSUA
 import SOBOL_ANALYSIS
 import GSUA_visulization
-
+import naming_function
 
 ##########################################################
 ############## Defining the Model Inputs #################
 ##########################################################
-# -------------------------------------------------------------------------------------
-""" YO YO YO YO YO YO BIG CODING GENIUS
-I Think you should make the models/inputs/ouputs defining and lists a function...
-go for it buddy! """
-# -------------------------------------------------------------------------------------
 
-models = [
-         ["AMI", "Amitrano"], 
-         ["BOS", "Boscheri"], 
-         ["CAV", "Cavazzoni"]
-         ]
-
-# this is leftover from before I figured out the better method
-# problem = {
-#     'num_vars': 5,
-#     'names': ['Temp','RH','CO2', 'PPFD', 'H'],
-#     'bounds': [[5,40],       # Temperature
-#                [35,100],      # Relative Humidity
-#                [330,1300],    # Atmo CO2 Concentration
-#                [0,1100],     # PPFD Level
-#                [0,24]]        # Photoperiod
-#                }
-
-u = "\u00B5"        # unicode for the micro symbol
-
-mec_outputs = [  
-            ["A", "Absorption", ""],
-            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
-            ["CUE_24", "Carbon Use Efficiency", ""],
-            ["ALPHA", "A*CQY*CUE_24", ""],
-            ["BETA", "A*CQY", ""],
-            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
-            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
-            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
-            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
-            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
-            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
-            ["VPD", "Vapor Pressure Deficit", "kPa"],
-            ["P_GROSS", "Gross Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["P_NET", "Net Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
-]
-
-mec_inputs = [
-            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
-            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
-            ["RH", "Relative Humidity", "%"],
-            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
-            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
-            ["H", "Photoperiod", "hours day$^{-1}$"]
-]
-
-sp = ProblemSpec({
-    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    # Notation [min, max, peak as % of that range]
-    # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
-    # which would actually give a peak at 24 since the range starts at 5.
-    'bounds': [[5,40,0.54286],      # Temperature Peak at 24 
-               [35,100,0.38461],    # Relative Humidity Peak at 60
-               [330,1300,0.48453],  # Atmo CO2 Concentration Peak at 800
-               [0,1100,0.27273],    # PPFD Level Peak at 300
-               [0,24, 0.66667]],    # Photoperiod Peak at 16
-    'dists': ['triang',             # Temperature
-              'triang',             # Relative Humidity
-              'triang',             # Atmo CO2
-              'triang',             # PPFD
-              'triang'],            # Photoperiod
-    'outputs': ['Y']
-})
+inputs = naming_function.mec_input_names()
+outputs = naming_function.mec_output_names()
+models = naming_function.model_names()
+sp = naming_function.prob_spec()
 
 
 ##########################################################
@@ -111,8 +44,8 @@ if __name__ == '__main__':
     sim_start=datetime.now()
     print("Generating the samples")
 
-    SOBOL_ANALYSIS.SAMPLE()
-
+    # SOBOL_ANALYSIS.SAMPLE()\
+    
     print('sobol sampling completed, proceeding to the simulations')
 
 

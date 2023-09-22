@@ -43,6 +43,14 @@ Full filepaths are not written, ideally these would not be hardcoded in, but tha
 * Perform Sobol Analysis with SALib functions
   * save messy text file results to `*/results/full_out/{MODEL_OUTPUT}_results.txt`
   * Create dataframes for the S1, S2, and ST effects individually saved to the easier to work with `*/results` as CSV's
+* Chart the Sobol results
+  * Start with reworking the dataframes. S1 and ST are combined `S1_ST_DF` to be chartable in the same loop since they have the same indexes. S2 is reworked `S2_small_df` to remove the rows of NaN
+  * Single model charts first. 
+    * first loop charts the S2 results after scanning to correct the error of AMI_ALPHA having results be 0 and conf be NaN.
+      * saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
+    * The next loop iterates through `S1_ST_DF` to create the corresponding charts for S1 and ST results
+      * S1 saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`      
+      * ST saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
 
   
 ### Elementary Effects and Sensitivity Analysis 

@@ -11,44 +11,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+import naming_function
 
-#########################################################
-############### Some Data Structuring ###################
-#########################################################
-u = "\u00B5"        # unicode for the micro symbol
-# These list of lists defines the short name, full name and units 
-# for the model inputs/outputs to limit the places they need to be 
-# changed should they need to be.
+##########################################################
+############## Defining the Model Inputs #################
+##########################################################
 
-mec_outputs = [  
-            ["A", "Absorption", ""],
-            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
-            ["CUE_24", "Carbon Use Efficiency", ""],
-            ["ALPHA", "A*CQY*CUE_24", ""],
-            ["BETA", "A*CQY", ""],
-            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
-            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
-            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
-            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
-            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
-            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
-            ["VPD", "Vapor Pressure Deficit", "kPa"],
-            ["P_GROSS", "Gross Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["P_NET", "Net Canopy Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
-]
-
-mec_inputs = [
-            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
-            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
-            ["RH", "Relative Humidity", "%"],
-            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
-            ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
-            ["H", "Photoperiod", "hours day$^{-1}$"]
-]
+inputs = naming_function.mec_input_names()
+outputs = naming_function.mec_output_names()
+models = naming_function.model_names()
+sp = naming_function.prob_spec()
 
 #########################################################
 ################### OTHER MODEL CONSTANTS ###############
@@ -204,7 +176,7 @@ def RUN_SIM():     # used to package this version of the MEC as a function calla
         # print(df_records)                    # prints a copy of output in the terminal
         df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
         df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv') # exports entire final data frame to a CSV
-        for output in mec_outputs:      # This loop runs create text files for each /inputoutput of the MEC!
+        for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
             np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', df_sims[[f'{output[0]}']])
         
     print("Amitrano Simulations Complete")
@@ -230,7 +202,7 @@ def RUN_CHART():
         input_short_name = item[0]
         input_long_name = item[1]
         input_unit = item[2]
-        for item in mec_outputs:
+        for item in outputs:
             output_short_name = item[0]
             output_long_name = item[1]
             output_unit = item[2]

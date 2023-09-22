@@ -2,59 +2,16 @@ from SALib import ProblemSpec
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import naming_function
 
-models = [
-         ["AMI", "Amitrano"],
-         ["BOS", "Boscheri"],
-         ["CAV", "Cavazzoni"]
-         ]
+##########################################################
+############## Defining the Model Inputs #################
+##########################################################
 
-u = "\u00B5"        # unicode for the micro symbol
-
-mec_outputs = [
-            ["A", "Absorption", ""],
-            ["CQY", "Canopy Quantum Yield", u+"mol$_{fixed}$ "+u+"mol$_{aborbed}$"],
-            ["CUE_24", "Carbon Use Efficiency", ""],
-            ["ALPHA", "A*CQY*CUE_24", ""],
-            ["BETA", "A*CQY", ""],
-            ["DCG", "Daily Carbon Gain", "mol$_{carbon}$ m$^{-2}$ day$^{-1}$"],
-            ["CGR", "Crop Growth Rate", "grams m$^{-2}$ day$^{-1}$"],
-            ["TCB", "Total Crop Biomass", "grams m$^{-2}$"],
-            ["TEB", "Total Edible Biomass", "grams m$^{-2}$"],
-            ["VP_SAT", "Saturated Moisture Vapor Pressure", "kPa"],
-            ["VP_AIR", "Actual Moisture Vapor Pressure", "kPa"],
-            ["VPD", "Vapor Pressure Deficit", "kPa"],
-            ["P_GROSS", "Gross Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["P_NET", "Net Photosynthesis", u+"mol$_{carbon}$ m$^{-2}$ second$^{-1}$"],
-            ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-            ["DTR", "Daily Transpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
-]
-
-mec_inputs = [
-            ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius", 'TEMP'],
-            ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius", 'TEMP'],
-            ["RH", "Relative Humidity", "%", 'RH'],
-            ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$", 'CO2'],
-            ["PPFD", "Photosynthetic Photon Flux Density", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$", 'PPFD'],
-            ["H", "Photoperiod", "hours day$^{-1}$", 'H']
-]
-
-sp = ProblemSpec({
-    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'bounds': [[5,40,0.68571],      # Temperature
-               [35,100,0.92308],    # Relative Humidity
-               [330,1300,0.82474],  # Atmo CO2 Concentration
-               [0,1100,0.27273],    # PPFD Level
-               [0,24, 0.66667]],    # Photoperiod
-    'dists': ['triang',             # Temperature
-              'triang',             # Relative Humidity
-              'triang',             # Atmo CO2
-              'triang',             # PPFD
-              'triang'],            # Photoperiod
-    'outputs': ['Y']
-})
+inputs = naming_function.mec_input_names()
+outputs = naming_function.mec_output_names()
+models = naming_function.model_names()
+sp = naming_function.prob_spec()
 
 ami_c = '#2A119B'
 bos_c = '#067300'
@@ -112,7 +69,7 @@ def GSUA_CHARTS():
     #     input_short_name = item[0]
     #     input_long_name = item[1]
     #     input_unit = item[2]
-    #     for item in mec_outputs:   # loop for outputs
+    #     for item in outputs:   # loop for outputs
     #         output_short_name = item[0]
     #         output_long_name = item[1]
     #         output_unit = item[2]
@@ -553,31 +510,31 @@ if __name__ ==('__main__'):
 # plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S1_TEB.png", bbox_inches='tight')
 
 
-'''2nd Order Effects on Net Photosythesis'''
-xA = [.8, 1.8, 2.8, 3.8, 4.8, 5.8, 6.8, 7.8, 8.8, 9.8]
-# xB = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-xC = [1.2, 2.2, 3.2, 4.2, 5.2, 6.2, 7.2, 8.2, 9.2, 10.2]
-yA = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.082964]
-ciA= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.498697]
-# yB = []
-# ciB= []
-yC = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.006686, 0.000273, 0.123295]
-ciC= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.080871, 0.058927, 0.474082]
+# '''2nd Order Effects on Net Photosythesis'''
+# xA = [.8, 1.8, 2.8, 3.8, 4.8, 5.8, 6.8, 7.8, 8.8, 9.8]
+# # xB = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# xC = [1.2, 2.2, 3.2, 4.2, 5.2, 6.2, 7.2, 8.2, 9.2, 10.2]
+# yA = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.082964]
+# ciA= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.498697]
+# # yB = []
+# # ciB= []
+# yC = [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.006686, 0.000273, 0.123295]
+# ciC= [0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.080871, 0.058927, 0.474082]
 
-fig, ax = plt.subplots()
-ax.scatter(xA, yA)
-# ax.scatter(xB, yB)
-ax.scatter(xC, yC)
-plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=ami_c)
-# plt.errorbar(xB, yB, yerr=ciB, fmt = 'o', label = "BOS", color=bos_c)
-plt.errorbar(xC, yC, yerr=ciC, fmt = 'o', label = "CAV", color=cav_c)
-plt.legend()
-plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
-                                             'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
-                                             'CO2xH',   'PPFDxH'), rotation = 90)
-plt.title('2nd Order Effects on Total Edible Biomass')
-plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S2_TEB.png", bbox_inches='tight')
-# plt.show()
+# fig, ax = plt.subplots()
+# ax.scatter(xA, yA)
+# # ax.scatter(xB, yB)
+# ax.scatter(xC, yC)
+# plt.errorbar(xA, yA, yerr=ciA, fmt = 'o', label = "AMI", color=ami_c)
+# # plt.errorbar(xB, yB, yerr=ciB, fmt = 'o', label = "BOS", color=bos_c)
+# plt.errorbar(xC, yC, yerr=ciC, fmt = 'o', label = "CAV", color=cav_c)
+# plt.legend()
+# plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+#                                              'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
+#                                              'CO2xH',   'PPFDxH'), rotation = 90)
+# plt.title('2nd Order Effects on Total Edible Biomass')
+# plt.savefig("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/MEC_GSUA_S2_TEB.png", bbox_inches='tight')
+# # plt.show()
 
 # ###########################
 # ######## Template #########
