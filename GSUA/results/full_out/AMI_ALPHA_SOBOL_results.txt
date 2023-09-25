@@ -1,0 +1,21 @@
+[       ST  ST_conf
+TEMP  0.0      0.0
+RH    0.0      0.0
+CO2   0.0      0.0
+PPFD  0.0      0.0
+H     0.0      0.0,        S1  S1_conf
+TEMP  0.0      0.0
+RH    0.0      0.0
+CO2   0.0      0.0
+PPFD  0.0      0.0
+H     0.0      0.0,                S2  S2_conf
+(TEMP, RH)    0.0      NaN
+(TEMP, CO2)   0.0      NaN
+(TEMP, PPFD)  0.0      NaN
+(TEMP, H)     0.0      NaN
+(RH, CO2)     0.0      NaN
+(RH, PPFD)    0.0      NaN
+(RH, H)       0.0      NaN
+(CO2, PPFD)   0.0      NaN
+(CO2, H)      0.0      NaN
+(PPFD, H)     0.0      NaN]
