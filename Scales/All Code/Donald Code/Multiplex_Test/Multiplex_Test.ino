@@ -5,8 +5,8 @@
 
 int Runs=0;
 
-const int DOUT = 3;  
-const int CLK = 2;   
+const int CLK = 3;   
+const int DOUT = 2;  
 
 HX711 scale1;
 HX711 scale2;
@@ -22,8 +22,8 @@ void setup() {
   // pinMode(7, OUTPUT);     
   // digitalWrite(7, HIGH);
 
-  // pinMode(8, OUTPUT);     
-  // digitalWrite(8, HIGH);
+  pinMode(8, OUTPUT);     
+  digitalWrite(8, HIGH);
 
   scale1.begin(DOUT, CLK);
   scale2.begin(DOUT, CLK);
@@ -56,8 +56,8 @@ void loop() {
   Serial.print(minute(utcTime)); Serial.print(":");
   Serial.print(second(utcTime)); Serial.print(";");
 
-  Serial.print(scale1.get_units(3), 1); //scale.get_units() returns a float
-  Serial.print(";");
+  // Serial.print(scale1.get_units(3), 1); //scale.get_units() returns a float
+  // Serial.print(";");
 
   Serial.print(scale2.get_units(3), 1); //scale.get_units() returns a float
   Serial.print(";");
