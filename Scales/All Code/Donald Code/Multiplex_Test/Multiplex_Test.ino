@@ -13,17 +13,30 @@ HX711 scale2;
 HX711 scale3;
 HX711 scale4;
 
+//////////////////////////////////////////////////////////////////////////////////////////
+int timer = 1000;           // The higher the number, the slower the timing.
+int scale_pins[] = {7, 8};       // an array of pin numbers to which LEDs are attached
+int pinCount = 2;           // the number of pins (i.e. the length of the array)
+//////////////////////////////////////////////////////////////////////////////////////////
+
 const int timeZoneOffset = 4; // Replace with your time zone offset
 
 void setup() {
   Serial.begin(9600);
 
-// These turn on the pins, need to be automated
-  // pinMode(7, OUTPUT);     
-  // digitalWrite(7, HIGH);
+// // These turn on the pins, need to be automated
+//   pinMode(7, OUTPUT);     
+//   digitalWrite(7, HIGH);
 
-  pinMode(8, OUTPUT);     
-  digitalWrite(8, HIGH);
+//   pinMode(8, OUTPUT);     
+//   digitalWrite(8, HIGH);
+//////////////////////////////////////////////////////////////////////////////////////////
+  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+
+    pinMode(scale_pins[thisPin], OUTPUT);
+
+  }
+//////////////////////////////////////////////////////////////////////////////////////////
 
   scale1.begin(DOUT, CLK);
   scale2.begin(DOUT, CLK);
@@ -56,11 +69,29 @@ void loop() {
   Serial.print(minute(utcTime)); Serial.print(":");
   Serial.print(second(utcTime)); Serial.print(";");
 
+//////////////////////////////////////////////////////////////////////////////////////////
+  // loop from the lowest pin to the highest:
+
+  for (int thisPin = 0; thisPin < pinCount; thisPin++) {
+
+    // open mosfet switch, turning scale on
+    digitalWrite(scale_pins[thisPin], LOW);
+
+    Serial.print(scale1.get_units(3), 1); //scale.get_units() returns a float
+    Serial.print(";");
+
+    // close mosfet switch, turning scale off.
+    digitalWrite(scale_pins[thisPin], HIGH);
+    delay(timer);
+
+  }
+//////////////////////////////////////////////////////////////////////////////////////////
+
   // Serial.print(scale1.get_units(3), 1); //scale.get_units() returns a float
   // Serial.print(";");
 
-  Serial.print(scale2.get_units(3), 1); //scale.get_units() returns a float
-  Serial.print(";");
+  // Serial.print(scale2.get_units(3), 1); //scale.get_units() returns a float
+  // Serial.print(";");
 
   Serial.println(Runs);
 
