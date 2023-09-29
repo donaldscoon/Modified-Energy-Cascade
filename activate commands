@@ -1,2 +1,15 @@
 PS C:\Users\donal\Documents\GitHub\Modified-Energy-Cascade> C:/Users/donal/Anaconda3/Scripts/activate
 PS C:\Users\donal\Documents\GitHub\Modified-Energy-Cascade> conda activate C:\Users\donal\mambaforge\envs\mec
+
+to add new packages there are two options. 
+
+1: 
+open a command shell, 
+type in mamba install packagename
+test if it works,
+
+2: 
+open a command shell,
+mamba activate env name,
+pip install package name
+test,
