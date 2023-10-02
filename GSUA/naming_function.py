@@ -10,7 +10,7 @@ from SALib import ProblemSpec
 def prob_spec():
     sp = ProblemSpec({
     'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'num_vars': 5,
+    'num_vars': 6,
     # Notation [min, max, peak as % of that range]
     # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
     # which would actually give a peak at 24 since the range starts at 5.

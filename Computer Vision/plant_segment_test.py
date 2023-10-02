@@ -35,10 +35,13 @@ plt.imshow(img)
 # Applying a threshold to detect green color can be performed quite easily using LAB color space.
 # check out https://stackoverflow.com/questions/47483951/how-can-i-define-a-threshold-value-to-detect-only-green-colour-objects-in-an-ima
 lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+
 # store the a-channel
 a_channel = lab[:,:,1]
+
 # Automate threshold using Otsu method
 th = cv2.threshold(a_channel,127,255,cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)[1]
+
 # Mask the result with the original image
 masked = cv2.bitwise_and(img, img, mask = th)
 
