@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # sim_start=datetime.now()
     print("Generating the samples")
 
-    # SOBOL_ANALYSIS.SAMPLE()\
+    SOBOL_ANALYSIS.SAMPLE()
     
     print('sobol sampling completed, proceeding to the simulations')
 
@@ -68,8 +68,9 @@ if __name__ == '__main__':
         SIM_CO2  = X[2]
         SIM_PPFD = X[3]
         SIM_H    = X[4]
+        SIM_STRU = X[5]
         SIM_NUM = i
-        print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H)
+        print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
         SIM_LENGTH = 30
 
         MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model

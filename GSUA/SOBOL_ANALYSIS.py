@@ -41,6 +41,10 @@ def SAMPLE():
         SIM_CO2  = X[2]
         SIM_PPFD = X[3]
         SIM_H    = X[4]
+        SIM_STRU = X[5]
+        #################################################
+        ######### NEED TO ROUND NUMNBERS ################
+        #################################################
         SIM_NUM = i
 
 # Executes this program/function

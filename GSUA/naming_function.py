@@ -9,7 +9,7 @@ from SALib import ProblemSpec
 
 def prob_spec():
     sp = ProblemSpec({
-    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
+    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'],
     'num_vars': 6,
     # Notation [min, max, peak as % of that range]
     # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
@@ -18,12 +18,14 @@ def prob_spec():
                [35,100,0.38461],    # Relative Humidity Peak at 60
                [330,1300,0.48453],  # Atmo CO2 Concentration Peak at 800
                [0,1100,0.27273],    # PPFD Level Peak at 300
-               [0,24, 0.66667]],    # Photoperiod Peak at 16
+               [0,24, 0.66667],     # Photoperiod Peak at 16
+               [0,2]],              # Model structure, AMI, BOS, CAV, uniform distri
     'dists': ['triang',             # Temperature
               'triang',             # Relative Humidity
               'triang',             # Atmo CO2
               'triang',             # PPFD
-              'triang'],            # Photoperiod
+              'triang',             # Photoperiod
+              'unif'],               # Model Structure
     'outputs': ['Y']
     })
     return sp
@@ -99,4 +101,4 @@ def colors(): # combines all these functions into one!
 
 # Executes this program/function
 if __name__ ==('__main__'):
-    all_names()
+    colors()
