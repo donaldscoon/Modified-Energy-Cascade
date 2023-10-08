@@ -25,7 +25,7 @@ def prob_spec():
               'triang',             # Atmo CO2
               'triang',             # PPFD
               'triang',             # Photoperiod
-              'unif'],               # Model Structure
+              'unif'],              # Model Structure
     'outputs': ['Y']
     })
     return sp
