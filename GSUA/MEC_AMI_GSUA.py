@@ -41,7 +41,7 @@ bmax_GON = 0.0564626043274799    # amitrano 2020 calibrated with growth chamber 
 def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):     # used to package this version of the MEC as a function callable by other programs
 
     # start=datetime.now()
-    print("Begining Amitrano Simulations")
+    # print("Begining Amitrano Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
@@ -179,7 +179,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):   
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
         np.savetxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', df_sims[[f'{output[0]}']])
     
-print("Amitrano Simulations Complete")
+# print("Amitrano Simulations Complete")
 # time = datetime.now()-start
 # print(f"Simulations took {time}")
 
