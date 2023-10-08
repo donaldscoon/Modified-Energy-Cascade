@@ -25,7 +25,7 @@ sp = naming_function.prob_spec()
 
 def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):     # used to package this version of the MEC as a function callable by other programs
     # start=datetime.now()
-    print("Begining Boscheri Simulations")
+    # print("Begining Boscheri Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################

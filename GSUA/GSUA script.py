@@ -12,6 +12,7 @@ from SALib import ProblemSpec
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import winsound
 from datetime import datetime
 
 import MEC_AMI_GSUA
@@ -20,6 +21,7 @@ import MEC_CAV_GSUA
 import SOBOL_ANALYSIS
 import GSUA_visulization
 import naming_function
+
 
 ##########################################################
 ############## Defining the Model Inputs #################
@@ -64,8 +66,7 @@ if __name__ == '__main__':
             row from the sampled parameters for each simulation iteration.
         """
 
-
-        # Columns are Temp, Humidity, CO2, PPFD, H
+        # Columns are Temp, Humidity, CO2, PPFD, H, Model Structure
         SIM_TEMP = X[0]
         SIM_RH   = X[1]
         SIM_CO2  = X[2]
@@ -76,20 +77,25 @@ if __name__ == '__main__':
         # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
         SIM_LENGTH = 30
 
-
-        if SIM_STRU == 0:
-            print(f"SIM_STRU = {SIM_STRU} Run Amitrano")
+        """The code currently runs each individual model 
+        but only saves the last output of all the simulations :/ """
+        
+        if SIM_NUM % 100 == 0:
+            print(f"{SIM_NUM}")
+        if SIM_STRU == 1:
             ami_count += 1
-            # MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
-        elif SIM_STRU == 1:
-            print(f"SIM_STRU = {SIM_STRU} Run Boscheri")
+            MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
+        elif SIM_STRU == 2:
             bos_count += 1
-            # MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
+            MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
         else:
-            print(f"SIM_STRU = {SIM_STRU} Run Cavazonni")
             cav_count += 1
-            # MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
+            MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
     print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
+
+    duration = 1000  # milliseconds
+    freq = 440  # Hz
+    winsound.Beep(freq, duration)
     # MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
     # MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
     # MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
@@ -110,8 +116,8 @@ if __name__ == '__main__':
 #     print("Beginning Analysis of simulations")
 #     analysis_start=datetime.now()
 
-    SOBOL_ANALYSIS.ANALYZE()
-    EE.ANALYZE()
+    # SOBOL_ANALYSIS.ANALYZE()
+    # EE.ANALYZE()
 
 # ################################# Morris Elementary Effects Anlaysis ##################################
 
