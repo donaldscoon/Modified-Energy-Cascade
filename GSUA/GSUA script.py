@@ -22,6 +22,13 @@ import SOBOL_ANALYSIS
 import GSUA_visulization
 import naming_function
 
+###########################################################################################
+# Ok. So. I can get the model scripts to clear the output file before writing all the new 
+# results but the problem is that it clears all the output data before any functions run,
+# so the charting function deletes all the data essentially
+###########################################################################################
+
+# MEC_AMI_GSUA.CLEAR_OUTPUTS()
 
 ##########################################################
 ############## Defining the Model Inputs #################
@@ -79,28 +86,29 @@ if __name__ == '__main__':
 
         """The code currently runs each individual model 
         but only saves the last output of all the simulations :/ """
-        
+
         if SIM_NUM % 100 == 0:
             print(f"{SIM_NUM}")
         if SIM_STRU == 1:
             ami_count += 1
-            MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
+            # MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
         elif SIM_STRU == 2:
             bos_count += 1
-            MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
+        #     MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
         else:
             cav_count += 1
-            MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
+        #     MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
     print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
 
-    duration = 1000  # milliseconds
-    freq = 440  # Hz
-    winsound.Beep(freq, duration)
+    # duration = 1000  # milliseconds
+    # freq = 440  # Hz
+    # winsound.Beep(freq, duration)
+
     # MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
     # MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
     # MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
 
-    # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
+    MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
