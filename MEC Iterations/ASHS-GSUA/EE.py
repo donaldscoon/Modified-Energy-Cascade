@@ -1,9 +1,11 @@
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 from SALib.sample import morris
+from matplotlib.lines import Line2D
 
 import SALib as SALib
 import numpy as np
+import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
@@ -21,59 +23,75 @@ outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
 
-###########################################################
-#################### Analysis #############################
-###########################################################
+# ###########################################################
+# #################### Analysis #############################
+# ###########################################################
 
-def ANALYZE():
+# def ANALYZE():
 
-    # Create dataframes for each models GSUA runs
-    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+#     # Create dataframes for each models GSUA runs
+#     df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+#     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+#     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
-    N = 128 # number of unique levels resulting from the sobol sampling
-    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_parameters.txt')
+#     N = 128 # number of unique levels resulting from the sobol sampling
+#     X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_parameters.txt')
 
-    EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
-    EE_out_df.set_index('Index')
+#     EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
+#     EE_out_df.set_index('Index')
 
-    for item in models:                 # loop for model names
-        model_short_name = item[0]
-        model_long_name = item[1]
-        for item in outputs:        # loop for output names
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
-            # Loading specific outputs for Morris EE analysis 
-            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-            EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
+#     for item in models:                 # loop for model names
+#         model_short_name = item[0]
+#         model_long_name = item[1]
+#         for item in outputs:        # loop for output names
+#             output_short_name = item[0]
+#             output_long_name = item[1]
+#             output_unit = item[2]
+#             # Loading specific outputs for Morris EE analysis 
+#             Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+#             EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
-                results_df = EE.to_df()
-                f.write(str(results_df))
-            f.close
+#             with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
+#                 results_df = EE.to_df()
+#                 f.write(str(results_df))
+#             f.close
 
-            # create a big ol honking dataframe
-            mu_output_key = f'{model_short_name}_{output_short_name}_mu'
-            mu_star_output_key = f'{model_short_name}_{output_short_name}_mu_star'
-            mu_star_conf_output_key = f'{model_short_name}_{output_short_name}__mu_star_conf'
-            sigma_output_key = f'{model_short_name}_{output_short_name}_sigma'
+#             # create a big ol honking dataframe
+#             mu_output_key = f'{model_short_name}_{output_short_name}_mu'
+#             mu_star_output_key = f'{model_short_name}_{output_short_name}_mu_star'
+#             mu_star_conf_output_key = f'{model_short_name}_{output_short_name}__mu_star_conf'
+#             sigma_output_key = f'{model_short_name}_{output_short_name}_sigma'
 
-            EE_out_df[mu_output_key] = EE['mu']
-            EE_out_df[mu_star_output_key] = EE['mu_star']
-            EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
-            EE_out_df[sigma_output_key] = EE['sigma']
-    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/results/EE_out.csv', index=False)
+#             EE_out_df[mu_output_key] = EE['mu']
+#             EE_out_df[mu_star_output_key] = EE['mu_star']
+#             EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
+#             EE_out_df[sigma_output_key] = EE['sigma']
+#     EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/results/EE_out.csv', index=False)
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    ANALYZE()
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     ANALYZE()
 
 def CHART():
     ami_c = '#2A119B'
     bos_c = '#067300'
     cav_c = '#8C0004'
+
+    ### All of these creates a single point for all the legend entries!
+    ami_patch = mpatches.Patch(color = ami_c, label = 'Amitrano')
+    bos_patch = mpatches.Patch(color = bos_c, label = 'Boscheri')
+    cav_patch = mpatches.Patch(color = cav_c, label = 'Cavazzoni')
+    temp_point = Line2D([0], [0], linestyle= '', color='black', marker= 'o', label='TEMP' )
+    rh_point   = Line2D([0], [0], linestyle= '', color='black', marker= 's', label='RH' )
+    CO2_point  = Line2D([0], [0], linestyle= '', color='black', marker= '*', label='CO2' )
+    PPFD_point = Line2D([0], [0], linestyle= '', color='black', marker= '^', label='PPFD' )
+    H_point    = Line2D([0], [0], linestyle= '', color='black', marker= 'd', label='H' )
+    SEM_line = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
+
+    onetoone_legend = [ami_patch, bos_patch, cav_patch, temp_point, rh_point,
+                 CO2_point, PPFD_point, H_point]
+    SEM_legend = [ami_patch, bos_patch, cav_patch, temp_point, rh_point,
+                 CO2_point, PPFD_point, H_point, SEM_line]
 
 # perhaps I can write some kind of script to set these
 # so I don't have to write it out completely each time?
@@ -152,7 +170,7 @@ def CHART():
         plt.xlabel('mu*')
         plt.ylabel('sigma')
         plt.title(f'EE of {output_short_name}')
-        plt.legend()
+        plt.legend(handles= onetoone_legend)
         # plt.show()
         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
@@ -213,7 +231,7 @@ def CHART():
                 plt.xlabel('mu*')
                 plt.ylabel('sigma')
                 plt.title(f'EE of {model_short_name}_{output_short_name}')
-                plt.legend()
+                plt.legend(handles= onetoone_legend)
                 # plt.show()
                 plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/figures/EE/EE_1-1{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 plt.close()
@@ -284,7 +302,7 @@ def CHART():
         plt.xlabel('mu')
         plt.ylabel('sigma')
         plt.title(f'EE of {output_short_name}')
-        plt.legend()
+        plt.legend(handles= SEM_legend, loc='lower right')
         # plt.show()
         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
@@ -355,7 +373,7 @@ def CHART():
                 plt.xlabel('mu')
                 plt.ylabel('sigma')
                 plt.title(f'EE of {model_short_name}_{output_short_name}')
-                plt.legend()
+                plt.legend(handles= SEM_legend, loc='lower right')
                 # plt.show()
                 plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/figures/EE/EE_SEM_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 plt.close()
@@ -365,29 +383,29 @@ def CHART():
 if __name__ ==('__main__'):
     CHART()
 
-# """ NOTES FROM THE MATLAB CODE `EE_SENMAE_CALC.M`
+# # """ NOTES FROM THE MATLAB CODE `EE_SENMAE_CALC.M`
 
-# Two figures/subplots are produced for each model output.    %
-# %             The first subplot is a plot of µ* - ? while the second      %
-# %             one consists of µ - ?.                                      %
-# %                                                                         %
-# %             We plot 1:1 threshold(dotted black)in the first             %
-# %             subplot and µ = +/-2 ?/sqrt(r)threshold lines               %
-# %             (dotted black)in the second subplot. µ = +/-2 ?/sqrt(r)     %
-# %             lines were proposed by Morris (1991)to identify factor with %
-# %             dominant non-additive/non-linear effects. 1:1 (i.e. µ*=?)   %
-# %             line threshold is based on Khare et al.(2019)               %
-# %                                                                         %
-# %             Additionally, factors for which µ* = abs(µ) holds true i.e. %
-# %             perfectly monotonic effects are indicated by solid red circles%
-# %             while rest are indicated by blue asterisk. Also, bootstrapping %
-# %             95% CI for µ* and µ are indicated (golden color) on         %
-# %             respective subplots.                                        %
-# %                                                                         %
-# %             Plots are automatically saved as PDF files.                 %
-# %                                                                         %
-# % References: Khare et al. (2019), Effective Global Sensitivity Analysis  %
-# %             of a High-Dimensional Hydrologic and Water Quality Models.  %
-# %             Journal of Hydrologic Engineering, 24(1).                   %
-# %             DOI: 10.1061/(ASCE)HE.1943-5584.0001726. 
-# """
+# # Two figures/subplots are produced for each model output.    %
+# # %             The first subplot is a plot of µ* - ? while the second      %
+# # %             one consists of µ - ?.                                      %
+# # %                                                                         %
+# # %             We plot 1:1 threshold(dotted black)in the first             %
+# # %             subplot and µ = +/-2 ?/sqrt(r)threshold lines               %
+# # %             (dotted black)in the second subplot. µ = +/-2 ?/sqrt(r)     %
+# # %             lines were proposed by Morris (1991)to identify factor with %
+# # %             dominant non-additive/non-linear effects. 1:1 (i.e. µ*=?)   %
+# # %             line threshold is based on Khare et al.(2019)               %
+# # %                                                                         %
+# # %             Additionally, factors for which µ* = abs(µ) holds true i.e. %
+# # %             perfectly monotonic effects are indicated by solid red circles%
+# # %             while rest are indicated by blue asterisk. Also, bootstrapping %
+# # %             95% CI for µ* and µ are indicated (golden color) on         %
+# # %             respective subplots.                                        %
+# # %                                                                         %
+# # %             Plots are automatically saved as PDF files.                 %
+# # %                                                                         %
+# # % References: Khare et al. (2019), Effective Global Sensitivity Analysis  %
+# # %             of a High-Dimensional Hydrologic and Water Quality Models.  %
+# # %             Journal of Hydrologic Engineering, 24(1).                   %
+# # %             DOI: 10.1061/(ASCE)HE.1943-5584.0001726. 
+# # """
