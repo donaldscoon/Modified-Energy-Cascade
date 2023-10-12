@@ -226,15 +226,6 @@ def RUN_CHART(models, inputs, outputs):
 if __name__ ==('__main__'):
     RUN_CHART()
 
-def CLEAR_OUTPUTS(): # I can't get this to work properly! Grrr
-    open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', 'w').close() # clears contents of before writing new batch
-    for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'w').close() # clears contents of output files before writing new batch
-        
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_CLEAR_OUTPUTS()
-
 def RUN_FULL():
     print("Running Amitrano Simulations and Charting Functions")
     start=datetime.now()

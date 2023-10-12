@@ -85,9 +85,6 @@ if __name__ == '__main__':
         # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
         SIM_LENGTH = 30
 
-        """The code currently runs each individual model 
-        but only saves the last output of all the simulations :/ """
-
         if SIM_NUM % 100 == 0:
             print(f"{SIM_NUM}")
         if SIM_STRU == 1:
@@ -95,11 +92,14 @@ if __name__ == '__main__':
             MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
         elif SIM_STRU == 2:
             bos_count += 1
-        #     MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
+            MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
         else:
             cav_count += 1
             MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
     print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
+    # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
+    # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
+    # MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs) 
 
     duration = 1000  # milliseconds
     freq = 440  # Hz
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     # MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
 
     # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
-    # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
+    # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
     # MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
 
     # MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
