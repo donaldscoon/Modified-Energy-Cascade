@@ -77,6 +77,23 @@ if __name__ ==('__main__'):
 #     bos_c = '#067300'
 #     cav_c = '#8C0004'
 
+    ### SEE EE.py in ASHS GSUA For how this was used!
+    # ### All of these creates a single point for all the legend entries!
+    # ami_patch = mpatches.Patch(color = ami_c, label = 'Amitrano')
+    # bos_patch = mpatches.Patch(color = bos_c, label = 'Boscheri')
+    # cav_patch = mpatches.Patch(color = cav_c, label = 'Cavazzoni')
+    # temp_point = Line2D([0], [0], linestyle= '', color='black', marker= 'o', label='TEMP' )
+    # rh_point   = Line2D([0], [0], linestyle= '', color='black', marker= 's', label='RH' )
+    # CO2_point  = Line2D([0], [0], linestyle= '', color='black', marker= '*', label='CO2' )
+    # PPFD_point = Line2D([0], [0], linestyle= '', color='black', marker= '^', label='PPFD' )
+    # H_point    = Line2D([0], [0], linestyle= '', color='black', marker= 'd', label='H' )
+    # SEM_line = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
+
+    # onetoone_legend = [ami_patch, bos_patch, cav_patch, temp_point, rh_point,
+    #              CO2_point, PPFD_point, H_point]
+    # SEM_legend = [ami_patch, bos_patch, cav_patch, temp_point, rh_point,
+    #              CO2_point, PPFD_point, H_point, SEM_line]
+
 # # perhaps I can write some kind of script to set these
 # # so I don't have to write it out completely each time?
 # # symbols differntiate models

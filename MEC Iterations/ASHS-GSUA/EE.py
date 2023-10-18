@@ -169,7 +169,7 @@ def CHART():
         # Set the labels and title
         plt.xlabel('mu*')
         plt.ylabel('sigma')
-        plt.title(f'EE of {output_short_name}')
+        plt.title(f'Elementary Effects of {output_short_name}')
         plt.legend(handles= onetoone_legend)
         # plt.show()
         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
@@ -230,7 +230,7 @@ def CHART():
                 # Set the labels and title
                 plt.xlabel('mu*')
                 plt.ylabel('sigma')
-                plt.title(f'EE of {model_short_name}_{output_short_name}')
+                plt.title(f'Elementary Effects of {model_short_name}_{output_short_name}')
                 plt.legend(handles= onetoone_legend)
                 # plt.show()
                 plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/figures/EE/EE_1-1{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
@@ -301,7 +301,7 @@ def CHART():
         # Set the labels and title
         plt.xlabel('mu')
         plt.ylabel('sigma')
-        plt.title(f'EE of {output_short_name}')
+        plt.title(f'Elementary Effects of {output_short_name}')
         plt.legend(handles= SEM_legend, loc='lower right')
         # plt.show()
         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
@@ -372,7 +372,7 @@ def CHART():
                 # Set the labels and title
                 plt.xlabel('mu')
                 plt.ylabel('sigma')
-                plt.title(f'EE of {model_short_name}_{output_short_name}')
+                plt.title(f'Elementary Effects of {model_short_name}_{output_short_name}')
                 plt.legend(handles= SEM_legend, loc='lower right')
                 # plt.show()
                 plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/MEC Iterations/ASHS-GSUA/GSUA_{model_short_name}_out/figures/EE/EE_SEM_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig

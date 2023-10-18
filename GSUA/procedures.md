@@ -1,30 +1,34 @@
 # How Donald ran the GSUA
 
+# THIS MAY NEED TO BE UPDATED FOR THE STRUCTURE VERSION. 
+
 For this document, anything that is in {curly brackets} is not constant. This means it can be any of the models, inputs, or outputs specified within. This is done with f strings and loops to iterate through every possible combination of charts/analysis to avoid needing to specify which ones to perform. 
 
 Full filepaths are not written, ideally these would not be hardcoded in, but that is just how it is for now, sorry me or other people. `*/` is used to represent the file path into the GSUA folder.
 
 ## Generate Samples
 
-* Set the parameters in `GSUA script.py` for use by SALib
+* Set the parameters in 'naming_function.py` function 'prob_spec()'for use by SALib
   * Triangular Distributions [min, max, % of that range where the peak is]
   * actual values
-    * [[5,40,0.54286],      Temperature Peak at 24 
+    * [5,40,0.54286],      Temperature Peak at 24 
     *  [35,100,0.38461],    Relative Humidity Peak at 60
     *  [330,1300,0.48453],  Atmo CO2 Concentration Peak at 800
     *  [0,1100,0.27273],    PPFD Level Peak at 300
-    *  [0,24, 0.66667]],    Photoperiod Peak at 16
-* Use SALib's Sobol sampling function
-  * generates the 768 samples used to run the models
-  * saves to the file `GSUA_parameters.txt`
+    *  [0,24, 0.66667],    Photoperiod Peak at 16
+    *  [0,2]]    Model structure, AMI, BOS, CAV, uniform distribution
 
-## Run the Models
-* Split into three sets of functions, all initially commented out. Uncomment the selection you want to use.
-* `MEC_{MODEL}_GSUA.RUN_SIM()` functions run the selected model version through each set of parameters from `GSUA_parameters.txt`
-  * saves compiled results for each model to `*/GSUA_{MODEL}_out/data/GSUA_{MODE}L_Simulation.csv`
-* `MEC_{MODEL}_GSUA.RUN_CHART()` charts model outputs using output file from `*/GSUA_{MODEL}_out/data`
-  * generates and saves charts for each model individual model output to `*/GSUA_{MODEL}_out/figures`
-* `MEC_{MODEL}_GSUA.RUN_FULL()` runs both the simulation and charting functions
+
+## Run 'GSUA script.py'
+* begins with clearing the output directories to avoid appending on previous files.
+* Calls 'naming_function.py' to generate any model, inputs, outputs, and the problem statement needed.
+* Generate the input samples with 'SOBOL_ANALYSIS.SAMPLE()'
+  * generates the 896 (equation to describe how that is derived needed) samples used to run the models
+  * saves to the file `SOBOL_parameters.txt`
+* Read in 'SOBOL_parameters.txt'
+* Enters if statements that match which model to run `MEC_{MODEL}_GSUA.RUN_SIM()` matching the simulation structure input for each row of 'SOBOL_parameters.txt'
+  * Saves texts files of each individual model to 'GSUA/GSUA_{MODEL}_out/data/GSUA_{MODEL}_data_{OUTPUT}.txt'
+  * saves a csv of all outputs/inputs of a single model structure to 'GSUA/GSUA_{MODEL}_out/data/GSUA_{MODEL}_Simulation.csv'
 
 ## Analyze the models
 * `GSUA_visulization.GSUA_CHARTS()`
