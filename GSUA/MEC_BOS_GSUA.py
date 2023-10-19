@@ -23,7 +23,7 @@ outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
 
-def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):     # used to package this version of the MEC as a function callable by other programs
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
     # start=datetime.now()
     # print("Begining Boscheri Simulations")
     ##########################################################
@@ -331,6 +331,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):   
             'RH': [RH],
             'CO2': [CO2],
             'PPFD': [PPFD],
+            'SIM_STRU': [SIM_STRU],
             }) # creates a dataframe of all variables/outputs for each timestep. 
         df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
         df_day_avg = df_records.groupby(['Day']).mean()

@@ -22,6 +22,7 @@ def empty__output_dirs():
         # EE_multi_path = f'{path}/figures/Elementary_Effects'
         # hist_path = f'{path}/figures/histogram'
         # scatter_path = f'{path}/figures/scatter'
+        # one specific to the constant outputs file!
 
 
         for filename in os.listdir(data_path): # this loop removes the data files

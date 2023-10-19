@@ -48,7 +48,7 @@ if __name__ == '__main__':
 #     # sim_start=datetime.now()
 #     print("Generating the samples")
 
-#     SOBOL_ANALYSIS.SAMPLE()
+    # SOBOL_ANALYSIS.SAMPLE()
 
 #     print('sobol sampling completed, proceeding to the simulations')
 
@@ -79,30 +79,23 @@ if __name__ == '__main__':
         # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
         SIM_LENGTH = 30
 
-        # if SIM_NUM % 100 == 0:
-        #     print(f"{SIM_NUM}")
-        # if SIM_STRU == 1:
-        #     ami_count += 1
-        #     MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Amitrano Model
-        # elif SIM_STRU == 2:
-        #     bos_count += 1
-        #     MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Boscheri Model
-        # else:
-        #     cav_count += 1
-        #     MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH)      # Runs just the simulations for the Cavazzoni Model
-    # print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
+        if SIM_NUM % 100 == 0:
+            print(f"{SIM_NUM}")
+        if SIM_STRU == 1:
+            ami_count += 1
+            MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Amitrano Model
+        elif SIM_STRU == 2:
+            bos_count += 1
+            MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Boscheri Model
+        else:
+            cav_count += 1
+            MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Cavazzoni Model
+    print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
     
     # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
     # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
-    MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
-
-    duration = 1000  # milliseconds
-    freq = 440  # Hz
-    winsound.Beep(freq, duration)
-
-    # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
-    # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
     # MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
+
 
     # sim_time = datetime.now()-sim_start
     # print(f"All three models have run. It took {sim_time}")
@@ -114,9 +107,11 @@ if __name__ == '__main__':
 #     analysis_start=datetime.now()
 
     # SOBOL_ANALYSIS.ANALYZE()
-    # EE.ANALYZE()
+    # # EE.ANALYZE()
 
-# ################################# Morris Elementary Effects Anlaysis ##################################
+    duration = 1000  # milliseconds
+    freq = 440  # Hz
+    winsound.Beep(freq, duration)
 
 
 #     analysis_time = datetime.now()-analysis_start

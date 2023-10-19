@@ -30,105 +30,105 @@ sobol_tests = [
          ["S2", "2nd Order"]
          ]
 
-def SAMPLE():
-    param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
+# def SAMPLE():
+#     param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
 
-    for i, X in enumerate(sp.samples):
-        X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
-    #     # this saves each of the sample parameters.
-    #     # Columns are Temp, Humidity, CO2, PPFD, H
-        np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt", sp.samples)
-        SIM_TEMP = X[0]
-        SIM_RH   = X[1]
-        SIM_CO2  = X[2]
-        SIM_PPFD = X[3]
-        SIM_H    = X[4]
-        SIM_STRU = X[5]
-        SIM_NUM = i
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    SAMPLE()
-
-# def ANALYZE():
-#     # Create dataframes for each models GSUA runs
-#     df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-#     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-#     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
-
-#     sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
-#     sobol_ST_out_df.set_index('Index')
-#     sobol_S1_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
-#     sobol_S1_out_df.set_index('Index')
-#     sobol_S2_out_df = pd.DataFrame({'Index': ['TEMPxTEMP', 'TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
-#                                               'RHxTEMP', 'RHxRH', 'RHxCO2', 'RHxPPFD', 'RHxH',
-#                                               'CO2xTEMP', 'CO2xRH', 'CO2xCO2', 'CO2xPPFD', 'CO2xH',
-#                                               'PPFDxTEMP', 'PPFDxRH', 'PPFDxCO2', 'PPFDxPPFD', 'PPFDxH',
-#                                               'HxTEMP', 'HxRH', 'HxCO2', 'HxPPFD', 'HxH']})
-#     sobol_S2_out_df.set_index('Index')
-
-
-#     for item in models:                 # loop for model names
-#         model_short_name = item[0]
-#         model_long_name = item[1]
-#         for item in outputs:        # loop for output names
-#             output_short_name = item[0]
-#             output_long_name = item[1]
-#             output_unit = item[2]
-#             # Loading specific outputs for GSUA analysis 
-#             Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-#             # print(Y)
-#             sp.set_results(Y)
-#             # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
-#             # there are ignore warning statements up at the top because I took out this section.
-#             # this file may not truly overwrite itself completely, delete to be sure. I can't figure out why or how to avoid that
-#             # with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
-#             #     if Y[0] == Y[20]: # identifying constant outputs
-#             #         # if identified here it does not mean that they are constant throughout the simulation
-#             #         # just that the final value is constant such as CUE_24 which hits a max  
-#             #         f.write(f'{model_short_name} {output_short_name} \n')    # writing them to a text file
-#             #         continue
-#             # f.close()
-
-#     ##################################### Sobol Analysis ###############################################
-#             sp.analyze_sobol()
-
-#             # this saving the results part is still pretty garbage, 
-#             # diverted them to a special folder just in case though. 
-#             with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
-#                 results_df = sp.to_df()
-#                 f.write(str(results_df))
-#             f.close
-
-
-#             # First Order Analysis
-#             S1_output_key = f'{model_short_name}_{output_short_name}_S1'
-#             S1_CONF_output_key = f'{model_short_name}_{output_short_name}_S1_conf'
-#             sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
-#             sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
-
-#             # Second Order Analysis
-#             S2_output_key = f'{model_short_name}_{output_short_name}_S2'
-#             S2_CONF_output_key = f'{model_short_name}_{output_short_name}_S2_conf'
-#             sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
-#             sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
-
-
-#             # Total Order Analysis
-#             ST_output_key = f'{model_short_name}_{output_short_name}_ST'
-#             ST_CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
-#             sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
-#             sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
-
-
-#     # # Saving all of these to CSV's
-#     sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+#     for i, X in enumerate(sp.samples):
+#         X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+#     #     # this saves each of the sample parameters.
+#     #     # Columns are Temp, Humidity, CO2, PPFD, H
+#         np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt", sp.samples)
+#         SIM_TEMP = X[0]
+#         SIM_RH   = X[1]
+#         SIM_CO2  = X[2]
+#         SIM_PPFD = X[3]
+#         SIM_H    = X[4]
+#         SIM_STRU = X[5]
+#         SIM_NUM = i
 
 # # Executes this program/function
 # if __name__ ==('__main__'):
-#     ANALYZE()
+#     SAMPLE()
+
+def ANALYZE():
+    # Create dataframes for each models GSUA runs
+    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+
+    sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
+    sobol_ST_out_df.set_index('Index')
+    sobol_S1_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
+    sobol_S1_out_df.set_index('Index')
+    sobol_S2_out_df = pd.DataFrame({'Index': ['TEMPxTEMP', 'TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+                                              'RHxTEMP', 'RHxRH', 'RHxCO2', 'RHxPPFD', 'RHxH',
+                                              'CO2xTEMP', 'CO2xRH', 'CO2xCO2', 'CO2xPPFD', 'CO2xH',
+                                              'PPFDxTEMP', 'PPFDxRH', 'PPFDxCO2', 'PPFDxPPFD', 'PPFDxH',
+                                              'HxTEMP', 'HxRH', 'HxCO2', 'HxPPFD', 'HxH']})
+    sobol_S2_out_df.set_index('Index')
+
+
+    for item in models:                 # loop for model names
+        model_short_name = item[0]
+        model_long_name = item[1]
+        for item in outputs:        # loop for output names
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            # Loading specific outputs for GSUA analysis 
+            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+            print(model_short_name, output_short_name, Y)
+            sp.set_results(Y)
+            # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
+            # there are ignore warning statements up at the top because I took out this section.
+            # this file may not truly overwrite itself completely, delete to be sure. I can't figure out why or how to avoid that
+            with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
+                if Y[0] == Y[20]: # identifying constant outputs
+                    # if identified here it does not mean that they are constant throughout the simulation
+                    # just that the final value is constant such as CUE_24 which hits a max  
+                    f.write(f'{model_short_name} {output_short_name} \n')    # writing them to a text file
+                    continue
+            f.close()
+
+    ##################################### Sobol Analysis ###############################################
+            sp.analyze_sobol()
+
+            # this saving the results part is still pretty garbage, 
+            # diverted them to a special folder just in case though. 
+            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/sobol/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
+                results_df = sp.to_df()
+                f.write(str(results_df))
+            f.close
+
+
+            # First Order Analysis
+            S1_output_key = f'{model_short_name}_{output_short_name}_S1'
+            S1_CONF_output_key = f'{model_short_name}_{output_short_name}_S1_conf'
+            sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
+            sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
+
+            # Second Order Analysis
+            S2_output_key = f'{model_short_name}_{output_short_name}_S2'
+            S2_CONF_output_key = f'{model_short_name}_{output_short_name}_S2_conf'
+            sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
+            sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
+
+
+            # Total Order Analysis
+            ST_output_key = f'{model_short_name}_{output_short_name}_ST'
+            ST_CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
+            sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
+            sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
+
+
+    # # Saving all of these to CSV's
+    sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
+    sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
+    sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    ANALYZE()
 
 # def CHART():
 

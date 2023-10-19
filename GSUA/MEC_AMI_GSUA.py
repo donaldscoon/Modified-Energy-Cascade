@@ -38,7 +38,7 @@ bmin_GON = 0.0486455477321762    # amitrano 2020 calibrated with growth chamber 
 bmax_GN = 0.0451765692503675     # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 bmax_GON = 0.0564626043274799    # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 
-def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):     # used to package this version of the MEC as a function callable by other programs
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
 
     # start=datetime.now()
     # print("Begining Amitrano Simulations")
@@ -153,6 +153,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):   
             'RH': [RH],
             'CO2': [CO2],
             'PPFD': [PPFD],
+            'STRU': [SIM_STRU],
         }) # creates a dataframe of all variables/outputs for each timestep. 
         df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
         t += res                          # advance timestep
@@ -162,7 +163,8 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH):   
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
         with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
-    
+    AMI_OUT = df_sims.iloc[-1]
+
 # print("Amitrano Simulations Complete")
 # time = datetime.now()-start
 # print(f"Simulations took {time}")
