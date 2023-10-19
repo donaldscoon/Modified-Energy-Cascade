@@ -327,14 +327,14 @@ if __name__ ==('__main__'):
 def RUN_CHART(models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['skip','Timestep', 'H','A','ALPHA','BETA','CQY','CUE_24',
-                     'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+    df_sims_label = ['Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                     'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
                      'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD']
 
     start=datetime.now()
     print("Begining Cavazzoni Visulizations")
 
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_sims_label)
 
     for item in mec_inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
@@ -346,7 +346,7 @@ def RUN_CHART(models, inputs, outputs):
             output_unit = item[2]
 
             """This chart bulding stuff works!"""
-            VIS_GSUA = df_CAV_sims[['Simulation', output_short_name, input_short_name]]
+            VIS_GSUA = df_CAV_sims[[output_short_name, input_short_name]]
             VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
             x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
             y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline

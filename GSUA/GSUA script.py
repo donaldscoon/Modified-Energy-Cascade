@@ -93,8 +93,8 @@ if __name__ == '__main__':
     # print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
     
     # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
-    MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
-    # MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
+    # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
+    MEC_CAV_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
 
     duration = 1000  # milliseconds
     freq = 440  # Hz
