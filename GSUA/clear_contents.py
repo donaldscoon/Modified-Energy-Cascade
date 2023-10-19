@@ -16,6 +16,13 @@ def empty__output_dirs():
         fig_path = f'{path}/GSUA_{model_short_name}_out/figures'
         EE_path =  f'{path}/GSUA_{model_short_name}_out/figures/EE'
         sobol_path =  f'{path}/GSUA_{model_short_name}_out/figures/sobol'
+        
+        ### These still need to be added
+        # # sobol_multi_path = f'{path}/figures'
+        # EE_multi_path = f'{path}/figures/Elementary_Effects'
+        # hist_path = f'{path}/figures/histogram'
+        # scatter_path = f'{path}/figures/scatter'
+
 
         for filename in os.listdir(data_path): # this loop removes the data files
             file_path = os.path.join(data_path, filename)  
