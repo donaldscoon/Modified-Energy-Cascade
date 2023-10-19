@@ -363,12 +363,12 @@ if __name__ ==('__main__'):
 def RUN_CHART(models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['Timestep','H','A','ALPHA','BETA','CQY',
+    df_sims_label = ['Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
                      'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
                      'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
                      'DOP','DOC','g_S','g_A','g_C','DTR',
                      'DCO2C','DCO2P','DNC', 'DWC','T_LIGHT',
-                     'T_DARK','RH','CO2','PPFD']
+                     'T_DARK','RH','CO2','PPFD', 'SIM_STRU']
 
 
 

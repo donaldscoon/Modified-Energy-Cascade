@@ -30,25 +30,25 @@ sobol_tests = [
          ["S2", "2nd Order"]
          ]
 
-# def SAMPLE():
-#     param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
+def SAMPLE():
+    param_values = sp.sample_sobol(2**6, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
 
-#     for i, X in enumerate(sp.samples):
-#         X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
-#     #     # this saves each of the sample parameters.
-#     #     # Columns are Temp, Humidity, CO2, PPFD, H
-#         np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt", sp.samples)
-#         SIM_TEMP = X[0]
-#         SIM_RH   = X[1]
-#         SIM_CO2  = X[2]
-#         SIM_PPFD = X[3]
-#         SIM_H    = X[4]
-#         SIM_STRU = X[5]
-#         SIM_NUM = i
+    for i, X in enumerate(sp.samples):
+        X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+    #     # this saves each of the sample parameters.
+    #     # Columns are Temp, Humidity, CO2, PPFD, H
+        np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt", sp.samples)
+        SIM_TEMP = X[0]
+        SIM_RH   = X[1]
+        SIM_CO2  = X[2]
+        SIM_PPFD = X[3]
+        SIM_H    = X[4]
+        SIM_STRU = X[5]
+        SIM_NUM = i
 
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     SAMPLE()
+# Executes this program/function
+if __name__ ==('__main__'):
+    SAMPLE()
 
 def ANALYZE():
     # Create dataframes for each models GSUA runs

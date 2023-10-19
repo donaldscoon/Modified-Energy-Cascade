@@ -330,7 +330,7 @@ def RUN_CHART(models, inputs, outputs):
     outputs = outputs
     df_sims_label = ['Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
                      'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD']
+                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
 
     start=datetime.now()
     print("Begining Cavazzoni Visulizations")

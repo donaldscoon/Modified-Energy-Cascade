@@ -68,29 +68,49 @@ if __name__ == '__main__':
             row from the sampled parameters for each simulation iteration.
         """
 
-        # Columns are Temp, Humidity, CO2, PPFD, H, Model Structure
-        SIM_TEMP = X[0]
-        SIM_RH   = X[1]
-        SIM_CO2  = X[2]
-        SIM_PPFD = X[3]
-        SIM_H    = X[4]
-        SIM_STRU = X[5]
-        SIM_NUM = i
-        # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
-        SIM_LENGTH = 30
+        # # Columns are Temp, Humidity, CO2, PPFD, H, Model Structure
+        # SIM_TEMP = X[0]
+        # SIM_RH   = X[1]
+        # SIM_CO2  = X[2]
+        # SIM_PPFD = X[3]
+        # SIM_H    = X[4]
+        # SIM_STRU = X[5]
+        # SIM_NUM = i
+        # # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H, SIM_STRU)
+        # SIM_LENGTH = 30
 
-        if SIM_NUM % 100 == 0:
-            print(f"{SIM_NUM}")
-        if SIM_STRU == 1:
-            ami_count += 1
-            MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Amitrano Model
-        elif SIM_STRU == 2:
-            bos_count += 1
-            MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Boscheri Model
-        else:
-            cav_count += 1
-            MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Cavazzoni Model
-    print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
+        # if SIM_NUM % 100 == 0:
+        #     print(f"{SIM_NUM}")
+        # if SIM_STRU == 1:
+        #     ami_count += 1
+        #     MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Amitrano Model
+        # elif SIM_STRU == 2:
+        #     bos_count += 1
+        #     MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Boscheri Model
+        # else:
+        #     cav_count += 1
+        #     MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU)      # Runs just the simulations for the Cavazzoni Model
+    # print(f'AMI={ami_count} BOS={bos_count} CAV={cav_count}')
+    
+    # Combining all the seperate datafiles into one for the anaylsis portion
+    AMI_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv")
+    AMI_df_label = ['Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                     'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+    AMI_df.columns = AMI_df_label
+    BOS_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv")
+    BOS_df_label = ['Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+                     'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
+                     'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
+                     'DOP','DOC','g_S','g_A','g_C','DTR',
+                     'DCO2C','DCO2P','DNC', 'DWC','T_LIGHT',
+                     'T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+    BOS_df.columns = BOS_df_label
+    CAV_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv")
+    CAV_df_label = ['Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                     'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+    CAV_df.columns = CAV_df_label
     
     # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
     # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model

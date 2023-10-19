@@ -163,7 +163,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
         with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
-    AMI_OUT = df_sims.iloc[-1]
+
 
 # print("Amitrano Simulations Complete")
 # time = datetime.now()-start
@@ -181,9 +181,9 @@ if __name__ ==('__main__'):
 def RUN_CHART(models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['skip','Timestep', 'H','A','ALPHA','BETA','CQY','CUE_24',
+    df_sims_label = ['Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
                      'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD']
+                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
 
     start=datetime.now()
     print("Begining Amitrano Visulizations")
