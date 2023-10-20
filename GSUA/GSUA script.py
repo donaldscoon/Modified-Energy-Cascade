@@ -111,6 +111,11 @@ if __name__ == '__main__':
                      'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
                      'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
     CAV_df.columns = CAV_df_label
+
+    GSUA_df = pd.concat([AMI_df, BOS_df, CAV_df])
+    clear_contents.clear_GSUA_sim_csv()
+    GSUA_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv', mode='a', index=False, header=True)
+    print(GSUA_df)
     
     # MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
     # MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
