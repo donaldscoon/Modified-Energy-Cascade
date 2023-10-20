@@ -72,7 +72,7 @@ def ANALYZE():
         output_long_name = item[1]
         output_unit = item[2]
         # Loading specific outputs for GSUA analysis 
-        Y = df_sims[f'{output_short_name}']
+        Y = df_sims[f'{output_short_name}'].to_numpy()
         sp.set_results(Y)
         # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
         # there are ignore warning statements up at the top because I took out this section.
@@ -81,9 +81,10 @@ def ANALYZE():
             if Y[0] == Y[20]: # identifying constant outputs
                 # if identified here it does not mean that they are constant throughout the simulation
                 # just that the final value is constant such as CUE_24 which hits a max  
-                f.write(f'{model_short_name} {output_short_name} \n')    # writing them to a text file
+                f.write(f'{output_short_name} \n')    # writing them to a text file
                 continue
         f.close()
+
 
 ##################################### Sobol Analysis ###############################################
         sp.analyze_sobol()
