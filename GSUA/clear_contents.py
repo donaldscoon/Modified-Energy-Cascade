@@ -70,3 +70,12 @@ def clear_GSUA_sim_csv():
 # Executes this program/function
 if __name__ ==('__main__'):
     clear_GSUA_sim_csv
+
+def clear_const_out():
+    if os.path.exists('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt'):
+        os.remove('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt')
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    clear_const_out
+

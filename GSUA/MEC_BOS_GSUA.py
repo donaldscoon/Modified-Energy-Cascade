@@ -297,6 +297,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
         HWC = HTR+HOP+HCO2P+HWCGR-HOC-HCO2C-HNC # boscheri eq 16
         dfts = pd.DataFrame({
+            'SIM_NUM': [SIM_NUM],
             'Timestep': [t],
             'H': [H],
             'Day': [day],
@@ -363,7 +364,7 @@ if __name__ ==('__main__'):
 def RUN_CHART(models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+    df_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
                      'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
                      'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
                      'DOP','DOC','g_S','g_A','g_C','DTR',

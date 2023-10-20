@@ -276,6 +276,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         g_C = (g_A*g_S)/(g_A+g_S)                               # canopy conductance ewert 4-26
         DTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM)
         dfts = pd.DataFrame({
+            'SIM_NUM': [SIM_NUM],
             'Timestep': [t],
             'H': [H],
             'A': [A],
@@ -328,7 +329,7 @@ if __name__ ==('__main__'):
 def RUN_CHART(models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+    df_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
                      'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
                      'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
 
