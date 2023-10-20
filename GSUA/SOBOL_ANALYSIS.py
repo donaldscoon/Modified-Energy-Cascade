@@ -77,13 +77,13 @@ def ANALYZE():
         # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
         # there are ignore warning statements up at the top because I took out this section.
         # this file may not truly overwrite itself completely, delete to be sure. I can't figure out why or how to avoid that
-        with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
-            if Y[0] == Y[20]: # identifying constant outputs
-                # if identified here it does not mean that they are constant throughout the simulation
-                # just that the final value is constant such as CUE_24 which hits a max  
-                f.write(f'{output_short_name} \n')    # writing them to a text file
-                continue
-        f.close()
+        # with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
+        #     if Y[0] == Y[20]: # identifying constant outputs
+        #         # if identified here it does not mean that they are constant throughout the simulation
+        #         # just that the final value is constant such as CUE_24 which hits a max  
+        #         f.write(f'{output_short_name} \n')    # writing them to a text file
+        #         continue
+        # f.close()
 
 
 ##################################### Sobol Analysis ###############################################
@@ -117,103 +117,178 @@ def ANALYZE():
 if __name__ ==('__main__'):
     ANALYZE()
 
-# def CHART():
+def CHART():
 
-    # ami_c = '#2A119B'
-    # bos_c = '#067300'
-    # cav_c = '#8C0004'
+    S1_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv')    
+    S2_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv')    
+    ST_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv')    
 
-    # S1_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S1_out.csv')    
-    # S2_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_S2_out.csv')    
-    # ST_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/sobol_ST_out.csv')    
-
-    # S1_ST_DF = pd.concat([S1_df, ST_df], axis=1) #combining the S1 and S2 dataframes for better looping
-
-    # # this creates a dataframe of S2 results that exlcudes all the NaN output rows
-    # index_list = [1,2,3,4,7,8,9,13,14,19]
-    # S2_small_df = S2_df.loc[S2_df.index[index_list]]
-    # # print(S2_small_df)
+    S1_ST_DF = pd.concat([S1_df, ST_df], axis=1) #combining the S1 and S2 dataframes for better looping
     
-#     ''' ##########################################################
-#     SINGLE MODEL SOBOL OUTPUTS 
-#     ###########################################################'''
-#     for item in models:                 # loop for model names
-#         model_short_name = item[0]
-#         model_long_name = item[1]
-#         for item in mec_outputs:   # loop for outputs
-#             output_short_name = item[0]
-#             output_long_name = item[1]
-#             output_unit = item[2]
-#             for item in sobol_tests:
-#                 sobol_short_name = item [0]
-#                 sobol_long_name = item [1]
-#                 # sets the color of each model for that loop.
-#                 if model_short_name == 'AMI':
-#                     color = ami_c
-#                 elif model_short_name == 'BOS':
-#                     color = bos_c
-#                 elif model_short_name == 'CAV':
-#                     color = cav_c
-#                 print(model_short_name, output_short_name)
-#                 # # this if/else statment sets up loop for S1 and ST to share code
-#                 if sobol_short_name == 'S2':
-#                     # Check if the column contains all NaN values
-#                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
-#                     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
-#                     # Check for discrepancies and update values (ALL of this because for some reason AMI_ALPHA_S2 is zeros and the confidences are NaN \_O.o_/ )
-#                     mask1 = S2_small_df[f'{column_name}'].isna() & ~S2_small_df[f'{confidence}'].isna()
-#                     mask2 = ~S2_small_df[f'{column_name}'].isna() & S2_small_df[f'{confidence}'].isna()
+    # this creates a dataframe of S2 results that exlcudes all the NaN output rows
+    index_list = [1,2,3,4,5,8,9,10,11,15,16,17,22,23,29,]
+    S2_small_df = S2_df.loc[S2_df.index[index_list]]
 
-#                     # Set NaN values in 'column1' where 'column2' has NaN
-#                     S2_small_df.loc[mask2, f'{column_name}'] = np.nan
-
-#                     # Set NaN values in 'column2' where 'column1' has NaN
-#                     S2_small_df.loc[mask1, f'{confidence}'] = np.nan
-                    
-#                     if not S2_small_df[column_name].isna().all():
-#                         fig, ax = plt.subplots()
-                        
-#                         X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-#                         Y = S2_small_df[column_name]
-#                         ciY = S2_small_df[confidence]
     
-#                         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color=color)
-
-#                         ax.scatter(X, Y)
-#                         plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'RHxCO2',
-#                                                                         'RHxPPFD', 'RHxH', 'CO2xPPFD', 'CO2xH', 'PPFDxH'), rotation = 90)
-#                         plt.ylabel('What is this axis anyways?')
-#                         plt.xlabel('Equation Inputs')
-#                         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
-#                         # plt.show()
-#                         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#                         plt.close()
-#                 else:     # S1 and ST charting
-#                     # Check if the column contains all NaN values
-#                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
-#                     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
-#                     if not S1_ST_DF[column_name].isna().all():
-#                         fig, ax = plt.subplots()
-                        
-#                         X = [1, 2, 3, 4, 5]
-#                         Y = S1_ST_DF[column_name]
-#                         ciY = S1_ST_DF[confidence]
-#                         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
-
-#                         ax.scatter(X, Y)
-#                         plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
-#                         plt.ylabel('What is this axis anyways?')
-#                         plt.xlabel('Equation Inputs')
-#                         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
-#                         # plt.show()
-#                         # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#                         # plt.close()
-
-
-
     ''' ##########################################################
-    MULTIMODEL SOBOL OUTPUTS 
-    ##########################################################'''
+    SINGLE MODEL SOBOL OUTPUTS 
+    ###########################################################'''
+    for item in outputs:   # loop for outputs
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
+        for item in sobol_tests:
+            sobol_short_name = item [0]
+            sobol_long_name = item [1]
+
+            print(sobol_short_name, output_short_name)
+            # # this if/else statment sets up loop for S1 and ST to share code
+            if sobol_short_name == 'S2':
+                # Check if the column contains all NaN values
+                column_name = f'{output_short_name}_{sobol_short_name}'
+                confidence = f'{output_short_name}_{sobol_short_name}_conf'
+
+                # Check for discrepancies and update values (ALL of this because for some reason AMI_ALPHA_S2 is zeros and the confidences are NaN \_O.o_/ )
+                mask1 = S2_small_df[f'{column_name}'].isna() & ~S2_small_df[f'{confidence}'].isna()
+                mask2 = ~S2_small_df[f'{column_name}'].isna() & S2_small_df[f'{confidence}'].isna()
+
+                # Set NaN values in 'column1' where 'column2' has NaN
+                S2_small_df.loc[mask2, f'{column_name}'] = np.nan
+
+                # Set NaN values in 'column2' where 'column1' has NaN
+                S2_small_df.loc[mask1, f'{confidence}'] = np.nan
+                
+                if not S2_small_df[column_name].isna().all():
+                    fig, ax = plt.subplots()
+                    
+                    X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+                    Y = S2_small_df[column_name]
+                    ciY = S2_small_df[confidence]
+
+                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color='black')
+
+                    ax.scatter(X, Y)
+                    plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
+                               ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'TEMPxSTRU', 
+                                'RHxCO2', 'RHxPPFD', 'RHxH', 'RHxSTRU', 'CO2xPPFD', 'CO2xH', 
+                                'CO2xSTRU', 'PPFDxH', 'PPFDxSTRU','HxSTRU'), rotation = 45)
+                    plt.ylabel('Percent of Output Explained')
+                    plt.xlabel('Equation Inputs')
+                    plt.title(f'{sobol_long_name} Results of {output_short_name}')
+                    # plt.show()
+                    plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                    plt.close()
+            else:     # S1 and ST charting
+                # Check if the column contains all NaN values
+                column_name = f'{output_short_name}_{sobol_short_name}'
+                confidence = f'{output_short_name}_{sobol_short_name}_conf'
+                if not S1_ST_DF[column_name].isna().all():
+                    fig, ax = plt.subplots()
+                    
+                    X = [1, 2, 3, 4, 5, 6]
+                    Y = S1_ST_DF[column_name]
+                    ciY = S1_ST_DF[confidence]
+                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color='black')
+
+                    ax.scatter(X, Y)
+                    plt.xticks((1, 2, 3, 4, 5, 6), ('TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'))
+                    plt.ylabel('Percent of Output Explained')
+                    plt.xlabel('Equation Input Interactions')
+                    plt.title(f'{sobol_long_name} Results of {output_short_name}')
+                    # plt.show()
+                    plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                    plt.close()
+
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+    # ###########################################################'''
+
+    
+    # ''' ##########################################################
+    # SINGLE MODEL SOBOL OUTPUTS 
+    # ###########################################################'''
+    # for item in models:                 # loop for model names
+    #     model_short_name = item[0]
+    #     model_long_name = item[1]
+    #     for item in mec_outputs:   # loop for outputs
+    #         output_short_name = item[0]
+    #         output_long_name = item[1]
+    #         output_unit = item[2]
+    #         for item in sobol_tests:
+    #             sobol_short_name = item [0]
+    #             sobol_long_name = item [1]
+    #             # sets the color of each model for that loop.
+    #             if model_short_name == 'AMI':
+    #                 color = ami_c
+    #             elif model_short_name == 'BOS':
+    #                 color = bos_c
+    #             elif model_short_name == 'CAV':
+    #                 color = cav_c
+    #             print(model_short_name, output_short_name)
+    #             # # this if/else statment sets up loop for S1 and ST to share code
+    #             if sobol_short_name == 'S2':
+    #                 # Check if the column contains all NaN values
+    #                 column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
+    #                 confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
+    #                 # Check for discrepancies and update values (ALL of this because for some reason AMI_ALPHA_S2 is zeros and the confidences are NaN \_O.o_/ )
+    #                 mask1 = S2_small_df[f'{column_name}'].isna() & ~S2_small_df[f'{confidence}'].isna()
+    #                 mask2 = ~S2_small_df[f'{column_name}'].isna() & S2_small_df[f'{confidence}'].isna()
+
+    #                 # Set NaN values in 'column1' where 'column2' has NaN
+    #                 S2_small_df.loc[mask2, f'{column_name}'] = np.nan
+
+    #                 # Set NaN values in 'column2' where 'column1' has NaN
+    #                 S2_small_df.loc[mask1, f'{confidence}'] = np.nan
+                    
+    #                 if not S2_small_df[column_name].isna().all():
+    #                     fig, ax = plt.subplots()
+                        
+    #                     X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    #                     Y = S2_small_df[column_name]
+    #                     ciY = S2_small_df[confidence]
+    
+    #                     plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color=color)
+
+    #                     ax.scatter(X, Y)
+    #                     plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'RHxCO2',
+    #                                                                     'RHxPPFD', 'RHxH', 'CO2xPPFD', 'CO2xH', 'PPFDxH'), rotation = 90)
+    #                     plt.ylabel('What is this axis anyways?')
+    #                     plt.xlabel('Equation Inputs')
+    #                     plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
+    #                     # plt.show()
+    #                     plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+    #                     plt.close()
+    #             else:     # S1 and ST charting
+    #                 # Check if the column contains all NaN values
+    #                 column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
+    #                 confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
+    #                 if not S1_ST_DF[column_name].isna().all():
+    #                     fig, ax = plt.subplots()
+                        
+    #                     X = [1, 2, 3, 4, 5]
+    #                     Y = S1_ST_DF[column_name]
+    #                     ciY = S1_ST_DF[confidence]
+    #                     plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color)
+
+    #                     ax.scatter(X, Y)
+    #                     plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+    #                     plt.ylabel('What is this axis anyways?')
+    #                     plt.xlabel('Equation Inputs')
+    #                     plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
+    #                     # plt.show()
+    #                     # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+    #                     # plt.close()
+
+
+
+    # ''' ##########################################################
+    # MULTIMODEL SOBOL OUTPUTS 
+    # #########################################################'''
  
     # for item in sobol_tests:
     #     sobol_short_name = item [0]
@@ -357,6 +432,6 @@ if __name__ ==('__main__'):
     #                     # print(model_short_name, output_short_name, sobol_short_name)
 
 
-# if __name__==('__main__'):
-#     CHART()
+if __name__==('__main__'):
+    CHART()
 
