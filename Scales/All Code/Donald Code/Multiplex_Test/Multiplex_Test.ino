@@ -16,7 +16,8 @@ HX711 scale4;
 //////////////////////////////////////////////////////////////////////////////////////////
 int timer = 1000;                   // 1000 milliseconds
 int scale_pins[] = {7, 8, 9, 10};   // an array of pin numbers to which scales are attached
-int scale_num[] = {1,2,3,4};        // an array of scale numbers for looping
+// int scale_num[] = {1,2,3,4};
+const char* scale_num[] = {"scale1", "scale2", "scale3", "scale4"};
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -37,10 +38,17 @@ void setup() {
   scale3.set_scale(466.98718);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale4.set_scale(498.09172);//This value is obtained by using the SparkFun_HX711_Calibration sketch
 
+  // int i = 0;
+  // // this loop iterates throught the list of pins used to control the mosfets
+  // // It selects a pin, turn it on (LOW POWER), waits a second, tares the scale, 
+  // // shuts down, and waits a second before moving to the next pin/scale.
+  // while (i < sizeof(scale_pins) / sizeof(scale_pins[0])) { 
 
-  pinMode(7, OUTPUT);
-  digitalWrite(7, LOW);
+  //   pinMode(scale_pins[i], OUTPUT);
+  //   digitalWrite(scale_pins[i], LOW);
 
+  //   // Need to fix this!
+  //   i++;
   scale1.tare();
   scale2.tare();
   scale3.tare();
@@ -71,13 +79,19 @@ void loop() {
 //////////////////////////////////////////////////////////////////////////////////////////
   // loop from the lowest pin to the highest:
   int i = 0;
-  // for (int thisPin = 0; thisPin < pinCount; thisPin++) {
-  // for (int i = 0; i < sizeof(scale_pins) / sizeof(scale_pins); i++){
-  while (i < sizeof(scale_pins) / sizeof(scale_pins[0])) {
+  // this loop iterates throught the list of pins used to control the mosfets
+  // It selects a pin, turn it on (LOW POWER), waits a second, takes a reading, 
+  // shuts down, and waits a second before moving to the next pin/scale.
+  while (i < sizeof(scale_pins) / sizeof(scale_pins[0])) { 
+    // Pin Identification Debugger
     Serial.print("The Pin is ");
     Serial.print(scale_pins[i]);
     Serial.print(";");
-    i++;
+    
+    // Scale Identification Debugger
+    Serial.print("The Scale is ");
+    Serial.print(scale_num[i]);
+    Serial.print(";");
 
     // Serial.print("Turning on pin ");
     // Serial.print(scale_pins[i]);
@@ -97,6 +111,7 @@ void loop() {
 
     // digitalWrite(scale_pins[i], HIGH);
     // delay(timer);
+    i++;
 
   }
 //////////////////////////////////////////////////////////////////////////////////////////
