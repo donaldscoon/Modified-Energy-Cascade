@@ -16,8 +16,7 @@ HX711 scale4;
 //////////////////////////////////////////////////////////////////////////////////////////
 int timer = 1000;                   // 1000 milliseconds
 int scale_pins[] = {7, 8, 9, 10};   // an array of pin numbers to which scales are attached
-// int scale_num[] = {1,2,3,4};
-const char* scale_num[] = {"scale1", "scale2", "scale3", "scale4"};
+const char* scale_num[] = {"scale1", "scale2", "scale3", "scale4"};  // an array of scale names, which I can hopefully use?
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -47,7 +46,7 @@ void setup() {
   //   pinMode(scale_pins[i], OUTPUT);
   //   digitalWrite(scale_pins[i], LOW);
 
-  //   // Need to fix this!
+  //   // Need to fix this! SEE OPERA ARIA!!!
   //   i++;
   scale1.tare();
   scale2.tare();
@@ -102,8 +101,8 @@ void loop() {
     // delay(timer);
     
 
-    // Serial.print(scale3.get_units(3), 1); //scale.get_units() returns a float
-    // Serial.print(";");
+    Serial.print(scale3.get_units(3), 1); //scale.get_units() returns a float
+    Serial.print(";");
 
     // // close mosfet switch, turning scale off.
     // Serial.print("Turning off pin ");
