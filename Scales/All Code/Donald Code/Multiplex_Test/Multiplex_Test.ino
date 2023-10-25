@@ -14,24 +14,16 @@ HX711 scale3;
 HX711 scale4;
 
 //////////////////////////////////////////////////////////////////////////////////////////
-int timer = 1000;           // The higher the number, the slower the timing.
-int scale_pins[] = {7, 8, 9, 10};       // an array of pin numbers to which LEDs are attached
-int pinCount = 4;           // the number of pins (i.e. the length of the array)
+int timer = 1000;                   // 1000 milliseconds
+int scale_pins[] = {7, 8, 9, 10};   // an array of pin numbers to which scales are attached
+int scale_num[] = {1,2,3,4};        // an array of scale numbers for looping
+
 //////////////////////////////////////////////////////////////////////////////////////////
 
 const int timeZoneOffset = 4; // Replace with your time zone offset
 
 void setup() {
   Serial.begin(9600);
-  pinMode(7, OUTPUT);
-  digitalWrite(7, LOW);
-
-// // These turn on the pins, need to be automated
-//   pinMode(7, OUTPUT);     
-//   digitalWrite(7, HIGH);
-
-//   pinMode(8, OUTPUT);     
-//   digitalWrite(8, HIGH);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +36,10 @@ void setup() {
   scale2.set_scale(-493.1443);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale3.set_scale(466.98718);//This value is obtained by using the SparkFun_HX711_Calibration sketch
   scale4.set_scale(498.09172);//This value is obtained by using the SparkFun_HX711_Calibration sketch
+
+
+  pinMode(7, OUTPUT);
+  digitalWrite(7, LOW);
 
   scale1.tare();
   scale2.tare();
@@ -74,36 +70,43 @@ void loop() {
 
 //////////////////////////////////////////////////////////////////////////////////////////
   // loop from the lowest pin to the highest:
-
+  int i = 0;
   // for (int thisPin = 0; thisPin < pinCount; thisPin++) {
-  // for (int i = 0, i < sizeof(scale_pins) / sizeof(scale_pins): i++){
-  //   Serial.print("Turning on pin");
-  //   Serial.print(scale_pins[i]);
-  //   Serial.print(";");
+  // for (int i = 0; i < sizeof(scale_pins) / sizeof(scale_pins); i++){
+  while (i < sizeof(scale_pins) / sizeof(scale_pins[0])) {
+    Serial.print("The Pin is ");
+    Serial.print(scale_pins[i]);
+    Serial.print(";");
+    i++;
 
-  //   // open mosfet switch, turning scale on
-  //   digitalWrite(scale_pins[thisPin], LOW);
-  //   delay(timer)
+    // Serial.print("Turning on pin ");
+    // Serial.print(scale_pins[i]);
+    // Serial.print(";");
+
+    // // open mosfet switch, turning scale on
+    // digitalWrite(scale_pins[i], LOW);
+    // delay(timer);
     
 
-  //   Serial.print(scale1.get_units(3), 1); //scale.get_units() returns a float
-  //   Serial.print(";");
+    // Serial.print(scale3.get_units(3), 1); //scale.get_units() returns a float
+    // Serial.print(";");
 
-  //   // close mosfet switch, turning scale off.
-  //   Serial.print("Turning off pin");
-  //   Serial.print(thisPin);
-  //   digitalWrite(scale_pins[thisPin], HIGH);
-  //   delay(timer);
+    // // close mosfet switch, turning scale off.
+    // Serial.print("Turning off pin ");
+    // Serial.print(scale_pins[i]);
 
-  // }
+    // digitalWrite(scale_pins[i], HIGH);
+    // delay(timer);
+
+  }
 //////////////////////////////////////////////////////////////////////////////////////////
-  pinMode(7, OUTPUT);     
-  digitalWrite(7, LOW);
+  // pinMode(7, OUTPUT);     
+  // digitalWrite(7, LOW);
 
-  Serial.print(scale3.get_units(3), 1); //scale.get_units() returns a float
-  Serial.print(";");
+  // Serial.print(scale3.get_units(3), 1); //scale.get_units() returns a float
+  // Serial.print(";");
 
-  // Serial.print(scale2.get_units(3), 1); //scale.get_units() returns a float
+  // Serial.print(scale2.get_units(3), 1);
   // Serial.print(";");
 
   Serial.println(Runs);
