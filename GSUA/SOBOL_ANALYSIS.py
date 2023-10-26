@@ -51,7 +51,7 @@ sobol_tests = [
 #     SAMPLE()
 
 def ANALYZE():
-    # Create dataframes for each models GSUA runs
+    # Create dataframe
     df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
 
     sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
@@ -74,25 +74,9 @@ def ANALYZE():
         # Loading specific outputs for GSUA analysis 
         Y = df_sims[f'{output_short_name}'].to_numpy()
         sp.set_results(Y)
-        # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
-        # there are ignore warning statements up at the top because I took out this section.
-        # this file may not truly overwrite itself completely, delete to be sure. I can't figure out why or how to avoid that
-        # with open("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt", "a") as f:
-        #     if Y[0] == Y[20]: # identifying constant outputs
-        #         # if identified here it does not mean that they are constant throughout the simulation
-        #         # just that the final value is constant such as CUE_24 which hits a max  
-        #         f.write(f'{output_short_name} \n')    # writing them to a text file
-        #         continue
-        # f.close()
+
 ##################################### Sobol Analysis ###############################################
         sp.analyze_sobol()
-        s1 = sp.analysis['S1']
-        s2 = sp.analysis['S2']
-        sT = sp.analysis['ST']
-        print(f"Output: {output_short_name} S1 Result: {s1} Sum of S1 Effects: {sum(s1)}")
-        # print(f"Output: {output_short_name} S2 Result: {s2} Sum of S2 Effects: {sum(s2)}")
-        print(f"Output: {output_short_name} ST Result: {sT} Sum of ST Effects: {sum(sT)}")
-
 
         # First Order Analysis
         S1_output_key = f'{output_short_name}_S1'

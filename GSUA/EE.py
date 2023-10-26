@@ -20,7 +20,6 @@ warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
 sp = naming_function.prob_spec()
 
 ###########################################################
@@ -29,43 +28,39 @@ sp = naming_function.prob_spec()
 
 def ANALYZE():
 
-    # Create dataframes for each models GSUA runs
-    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+    # Create dataframe
+    df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
 
     N = 128 # number of unique levels resulting from the sobol sampling
     X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
 
-    EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
+    EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
     EE_out_df.set_index('Index')
 
-    for item in models:                 # loop for model names
-        model_short_name = item[0]
-        model_long_name = item[1]
-        for item in outputs:        # loop for output names
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
-            # Loading specific outputs for Morris EE analysis 
-            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
-            EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
-                results_df = EE.to_df()
-                f.write(str(results_df))
-            f.close
+    for item in outputs:        # loop for output names
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
+        # Loading specific outputs for Morris EE analysis 
+        Y = df_sims[f'{output_short_name}'].to_numpy()
+        EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-            # create a big ol honking dataframe
-            mu_output_key = f'{model_short_name}_{output_short_name}_mu'
-            mu_star_output_key = f'{model_short_name}_{output_short_name}_mu_star'
-            mu_star_conf_output_key = f'{model_short_name}_{output_short_name}__mu_star_conf'
-            sigma_output_key = f'{model_short_name}_{output_short_name}_sigma'
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/EE/{output_short_name}_EE_results.txt', 'w') as f:
+            results_df = EE.to_df()
+            f.write(str(results_df))
+        f.close
 
-            EE_out_df[mu_output_key] = EE['mu']
-            EE_out_df[mu_star_output_key] = EE['mu_star']
-            EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
-            EE_out_df[sigma_output_key] = EE['sigma']
+        # create a big ol honking dataframe
+        mu_output_key = f'{output_short_name}_mu'
+        mu_star_output_key = f'{output_short_name}_mu_star'
+        mu_star_conf_output_key = f'{output_short_name}__mu_star_conf'
+        sigma_output_key = f'{output_short_name}_sigma'
+
+        EE_out_df[mu_output_key] = EE['mu']
+        EE_out_df[mu_star_output_key] = EE['mu_star']
+        EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
+        EE_out_df[sigma_output_key] = EE['sigma']
     EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv', index=False)
 
 # Executes this program/function

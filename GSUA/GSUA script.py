@@ -18,6 +18,7 @@ from datetime import datetime
 import MEC_AMI_GSUA
 import MEC_BOS_GSUA
 import MEC_CAV_GSUA
+import EE
 import SOBOL_ANALYSIS
 import GSUA_visulization
 import naming_function
@@ -132,8 +133,8 @@ if __name__ == '__main__':
 #     print("Beginning Analysis of simulations")
 #     analysis_start=datetime.now()
 
-    SOBOL_ANALYSIS.ANALYZE()
-    # # EE.ANALYZE()
+    # SOBOL_ANALYSIS.ANALYZE()
+    EE.ANALYZE()
 
     duration = 1000  # milliseconds
     freq = 440  # Hz
