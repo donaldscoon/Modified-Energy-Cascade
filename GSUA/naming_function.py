@@ -50,12 +50,13 @@ if __name__ ==('__main__'):
 def mec_input_names():      # Iterates through the input names
     u = "\u00B5"        # unicode for the micro symbol
     mec_inputs = [
-                ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
-                ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
+                ["TEMP", "Light Cycle Temperature", "Degrees Celsius"],
+                # ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
                 ["RH", "Relative Humidity", "%"],
                 ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
                 ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
-                ["H", "Photoperiod", "hours day$^{-1}$"]
+                ["H", "Photoperiod", "hours day$^{-1}$"],
+                ["STRU", "Structure", ""]
     ]
     return mec_inputs
 
