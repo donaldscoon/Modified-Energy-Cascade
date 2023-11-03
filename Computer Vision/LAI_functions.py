@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+import os
 
 """This has slowly devolved into a heaping pile of working code...
     making this shorter is somewhat byeond me."""
@@ -48,10 +49,10 @@ def calculate_leaf_area(image):
     height = int(stacked_images.shape[0] * scale_percent / 100)
     stacked_images = cv2.resize(stacked_images, (width, height))
 
-    # Display all images in the same window
-    cv2.imshow('Images Comparison', stacked_images)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # # Display all images in the same window
+    # cv2.imshow('Images Comparison', stacked_images)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     total_area = 0
 
@@ -163,13 +164,36 @@ def remove_non_green_area(red_masked):
     image_with_filtered_contours = image.copy()
     non_green_masked = cv2.drawContours(image_with_filtered_contours, non_green_contours, -1, (0, 0, 0), thickness=cv2.FILLED)
 
-    return non_green_masked
+    return non_green_masked, contours
 
+def open_images(path):
+    folder_path = path
 
-if __name__ == "__main__":
+    # Ensure the folder path is valid
+    if os.path.exists(folder_path):
+        file_list = []
+        
+        for file in os.listdir(folder_path):
+            file_path = os.path.join(folder_path, file)
+            
+            # Check if it's a file (not a subdirectory)
+            if os.path.isfile(file_path):
+                file_list.append(file_path)
+        
+        # Now, file_list contains the paths to all files in the specified folder.
 
-    image_path = "Modified-Energy-Cascade\Computer Vision\Rex-Leaves.jpg"
-    red_masked = remove_red_area(image_path)
-    non_green_masked = remove_non_green_area(red_masked)
-    leaf_area = calculate_leaf_area(non_green_masked)
-    print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
+    else:
+        print(f"The folder path '{folder_path}' does not exist.")
+    
+    return file_list
+
+# if __name__ == "__main__":
+    # remove_non_green_area()
+    # remove_red_area()
+    # calculate_leaf_area()
+
+    # image_path = "Modified-Energy-Cascade\Computer Vision\Rex-Leaves.jpg"
+    # red_masked = remove_red_area(image_path)
+    # non_green_masked = remove_non_green_area(red_masked)
+    # leaf_area = calculate_leaf_area(non_green_masked)
+    # print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
