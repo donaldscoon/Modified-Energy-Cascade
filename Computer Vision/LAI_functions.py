@@ -177,7 +177,7 @@ def open_images(path):
     return file_list
 
 # if __name__ == "__main__":
-#     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/test_images/H5_T_Muir_1.21_03.30.22.JPG"
+#     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/Rex-Leaves.jpg"
 #     red_masked = remove_red_area(image_path)
 #     non_green_masked = remove_non_green_area(red_masked)
 #     leaf_area = calculate_leaf_area(non_green_masked)

@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import os
 import LAI_functions as LAI
+import LAI_canopy as LAI_c
 import re
 
 
@@ -22,14 +23,20 @@ pattern2 = re.compile(r'_T_')
 
 for image in file_list:
     if re.search(pattern1, image):
-        # Mask and filter the images
-        display = cv2.imread(image)
-        red_masked = LAI.remove_red_area(image)
-        non_green_masked = LAI.remove_non_green_area(red_masked)
-        leaf_area, image_with_contours = LAI.calculate_leaf_area(non_green_masked)
-        print(f"Total leaf area in {image}: {leaf_area} square pixels")
+        # # Mask and filter the images
+        # display = cv2.imread(image)
+        # red_masked = LAI.remove_red_area(image)
+        # non_green_masked = LAI.remove_non_green_area(red_masked)
+        # leaf_area, image_with_contours = LAI.calculate_leaf_area(non_green_masked)
+        # print(f"Total leaf area in {image}: {leaf_area} square pixels")
+        continue
     elif re.search(pattern2, image):
+        display = cv2.imread(image)
+        non_green_masked = LAI_c.canopy_remove_non_green_area(image)
+        leaf_area, image_with_contours = LAI_c.canopy_calculate_leaf_area(non_green_masked)
         print(f"Total canopy area in {image}: {leaf_area} square pixels")
+        plt.imshow(non_green_masked)
+        plt.show()
 
 #     # Stack the images horizontally
 #     stacked_images = np.hstack((display, image_with_contours))
