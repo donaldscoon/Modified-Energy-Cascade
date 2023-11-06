@@ -35,20 +35,6 @@ def canopy_calculate_leaf_area(image):
     image_with_contours = image.copy()
     cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
 
-    # Stack the original image, thresholded image, green mask, and canvas horizontally
-    stacked_images = np.hstack((image, image_with_contours))
-
-    # # Resize the stacked images to a smaller ratio
-    # scale_percent = 50  # Adjust this percentage as needed
-    # width = int(stacked_images.shape[1] * scale_percent / 100)
-    # height = int(stacked_images.shape[0] * scale_percent / 100)
-    # stacked_images = cv2.resize(stacked_images, (width, height))
-
-    # # Display all images in the same window
-    # cv2.imshow('Images Comparison', stacked_images)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
     leaf_area = 0
 
     for contour in contours:
@@ -57,28 +43,6 @@ def canopy_calculate_leaf_area(image):
         leaf_area += area
 
     return leaf_area, image_with_contours
-
-# def remove_red_area(image_path):
-#     # Read the image
-#     image = cv2.imread(image_path)
-
-#     # Convert the image to the HSV color space
-#     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-
-#     # Define your red hue range
-#     lower_red = np.array([0, 100, 100])  # Lower range of red hue
-#     upper_red = np.array([10, 255, 255])  # Upper range of red hue
-
-#     # Create a mask for the red color
-#     red_mask = cv2.inRange(hsv, lower_red, upper_red)
-
-#     # Invert the mask to keep non-red areas
-#     non_red_mask = cv2.bitwise_not(red_mask)
-
-#     # Bitwise-AND the original image with the non-red mask to remove red regions
-#     red_masked = cv2.bitwise_and(image, image, mask=non_red_mask)
-
-#     return red_masked
 
 def canopy_remove_non_green_area(image_path):
     #Read the image
@@ -120,26 +84,6 @@ def canopy_remove_non_green_area(image_path):
 
     return non_green_masked
 
-def canopy_open_images(path):
-    folder_path = path
-
-    # Ensure the folder path is valid
-    if os.path.exists(folder_path):
-        file_list = []
-        
-        for file in os.listdir(folder_path):
-            file_path = os.path.join(folder_path, file)
-            
-            # Check if it's a file (not a subdirectory)
-            if os.path.isfile(file_path):
-                file_list.append(file_path)
-        
-        # Now, file_list contains the paths to all files in the specified folder.
-
-    else:
-        print(f"The folder path '{folder_path}' does not exist.")
-    
-    return file_list
 
 if __name__ == "__main__":
     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/test_images/H5_T_Muir_1.21_03.30.22.JPG"

@@ -31,12 +31,24 @@ def calculate_leaf_area(image):
     # Find contours in the combined thresholded image
     contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    # Draw the contours on a copy of the original image
-    image_with_contours = image.copy()
-    cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
+    # Create a black canvas of the same size as the original image
+    black_canvas = np.zeros_like(image)
 
+    # Draw the detected contours (leaves) on the black canvas
+    cv2.drawContours(black_canvas, contours, -1, (255, 255, 255), thickness=cv2.FILLED)
+
+    # Use a bitwise AND operation to combine the black canvas with the original image
+    result_image = cv2.bitwise_and(image, black_canvas)
+    plt.imshow(result_image)
+    plt.show()
+
+    # # Draw the contours on a copy of the original image
+    # image_with_contours = image.copy()
+    # cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
+    # plt.imshow(image_with_contours)
+    # plt.show()
     # Stack the original image, thresholded image, green mask, and canvas horizontally
-    stacked_images = np.hstack((image, image_with_contours))
+    # stacked_images = np.hstack((image, image_with_contours))
 
     # # Resize the stacked images to a smaller ratio
     # scale_percent = 50  # Adjust this percentage as needed
@@ -56,7 +68,7 @@ def calculate_leaf_area(image):
         area = cv2.contourArea(contour)
         leaf_area += area
 
-    return leaf_area, image_with_contours
+    return leaf_area, result_image
 
 def remove_red_area(image_path):
     # Read the image
@@ -146,6 +158,10 @@ def remove_non_green_area(red_masked):
 
     # convert the non_green contours to an array
     non_green_contours = np.array(non_green_contours, dtype=object)
+    
+    # Create a black canvas of the same size as the original image
+    black_canvas = np.zeros_like(image)
+
 
     # Draw the remaining contours on the image
     image_with_filtered_contours = image.copy()
@@ -176,9 +192,9 @@ def open_images(path):
     
     return file_list
 
-# if __name__ == "__main__":
-#     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/Rex-Leaves.jpg"
-#     red_masked = remove_red_area(image_path)
-#     non_green_masked = remove_non_green_area(red_masked)
-#     leaf_area = calculate_leaf_area(non_green_masked)
-#     print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
+if __name__ == "__main__":
+    image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/Rex-Leaves.jpg"
+    red_masked = remove_red_area(image_path)
+    non_green_masked = remove_non_green_area(red_masked)
+    leaf_area, result_image = calculate_leaf_area(non_green_masked)
+    print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
