@@ -34,7 +34,6 @@ def canopy_calculate_leaf_area(image):
     # Draw the contours on a copy of the original image
     image_with_contours = image.copy()
     cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
-
     leaf_area = 0
 
     for contour in contours:
@@ -85,9 +84,9 @@ def canopy_remove_non_green_area(image_path):
     return non_green_masked
 
 
-if __name__ == "__main__":
-    image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/test_images/H5_T_Muir_1.21_03.30.22.JPG"
-    # red_masked = remove_red_area(image_path)
-    non_green_masked = remove_non_green_area(image_path)
-    leaf_area = calculate_leaf_area(non_green_masked)
-    print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
+# if __name__ == "__main__":
+#     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/test_images/H5_T_Muir_1.21_03.30.22.JPG"
+#     # red_masked = remove_red_area(image_path)
+#     non_green_masked = remove_non_green_area(image_path)
+#     leaf_area = calculate_leaf_area(non_green_masked)
+#     print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
