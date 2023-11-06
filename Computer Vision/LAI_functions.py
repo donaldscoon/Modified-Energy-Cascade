@@ -11,7 +11,7 @@ def calculate_leaf_area(image):
     # Create a new blank canvas for displaying images
     canvas = np.zeros_like(image)
 
-    # Convert the image to grayscale
+    # # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # Apply Gaussian blur to reduce noise
@@ -41,7 +41,7 @@ def calculate_leaf_area(image):
     cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
 
     # Stack the original image, thresholded image, green mask, and canvas horizontally
-    stacked_images = np.hstack((image, image_with_contours, canvas))
+    stacked_images = np.hstack((image, image_with_contours))
 
     # Resize the stacked images to a smaller ratio
     scale_percent = 50  # Adjust this percentage as needed
@@ -54,18 +54,20 @@ def calculate_leaf_area(image):
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    total_area = 0
+    leaf_area = 0
 
     for contour in contours:
         # Calculate the area of each contour
         area = cv2.contourArea(contour)
-        total_area += area
+        leaf_area += area
 
-    return total_area
+    return leaf_area, image_with_contours
 
 def remove_red_area(image_path):
     # Read the image
     image = cv2.imread(image_path)
+    # plt.imshow(image)
+    # plt.show()
 
     # Convert the image to the HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -113,7 +115,7 @@ def remove_non_green_area(red_masked):
 
     # Find contours in the combined thresholded image
     contours, _ = cv2.findContours(combined_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    # contours = list(contours)
+    # contours2 = list(contours)
 
     # Draw the contours on a copy of the original image
     image_with_contours = image.copy()
@@ -147,24 +149,30 @@ def remove_non_green_area(red_masked):
             # print(average_hsv, "out of range")
             non_green_contours.append(contour)
 
-    # adjust the 
+    # convert the non_green contours to an array
     non_green_contours = np.array(non_green_contours, dtype=object)
 
-    # Create a new list to store the filtered contours
-    filtered_contours = []
+    # # Create a new list to store the filtered contours
+    # filtered_contours = []
 
-    # Iterate through the original contours
-    for contour in filtered_contours:
-        print(contour)
+    # # # Iterate through the original contours, removing any non_green_contours from the original list
+    # # for contour in contours:
+    # #     for ng_contour in non_green_contours:
+    # #         if ng_contour == contour:
+    # #             print("true")
+    # #         else:
+    # #             print('False')
 
-    # Update the contours variable with the filtered contours
-    contours = filtered_contours
+    # # Update the contours variable with the filtered contours
+    # contours = filtered_contours
 
     # Draw the remaining contours on the image
     image_with_filtered_contours = image.copy()
     non_green_masked = cv2.drawContours(image_with_filtered_contours, non_green_contours, -1, (0, 0, 0), thickness=cv2.FILLED)
+    # plt.imshow(non_green_masked)
+    # plt.show()
 
-    return non_green_masked, contours
+    return non_green_masked
 
 def open_images(path):
     folder_path = path
@@ -187,13 +195,9 @@ def open_images(path):
     
     return file_list
 
-# if __name__ == "__main__":
-    # remove_non_green_area()
-    # remove_red_area()
-    # calculate_leaf_area()
-
-    # image_path = "Modified-Energy-Cascade\Computer Vision\Rex-Leaves.jpg"
-    # red_masked = remove_red_area(image_path)
-    # non_green_masked = remove_non_green_area(red_masked)
-    # leaf_area = calculate_leaf_area(non_green_masked)
-    # print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
+if __name__ == "__main__":
+    image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/test_images/H5_T_Muir_1.21_03.30.22.JPG"
+    red_masked = remove_red_area(image_path)
+    non_green_masked = remove_non_green_area(red_masked)
+    leaf_area = calculate_leaf_area(non_green_masked)
+    print(f"Total leaf area in {image_path}: {leaf_area} square pixels")
