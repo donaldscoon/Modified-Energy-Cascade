@@ -173,7 +173,7 @@ def open_images(path):
     
     return file_list
 
-def display_images(original, result, area):
+def display_images(original, result, area, canopy_size=None):
     # Create a subplot with two columns
     plt.figure(figsize=(12, 6))
 
@@ -185,9 +185,14 @@ def display_images(original, result, area):
     # Display the result image on the right
     plt.subplot(1, 2, 2)
 
-    # Add the leaf area to the top right corner of the result image
+    # Add the area to the top right corner of the result image
     text = f"Area: {area} square pixels"
     cv2.putText(result, text, (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 5, (255, 255, 255), 8)
+    # if canopy_size is not None:
+    #     # Draw a bounding circle based on the canopy size
+    #     (x, y), radius = canopy_size
+    #     cv2.circle(result, (int(x), int(y)), int(radius), (0, 0, 255), 5)  # Red circle
+
     plt.imshow(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
     plt.title("Processed Image")
 

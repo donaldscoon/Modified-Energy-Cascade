@@ -35,13 +35,18 @@ def canopy_calculate_leaf_area(image):
     image_with_contours = image.copy()
     cv2.drawContours(image_with_contours, contours, -1, (0, 255, 0), 2)  # -1 draws all contours
     leaf_area = 0
+    canopy_size = []
 
     for contour in contours:
         # Calculate the area of each contour
         area = cv2.contourArea(contour)
         leaf_area += area
 
-    return leaf_area, image_with_contours
+        # # Calculate the enclosing circle for each contour
+        # (x, y), radius = cv2.minEnclosingCircle(contour)
+        # canopy_size.append((int(radius), int(radius)))
+        # print(canopy_size)
+    return leaf_area, image_with_contours, canopy_size
 
 def canopy_remove_non_green_area(image_path):
     #Read the image
