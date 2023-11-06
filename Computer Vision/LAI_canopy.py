@@ -38,16 +38,16 @@ def calculate_leaf_area(image):
     # Stack the original image, thresholded image, green mask, and canvas horizontally
     stacked_images = np.hstack((image, image_with_contours))
 
-    # # Resize the stacked images to a smaller ratio
-    # scale_percent = 50  # Adjust this percentage as needed
-    # width = int(stacked_images.shape[1] * scale_percent / 100)
-    # height = int(stacked_images.shape[0] * scale_percent / 100)
-    # stacked_images = cv2.resize(stacked_images, (width, height))
+    # Resize the stacked images to a smaller ratio
+    scale_percent = 50  # Adjust this percentage as needed
+    width = int(stacked_images.shape[1] * scale_percent / 100)
+    height = int(stacked_images.shape[0] * scale_percent / 100)
+    stacked_images = cv2.resize(stacked_images, (width, height))
 
-    # # Display all images in the same window
-    # cv2.imshow('Images Comparison', stacked_images)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    # Display all images in the same window
+    cv2.imshow('Images Comparison', stacked_images)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     leaf_area = 0
 
