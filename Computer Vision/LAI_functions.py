@@ -54,8 +54,6 @@ def calculate_leaf_area(image):
 def remove_red_area(image_path):
     # Read the image
     image = cv2.imread(image_path)
-    # plt.imshow(image)
-    # plt.show()
 
     # Convert the image to the HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -66,7 +64,6 @@ def remove_red_area(image_path):
 
     # Create a mask for the red color
     red_mask = cv2.inRange(hsv, lower_red, upper_red)
-
     # Invert the mask to keep non-red areas
     non_red_mask = cv2.bitwise_not(red_mask)
 
@@ -87,6 +84,7 @@ def remove_non_green_area(red_masked):
 
     # Threshold the image to segment the leaves
     _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
 
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)

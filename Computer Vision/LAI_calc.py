@@ -26,17 +26,17 @@ for image in file_list:
     original = cv2.imread(image)
     file_name = os.path.basename(image)  # Get just the file name
     if re.search(pattern1, image):      # this if statement calculates the total leaf area from those images
-        # # processing the image
-        # red_masked = LAI.remove_red_area(image)
-        # non_green_masked = LAI.remove_non_green_area(red_masked)
-        # leaf_area, image_result = LAI.calculate_leaf_area(non_green_masked)
+        # processing the image
+        red_masked = LAI.remove_red_area(image)
+        non_green_masked = LAI.remove_non_green_area(red_masked)
+        leaf_area, image_result = LAI.calculate_leaf_area(non_green_masked)
 
-        # # saving the results
-        # area_data[file_name] = leaf_area
-        # processed_image = LAI.display_images(original, image_result, leaf_area)
-        # output_path = os.path.join(result_path, file_name)
-        # cv2.imwrite(output_path, processed_image)
-        # print(f"Total leaf area in {file_name}: {leaf_area} square pixels")
+        # saving the results
+        area_data[file_name] = leaf_area
+        processed_image = LAI.display_images(original, image_result, leaf_area)
+        output_path = os.path.join(result_path, file_name)
+        cv2.imwrite(output_path, processed_image)
+        print(f"Total leaf area in {file_name}: {leaf_area} square pixels")
         continue
     elif re.search(pattern2, image) or re.search(pattern3, image):    # this elif statement calculates the total canopy area from those images
         # proccess the image
@@ -50,11 +50,11 @@ for image in file_list:
         area_data[f"{file_name}_height"] = canopy_height
         contour_image = LAI.display_images(original, image_with_contours, canopy_area) #CANOPY SIZE??!?!?!?!??!
         output_path = os.path.join(result_path, file_name)
-        boxed_path = f"{output_path}_BOXED"
+        boxed_path = f"BOXED_{output_path}"
         cv2.imwrite(boxed_path, boxed_img)
-        # cv2.imwrite(output_path, contour_image)
-        # print(f"Total canopy area in {file_name}: {canopy_area} square pixels")
-        continue
+        cv2.imwrite(output_path, contour_image)
+        print(f"Total canopy area in {file_name}: {canopy_area} square pixels")
+
 
 ########################################################################################################################
 ############################# SAVING THE AREAS #########################################################################
