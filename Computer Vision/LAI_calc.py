@@ -12,6 +12,7 @@ file_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vi
 file_list = LAI.open_images(file_path)
 pattern1 = re.compile(r'_A_')
 pattern2 = re.compile(r'_T_')
+pattern3 = re.compile(r'_C_')
 result_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/results/"
 
 # Create a dictionary to store the calculated areas with filenames (only the file name) as keys
@@ -37,17 +38,23 @@ for image in file_list:
         # cv2.imwrite(output_path, processed_image)
         # print(f"Total leaf area in {file_name}: {leaf_area} square pixels")
         continue
-    elif re.search(pattern2, image):    # this elif statement calculates the total canopy area from those images
+    elif re.search(pattern2, image) or re.search(pattern3, image):    # this elif statement calculates the total canopy area from those images
         # proccess the image
         non_green_masked = LAI_c.canopy_remove_non_green_area(image)
         canopy_area, image_with_contours, canopy_size = LAI_c.canopy_calculate_leaf_area(non_green_masked)
+        boxed_img, canopy_width, canopy_height = LAI.bounding_box(image_with_contours)
 
         # save the results
-        area_data[file_name] = canopy_area
-        processed_image = LAI.display_images(original, image_with_contours, canopy_area, canopy_size) #CANOPY SIZE??!?!?!?!??!
+        area_data[f"{file_name}_area"] = canopy_area
+        area_data[f"{file_name}_width"] = canopy_width
+        area_data[f"{file_name}_height"] = canopy_height
+        contour_image = LAI.display_images(original, image_with_contours, canopy_area) #CANOPY SIZE??!?!?!?!??!
         output_path = os.path.join(result_path, file_name)
-        cv2.imwrite(output_path, processed_image)
-        print(f"Total canopy area in {file_name}: {canopy_area} square pixels")
+        boxed_path = f"{output_path}_BOXED"
+        cv2.imwrite(boxed_path, boxed_img)
+        # cv2.imwrite(output_path, contour_image)
+        # print(f"Total canopy area in {file_name}: {canopy_area} square pixels")
+        continue
 
 ########################################################################################################################
 ############################# SAVING THE AREAS #########################################################################

@@ -42,22 +42,12 @@ def canopy_calculate_leaf_area(image):
         area = cv2.contourArea(contour)
         leaf_area += area
 
-        # # Calculate the enclosing circle for each contour
-        # (x, y), radius = cv2.minEnclosingCircle(contour)
-        # canopy_size.append((int(radius), int(radius)))
-        # print(canopy_size)
     return leaf_area, image_with_contours, canopy_size
 
 def canopy_remove_non_green_area(image_path):
     #Read the image
     image = cv2.imread(image_path)
 
-    # Convert the image to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    # Apply Gaussian blur to reduce noise
-    blurred = cv2.GaussianBlur(gray, (11, 11), 0)
-    
     # Convert the image to HSV color space
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 

@@ -202,8 +202,41 @@ def display_images(original, result, area, canopy_size=None):
     # plt.show()
 
     return processed_image
-    
 
+def bounding_box(image):
+    # Convert the image to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply a binary threshold
+    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY)
+
+    # Find contours in the binary image
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    # plt.imshow(contours)
+    # plt.show()
+
+    # Iterate through contours and find the bounding box for the largest contour
+    max_contour = max(contours, key=cv2.contourArea)
+    x, y, w, h = cv2.boundingRect(max_contour)
+
+    # Draw a rectangle around the plant
+    boxed = cv2.rectangle(image, (x, y), (x + w, y + h), (0, 0, 255), 6)
+
+    # Write the values of w and h on the image
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(boxed, f'Width: {w}', (x, y - 10), font, 4, (0, 0, 255), 6)
+    # cv2.putText(boxed, f'Height: {h}', (x, y - 30), font, 4, (0, 0, 255), 6)
+
+    # Write height vertically
+    text_height = f'Height: {h}'
+    for i, char in enumerate(text_height):
+        cv2.putText(boxed, char, (x + w + 10, y + i * 100), font, 4, (0, 0, 255), 6, cv2.LINE_AA)
+
+    # Display the result
+    # plt.imshow(boxed)
+    # plt.show()
+
+    return boxed, w, h
 
 # if __name__ == "__main__":
 #     image_path = "C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/Computer Vision/Rex-Leaves.jpg"
