@@ -1,0 +1,6 @@
+       mu  mu_star  sigma  mu_star_conf
+TEMP  0.0      0.0    0.0           0.0
+RH    0.0      0.0    0.0           0.0
+CO2   0.0      0.0    0.0           0.0
+PPFD  0.0      0.0    0.0           0.0
+H     0.0      0.0    0.0           0.0
