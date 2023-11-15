@@ -26,46 +26,46 @@ sp = naming_function.prob_spec()
 #################### Analysis #############################
 ###########################################################
 
-# def ANALYZE():
+def ANALYZE():
 
-#     # Create dataframe
-#     df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
+    # Create dataframe
+    df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
 
-#     N = 128 # number of unique levels resulting from the sobol sampling
-#     X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
+    N = 128 # number of unique levels resulting from the sobol sampling
+    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
 
-#     EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
-#     EE_out_df.set_index('Index')
+    EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
+    EE_out_df.set_index('Index')
 
 
-#     for item in outputs:        # loop for output names
-#         output_short_name = item[0]
-#         output_long_name = item[1]
-#         output_unit = item[2]
-#         # Loading specific outputs for Morris EE analysis 
-#         Y = df_sims[f'{output_short_name}'].to_numpy()
-#         EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
+    for item in outputs:        # loop for output names
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
+        # Loading specific outputs for Morris EE analysis 
+        Y = df_sims[f'{output_short_name}'].to_numpy()
+        EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-#         with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/EE/{output_short_name}_EE_results.txt', 'w') as f:
-#             results_df = EE.to_df()
-#             f.write(str(results_df))
-#         f.close
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/EE/{output_short_name}_EE_results.txt', 'w') as f:
+            results_df = EE.to_df()
+            f.write(str(results_df))
+        f.close
 
-#         # create a big ol honking dataframe
-#         mu_output_key = f'{output_short_name}_mu'
-#         mu_star_output_key = f'{output_short_name}_mu_star'
-#         mu_star_conf_output_key = f'{output_short_name}__mu_star_conf'
-#         sigma_output_key = f'{output_short_name}_sigma'
+        # create a big ol honking dataframe
+        mu_output_key = f'{output_short_name}_mu'
+        mu_star_output_key = f'{output_short_name}_mu_star'
+        mu_star_conf_output_key = f'{output_short_name}__mu_star_conf'
+        sigma_output_key = f'{output_short_name}_sigma'
 
-#         EE_out_df[mu_output_key] = EE['mu']
-#         EE_out_df[mu_star_output_key] = EE['mu_star']
-#         EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
-#         EE_out_df[sigma_output_key] = EE['sigma']
-#     EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv', index=False)
+        EE_out_df[mu_output_key] = EE['mu']
+        EE_out_df[mu_star_output_key] = EE['mu_star']
+        EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
+        EE_out_df[sigma_output_key] = EE['sigma']
+    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv', index=False)
 
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     ANALYZE()
+# Executes this program/function
+if __name__ ==('__main__'):
+    ANALYZE()
 
 def CHART():
     
@@ -250,4 +250,9 @@ if __name__ ==('__main__'):
 # %             of a High-Dimensional Hydrologic and Water Quality Models.  %
 # %             Journal of Hydrologic Engineering, 24(1).                   %
 # %             DOI: 10.1061/(ASCE)HE.1943-5584.0001726. 
+
+# From the same paper listed above 
+# . Morris (1991) suggested plotting two lines corresponding to μ ¼2 standard errors of 
+# the mean (SEM) ¼ 2σ=sqrtðrÞ. All the parameters that are inside the wedge formed by these
+#  two lines in μ − σ space can be considered to be involved in parameter interactions.
 # """

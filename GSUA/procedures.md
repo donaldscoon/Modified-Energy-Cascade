@@ -37,25 +37,6 @@ Full filepaths are not written, ideally these would not be hardcoded in, but tha
     * saved to `*/GSUA/figures/MEC_Scatter_{INPUT}_X_{OUTPUT}.png`
     * saved to `*/GSUA/figures/MEC_Histogram_{OUTPUT}.png`
 
-
-### Sobol Analysis
-* run as `SOBOL_ANALYSIS.ANALYZE()` in the `GSUA_script.py`
-* pull in the output file `GSUA_{MODEL}_Simulations.csv`
-  * parse this file to create individual output files `GSUA_{MODEL}_data_{OUTPUT}.txt`
-  * write names of constant outputs to `*/results/constant_outputs.txt`
-    * this simply identifies them for easy removal. The file should be deleted before each run otherwise it appends new data with each run. (A future fix if possible)
-* Perform Sobol Analysis with SALib functions
-  * save messy text file results to `*/results/full_out/{MODEL_OUTPUT}_results.txt`
-  * Create dataframes for the S1, S2, and ST effects individually saved to the easier to work with `*/results` as CSV's
-* Chart the Sobol results
-  * Start with reworking the dataframes. S1 and ST are combined `S1_ST_DF` to be chartable in the same loop since they have the same indexes. S2 is reworked `S2_small_df` to remove the rows of NaN
-  * Single model charts first. 
-    * first loop charts the S2 results after scanning to correct the error of AMI_ALPHA having results be 0 and conf be NaN.
-      * saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
-    * The next loop iterates through `S1_ST_DF` to create the corresponding charts for S1 and ST results
-      * S1 saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`      
-      * ST saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
-
   
 ### Elementary Effects and Sensitivity Analysis 
 * Run as `EE.analyze()` in `GSUA_script.py`
@@ -77,15 +58,22 @@ Full filepaths are not written, ideally these would not be hardcoded in, but tha
       * Multimodel saved to `GSUA/figures/Elementary_Effects/EE_SEM_{OUTPUT}_multimodel.png`
       * single model saved to `GSUA/GSUA_{MODEL}_out/figures/EE/EE_SEM_{MODEL}_{OUTPUT}.png`
 
+### Sobol Analysis
+* run as `SOBOL_ANALYSIS.ANALYZE()` in the `GSUA_script.py`
+* pull in the output file `GSUA_{MODEL}_Simulations.csv`
+  * parse this file to create individual output files `GSUA_{MODEL}_data_{OUTPUT}.txt`
+  * write names of constant outputs to `*/results/constant_outputs.txt`
+    * this simply identifies them for easy removal. The file should be deleted before each run otherwise it appends new data with each run. (A future fix if possible)
+* Perform Sobol Analysis with SALib functions
+  * save messy text file results to `*/results/full_out/{MODEL_OUTPUT}_results.txt`
+  * Create dataframes for the S1, S2, and ST effects individually saved to the easier to work with `*/results` as CSV's
+* Chart the Sobol results
+  * Start with reworking the dataframes. S1 and ST are combined `S1_ST_DF` to be chartable in the same loop since they have the same indexes. S2 is reworked `S2_small_df` to remove the rows of NaN
+  * Single model charts first. 
+    * first loop charts the S2 results after scanning to correct the error of AMI_ALPHA having results be 0 and conf be NaN.
+      * saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
+    * The next loop iterates through `S1_ST_DF` to create the corresponding charts for S1 and ST results
+      * S1 saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`      
+      * ST saves outputs to `GSUA/GSUA_{MODEL}_out/figures/sobol/{SOBOL_RESULT}_{MODEL}_{OUTPUT}.png`
 
 
-# TO DO LIST, after completeing the EE analysis
-* Recreate the Sobol charts using automation. 
-* Package each charting type into a function
-  * Sobol to sobol function
-  
-# Questions for Carpena
-* I used the sobol parameters (which had 128 unique levels) for the EE testing, is that alright?
-* Would it be important to include the previous output as an input for each sobol/EE test?
-* I did my best to follow the EE charts from the Matlab, but am uncertain how the 95% confidence was calculated.
-  * Was it just based on the sample, or is the a population to sample from?
