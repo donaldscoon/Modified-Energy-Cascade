@@ -76,7 +76,7 @@ def CHART():
     PPFD_point = Line2D([0], [0], linestyle= '', color='black', marker= '^', label='PPFD' )
     H_point    = Line2D([0], [0], linestyle= '', color='black', marker= 'd', label='H' )
     STRU_point = Line2D([0], [0], linestyle= '', color='black', marker= 'P', label='STRU')
-    SEM_line = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
+    SEM_line   = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
 
     onetoone_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point]
     SEM_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point, SEM_line]
@@ -86,58 +86,73 @@ def CHART():
 
     '''##########################################################
      mu star by sigma with a 1/1 line MULTIMODEL
-     #########################################################'''
-    # for item in outputs:   # loop for outputs
-    #     output_short_name = item[0]
-    #     output_long_name = item[1]
-    #     output_unit = item[2]
+     ########################################################'''
+    for item in outputs:   # loop for outputs
+        output_short_name = item[0]
+        output_long_name = item[1]
+        output_unit = item[2]
         
-    #     plt.figure() # creates the figure for each output type, which is then iterated by model.
+        plt.figure() # creates the figure for each output type, which is then iterated by model.
 
-    #     # print(model_short_name, output_short_name)
-    #     X = EE_out_df[f'{output_short_name}_mu_star']
-    #     Y = EE_out_df[f'{output_short_name}_sigma']
+        # print(model_short_name, output_short_name)
+        X = EE_out_df[f'{output_short_name}_mu_star']
+        Y = EE_out_df[f'{output_short_name}_sigma']
+        X_conf = EE_out_df[f'{output_short_name}__mu_star_conf']
 
-    #     # Check if both X and Y have all zero values
-    #     if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+        # Check if both X and Y have all zero values
+        if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
                 
-    #         # define which points correspond to which inputs
-    #         mu_star_temp = X[0]
-    #         mu_star_rh   = X[1]
-    #         mu_star_CO2  = X[2]
-    #         mu_star_PPFD = X[3]
-    #         mu_star_H    = X[4]
-    #         mu_star_STRU = X[5]
+            # define which points correspond to which inputs
+            mu_star_temp = X[0]
+            mu_star_rh   = X[1]
+            mu_star_CO2  = X[2]
+            mu_star_PPFD = X[3]
+            mu_star_H    = X[4]
+            mu_star_STRU = X[5]
 
-    #         sigma_temp   = Y[0]
-    #         sigma_rh     = Y[1]
-    #         sigma_CO2    = Y[2]
-    #         sigma_PPFD   = Y[3]
-    #         sigma_H      = Y[4]
-    #         sigma_STRU   = Y[5]
+            sigma_temp   = Y[0]
+            sigma_rh     = Y[1]
+            sigma_CO2    = Y[2]
+            sigma_PPFD   = Y[3]
+            sigma_H      = Y[4]
+            sigma_STRU   = Y[5]
 
-    #         # Create the scatter plot
-    #         plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= "black")
-    #         plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= "black")
-    #         plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= "black")
-    #         plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= "black")
-    #         plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= "black")
-    #         plt.scatter(mu_star_STRU, sigma_STRU,    s=50, marker= 'P', color= "black")
+            mu_star_temp_conf        = X_conf[0]
+            mu_star_rh_conf          = X_conf[1]
+            mu_star_CO2_conf         = X_conf[2]
+            mu_star_PPFD_conf        = X_conf[3]
+            mu_star_H_conf           = X_conf[4]
+            mu_star_STRU_conf        = X_conf[5]
 
+            # Create the scatter plot
+            plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= "black")
+            plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= "black")
+            plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= "black")
+            plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= "black")
+            plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= "black")
+            plt.scatter(mu_star_STRU, sigma_STRU,    s=50, marker= 'P', color= "black")
+            
+            # Adding Confidences
+            plt.errorbar(mu_star_temp,  sigma_temp, xerr=mu_star_temp_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_rh,    sigma_rh,   xerr=mu_star_rh_conf,   ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_CO2,   sigma_CO2,  xerr=mu_star_CO2_conf,  ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_PPFD,  sigma_PPFD, xerr=mu_star_PPFD_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_H,     sigma_H,    xerr=mu_star_H_conf,    ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_STRU,  sigma_STRU, xerr=mu_star_STRU_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
 
-    #         # Add a 1:1 line
-    #         # min_val = min(min(X), min(Y))
-    #         max_val = max(max(X), max(Y))
-    #         plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
+            # Add a 1:1 line
+            # min_val = min(min(X), min(Y))
+            max_val = max(max(X), max(Y))
+            plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
 
-    #     # Set the labels and title
-    #     plt.xlabel('mu*')
-    #     plt.ylabel('sigma')
-    #     plt.title(f'EE of {output_short_name}')
-    #     plt.legend(handles= onetoone_legend)
-    #     # plt.show()
-    #     plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-    #     plt.close()
+        # Set the labels and title
+        plt.xlabel('mu*')
+        plt.ylabel('sigma')
+        plt.title(f'EE of {output_short_name}')
+        plt.legend(handles= onetoone_legend)
+        # plt.show()
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+        plt.close()
 
     '''###############################################################################
     mu by sigma with the V MULTIMODEL
@@ -179,7 +194,7 @@ def CHART():
             plt.scatter(mu_PPFD, sigma_PPFD,    s=50, marker= '^', color= 'black')
             plt.scatter(mu_H, sigma_H,          s=50, marker= 'd', color= 'black')
             plt.scatter(mu_STRU, sigma_STRU,    s=50, marker= 'P', color= 'black')
-
+     
             # Add +-2SEM LINES
             # calc SD of mu, 
             mu_sd = EE_out_df[f'{output_short_name}_mu'].std()
