@@ -78,9 +78,10 @@ def remove_non_green_area(red_masked):
     
     # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
     # Apply Gaussian blur to reduce noise
-    blurred = cv2.GaussianBlur(gray, (11, 11), 0)
+    blurred = cv2.GaussianBlur(gray, (11, 11), 0)    
+    plt.imshow(blurred)
+    plt.show()
 
     # Threshold the image to segment the leaves
     _, thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
