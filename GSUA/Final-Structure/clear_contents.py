@@ -5,7 +5,7 @@ inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 
-path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA'
+path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure'
 
 def empty__output_dirs():
 
@@ -64,16 +64,16 @@ if __name__ ==('__main__'):
     empty__output_dirs()
 
 def clear_GSUA_sim_csv():
-    if os.path.exists('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv'):
-        os.remove('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
+    if os.path.exists('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_simulations.csv'):
+        os.remove('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_simulations.csv')
 
 # Executes this program/function
 if __name__ ==('__main__'):
     clear_GSUA_sim_csv
 
 def clear_const_out():
-    if os.path.exists('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt'):
-        os.remove('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/constant_outputs.txt')
+    if os.path.exists('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/constant_outputs.txt'):
+        os.remove('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/constant_outputs.txt')
 
 # Executes this program/function
 if __name__ ==('__main__'):

@@ -381,7 +381,7 @@ def RUN_CHART():
 
     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
 
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
+    for item in inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
         input_long_name = item[1]
         input_unit = item[2]

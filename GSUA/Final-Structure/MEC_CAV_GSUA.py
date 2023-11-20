@@ -23,8 +23,8 @@ models = naming_function.model_names()
 sp = naming_function.prob_spec()
 
 def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
-    # start=datetime.now()
-    # print("Begining Cavazzoni Simulations")
+    start=datetime.now()
+    print("Begining Cavazzoni Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
@@ -309,9 +309,9 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         t += res                          # advance timestep
     # print(df_records)                    # prints a copy of output in the terminal
     df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
-    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', mode='a', index=False, header=False)
+    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', mode='a', index=False, header=False)
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
     # print("Cavazzoni Simulations Complete")
@@ -336,7 +336,7 @@ def RUN_CHART(models, inputs, outputs):
     start=datetime.now()
     print("Begining Cavazzoni Visulizations")
 
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_sims_label)
+    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_sims_label)
 
     for item in mec_inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
@@ -363,7 +363,7 @@ def RUN_CHART(models, inputs, outputs):
             p = np.poly1d(z)
             plt.plot(x,p(x),"red")
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # in the likely rare event all of these need to be viewed...
             # plt.show()
 

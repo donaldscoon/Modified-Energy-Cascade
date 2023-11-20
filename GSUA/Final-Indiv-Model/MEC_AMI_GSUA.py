@@ -198,7 +198,7 @@ def RUN_CHART():
 
     df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
 
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
+    for item in inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
         input_long_name = item[1]
         input_unit = item[2]

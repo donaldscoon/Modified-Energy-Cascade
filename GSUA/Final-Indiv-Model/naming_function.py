@@ -20,10 +20,10 @@ def prob_spec():
                [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
                [236.95, 13.47],  # PPFD Level Average, SD 
                [10,22, 0.5]],    # Photoperiod Peak at 16 +- 6 hours
-    'dists': ['normal',             # Temperature
-              'normal',             # Relative Humidity
-              'normal',             # Atmo CO2
-              'normal',             # PPFD
+    'dists': ['norm',             # Temperature
+              'norm',             # Relative Humidity
+              'norm',             # Atmo CO2
+              'norm',             # PPFD
               'triang'],            # Photoperiod
     'outputs': ['Y']
     })

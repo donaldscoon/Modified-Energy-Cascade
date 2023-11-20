@@ -14,16 +14,16 @@ def prob_spec():
     # Notation [min, max, peak as % of that range]
     # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
     # which would actually give a peak at 24 since the range starts at 5.
-    'bounds': [[5,40,0.54286],      # Temperature Peak at 24 
-               [35,100,0.38461],    # Relative Humidity Peak at 60
-               [330,1300,0.48453],  # Atmo CO2 Concentration Peak at 800
-               [0,1100,0.27273],    # PPFD Level Peak at 300
-               [0,24, 0.66667],     # Photoperiod Peak at 16
+    'bounds': [[21.20, 0.30],    # Temperature Average, SD 
+               [72.14, 8.13],    # Relative Humidity Average, SD 
+               [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
+               [236.95, 13.47],  # PPFD Level Average, SD 
+               [10,22, 0.5],     # Photoperiod Peak at 16 +- 6 hours
                [0,2]],              # Model structure, AMI, BOS, CAV, uniform distri
-    'dists': ['triang',             # Temperature
-              'triang',             # Relative Humidity
-              'triang',             # Atmo CO2
-              'triang',             # PPFD
+    'dists': ['norm',             # Temperature
+              'norm',             # Relative Humidity
+              'norm',             # Atmo CO2
+              'norm',             # PPFD
               'triang',             # Photoperiod
               'unif'],              # Model Structure
     'outputs': ['Y']

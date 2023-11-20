@@ -344,9 +344,9 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
     df_sims = df_avg_sims
     df_sims['DCG'] = df_sum_sims['DCG']
     df_sims['CGR'] = df_sum_sims['CGR']
-    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', mode='a', index=False, header=False) # exports entire final data frame to a CSV
+    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', mode='a', index=False, header=False) # exports entire final data frame to a CSV
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
 # print("NOTE: Boscheri did not calculate P_GROSS, VP_AIR, TCB, TEB")
@@ -418,13 +418,13 @@ def RUN_CHART(models, inputs, outputs):
 if __name__ ==('__main__'):
     RUN_CHART()
 
-# def RUN_FULL():
-#     print("Running Boscheri Simulations and Charting Functions")
-#     start=datetime.now()
-#     RUN_SIM()
-#     RUN_CHART()
-#     time = datetime.now()-start
-#     print(f"Full Boscheri run completed. It took {time}")
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     RUN_FULL()
+def RUN_FULL():
+    print("Running Boscheri Simulations and Charting Functions")
+    start=datetime.now()
+    RUN_SIM()
+    RUN_CHART()
+    time = datetime.now()-start
+    print(f"Full Boscheri run completed. It took {time}")
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_FULL()

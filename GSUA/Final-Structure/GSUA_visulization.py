@@ -40,14 +40,14 @@ cav_c = '#8C0004'
 import numpy as np
 
 def GSUA_CHARTS():
-    model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'])
+    model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/SOBOL_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'])
     # Combining all the seperate datafiles into one for the anaylsis portion
-    AMI_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv", header=None)
+    AMI_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv", header=None)
     AMI_df_label = ['Timestep','skip?','SIM_NUM', 'H','A','ALPHA','BETA','CQY','CUE_24',
                      'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
                      'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
     AMI_df.columns = AMI_df_label
-    BOS_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv", header=None)
+    BOS_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv", header=None)
     BOS_df_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
                      'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
                      'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
@@ -55,7 +55,7 @@ def GSUA_CHARTS():
                      'DCO2C','DCO2P','DNC', 'DWC','TEMP',
                      'T_DARK','RH','CO2','PPFD', 'STRU']
     BOS_df.columns = BOS_df_label
-    CAV_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv", header=None)
+    CAV_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv", header=None)
     CAV_df_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
                      'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
                      'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
@@ -75,7 +75,7 @@ def GSUA_CHARTS():
         ax.set_xlabel(f'{input_unit}')
         ax.set_title(f'{input_long_name} Frequency')
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/histogram/input_histogram_{input_short_name}', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/histogram/input_histogram_{input_short_name}', bbox_inches='tight') #there are many options for savefig
         plt.close()
 
 
@@ -125,7 +125,7 @@ def GSUA_CHARTS():
             plt.plot(xA,pA(xA), color="#0000FF")
             plt.plot(xB,pB(xB), color="darkgreen")
             plt.plot(xC,pC(xC), color="#FF0000")
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # plt.show()
             plt.close()
 
@@ -139,7 +139,7 @@ def GSUA_CHARTS():
             light_colors = ['#A798EC', '#96F391', '#FE989A']
             for patch, light_colors in zip(bplot['boxes'], light_colors):
                 patch.set_facecolor(light_colors)
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/histogram/output_histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/histogram/output_histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             plt.close()
             # plt.show()
             

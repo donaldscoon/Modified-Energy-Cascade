@@ -195,9 +195,9 @@ def CHART():
                         plt.ylabel('Percent of Output Explained')
                         plt.xlabel('Equation Inputs')
                         plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
-                        plt.show()
-                        # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-                        # plt.close()
+                        # plt.show()
+                        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                        plt.close()
                 else:     # S1 and ST charting
                     # Check if the column contains all NaN values
                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'

@@ -29,10 +29,10 @@ sp = naming_function.prob_spec()
 def ANALYZE():
 
     # Create dataframe
-    df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_simulations.csv')
+    df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_simulations.csv')
 
     N = 128 # number of unique levels resulting from the sobol sampling
-    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/SOBOL_parameters.txt')
+    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/SOBOL_parameters.txt')
 
     EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
     EE_out_df.set_index('Index')
@@ -46,7 +46,7 @@ def ANALYZE():
         Y = df_sims[f'{output_short_name}'].to_numpy()
         EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/full_out/EE/{output_short_name}_EE_results.txt', 'w') as f:
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/full_out/EE/{output_short_name}_EE_results.txt', 'w') as f:
             results_df = EE.to_df()
             f.write(str(results_df))
         f.close
@@ -61,7 +61,7 @@ def ANALYZE():
         EE_out_df[mu_star_output_key] = EE['mu_star']
         EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
         EE_out_df[sigma_output_key] = EE['sigma']
-    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv', index=False)
+    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/EE_out.csv', index=False)
 
 # Executes this program/function
 if __name__ ==('__main__'):
@@ -82,7 +82,7 @@ def CHART():
     SEM_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point, SEM_line]
 
     # read in the data
-    EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/results/EE_out.csv')
+    EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/EE_out.csv')
 
     '''##########################################################
      mu star by sigma with a 1/1 line MULTIMODEL
@@ -151,7 +151,7 @@ def CHART():
         plt.title(f'EE of {output_short_name}')
         plt.legend(handles= onetoone_legend)
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
 
     '''###############################################################################
@@ -218,7 +218,7 @@ def CHART():
         plt.title(f'EE of {output_short_name}')
         plt.legend(handles = SEM_legend)
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
 
 # Executes this program/function
