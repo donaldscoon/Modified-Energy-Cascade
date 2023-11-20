@@ -377,7 +377,7 @@ def RUN_CHART(models, inputs, outputs):
 
     print("Begining Boscheri Visulizations")
 
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_sims_label)
+    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_sims_label)
 
     for item in mec_inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]
@@ -406,7 +406,7 @@ def RUN_CHART(models, inputs, outputs):
             p = np.poly1d(z)
             plt.plot(x,p(x),"red")
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # in the likely rare event all of these need to be viewed...
             # plt.show()
 

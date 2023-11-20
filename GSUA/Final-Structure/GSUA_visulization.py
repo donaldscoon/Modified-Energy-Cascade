@@ -61,22 +61,23 @@ def GSUA_CHARTS():
                      'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
     CAV_df.columns = CAV_df_label
     
+
     ##############################################
     ########### Input  Historgram ################
     ##############################################
-    for item in inputs:        # loop for inputs
-        input_short_name = item[0]
-        input_long_name = item[1]
-        input_unit = item[2]
-
+    # for item in inputs:        # loop for inputs
+    column_names = model_inputs.columns
+    u = "\u00B5"        # unicode for the micro symbol
+    hist_units = ["Degrees Celsius", "Percent", u+"mol$_{carbon}$ mol$_{air}$", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$", "hours day$^{-1}$", "Stuff"]
+    hist_long_name = ["Temperature", "Relative Humidity", "CO$_{2}$ Concentration", "Photosynthetic Photon Flux Density", "Photoperiod", "Structure"]
+    for i, column in enumerate(column_names):
         fig, ax = plt.subplots()
-        ax.hist(model_inputs[f'{input_short_name}'], 10, density=True, histtype='bar', color='#2A119B', edgecolor='white')
+        ax.hist(model_inputs[column], bins=20, density=True, histtype='bar', color='#2A119B', edgecolor='white')
         ax.set_ylabel('Frequency')
-        ax.set_xlabel(f'{input_unit}')
-        ax.set_title(f'{input_long_name} Frequency')
+        ax.set_xlabel(f'{hist_units[i]}')
+        ax.set_title(f'{hist_long_name[i]}')
+        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/histogram/input_histogram_{input_short_name}', bbox_inches='tight') #there are many options for savefig
-        plt.close()
 
 
 

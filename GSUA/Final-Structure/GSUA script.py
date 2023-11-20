@@ -117,7 +117,7 @@ if __name__ == '__main__':
     GSUA_df = GSUA_df.sort_values(by='SIM_NUM')
     clear_contents.clear_GSUA_sim_csv()
     GSUA_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_simulations.csv', mode='a', index=False, header=True)
-    print(GSUA_df)
+    # print(GSUA_df)
 
     MEC_AMI_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Amitrano Model
     MEC_BOS_GSUA.RUN_CHART(models, inputs, outputs)    # Runs just the charting for the Boscheri Model
@@ -153,7 +153,7 @@ if __name__ == '__main__':
 ##########################################################
 
 GSUA_visulization.GSUA_CHARTS()
-EE.CHARTS()
+EE.CHART()
 
 ###########################################
 ############ To Do ########################
