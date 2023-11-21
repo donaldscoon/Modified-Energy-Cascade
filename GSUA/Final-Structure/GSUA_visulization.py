@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import naming_function
 
-warnings.filterwarnings("ignore", category=np.RankWarning)
+# warnings.filterwarnings("ignore", category=np.RankWarning)
 
 ##########################################################
 ############## Defining the Model Inputs #################

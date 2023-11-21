@@ -24,7 +24,7 @@ sp = naming_function.prob_spec()
 
 def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
     start=datetime.now()
-    print("Begining Cavazzoni Simulations")
+    # print("Begining Cavazzoni Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
@@ -331,7 +331,7 @@ def RUN_CHART(models, inputs, outputs):
     outputs = outputs
     df_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
                      'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
     start=datetime.now()
     print("Begining Cavazzoni Visulizations")

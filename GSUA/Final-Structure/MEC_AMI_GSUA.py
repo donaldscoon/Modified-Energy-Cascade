@@ -184,7 +184,7 @@ def RUN_CHART(models, inputs, outputs):
     outputs = outputs
     df_sims_label = ['SIM_NUM','Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
                      'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
     start=datetime.now()
     print("Begining Amitrano Visulizations")
@@ -217,7 +217,7 @@ def RUN_CHART(models, inputs, outputs):
             p = np.poly1d(z)
             plt.plot(x,p(x),"red")
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMi_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # in the likely rare event all of these need to be viewed...
             # plt.show()
 

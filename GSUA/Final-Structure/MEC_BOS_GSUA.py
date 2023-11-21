@@ -368,8 +368,8 @@ def RUN_CHART(models, inputs, outputs):
                      'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
                      'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
                      'DOP','DOC','g_S','g_A','g_C','DTR',
-                     'DCO2C','DCO2P','DNC', 'DWC','T_LIGHT',
-                     'T_DARK','RH','CO2','PPFD', 'SIM_STRU']
+                     'DCO2C','DCO2P','DNC', 'DWC','TEMP',
+                     'T_DARK','RH','CO2','PPFD', 'STRU']
 
 
 
