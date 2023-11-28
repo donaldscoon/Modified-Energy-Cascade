@@ -154,7 +154,7 @@ def CHART():
                     Y = S2_small_df[column_name]
                     ciY = S2_small_df[confidence]
 
-                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color='black', elinewidth=.5, capsize=2, capthick=.5)
+                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color='black', elinewidth=.75, capsize=2, capthick=.75)
 
                     ax.scatter(X, Y)
                     plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
@@ -177,7 +177,7 @@ def CHART():
                     X = [1, 2, 3, 4, 5, 6]
                     Y = S1_ST_DF[column_name]
                     ciY = S1_ST_DF[confidence]
-                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color='black', elinewidth=.5, capsize=2, capthick=.5)
+                    plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color='black', elinewidth=.75, capsize=2, capthick=.75)
 
                     ax.scatter(X, Y)
                     plt.xticks((1, 2, 3, 4, 5, 6), ('TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'))

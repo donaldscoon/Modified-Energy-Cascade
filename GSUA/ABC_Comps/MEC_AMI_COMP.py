@@ -65,6 +65,7 @@ def timestep(i, row):
     SIM_CO2  = row['CO2']
     SIM_PPFD = row['PPFD']
     SIM_H    = row['H']
+    SIM_TIMESTEP = row['Timestep']
     SIM_NUM = i
     SIM_LENGTH = 30
     # print(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H)
@@ -86,7 +87,7 @@ def timestep(i, row):
     ################# INTIALIZATION  #################
     ##################################################
 
-    t = 0               # time in days
+    t = SIM_TIMESTEP               # time in days
     res = 1             # model resolution (in days)
     day = 0             # used in the seedling stage loop
     df_records = pd.DataFrame({})            # simulation record dataframe
@@ -160,8 +161,8 @@ def timestep(i, row):
             'PPFD': [PPFD],
         }) # creates a dataframe of all variables/outputs for each timestep. 
         df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-        t += res                          # advance timestep
-    return df_records
-
+        # t += res                          # advance timestep
+        return df_records
+        exit
 
 

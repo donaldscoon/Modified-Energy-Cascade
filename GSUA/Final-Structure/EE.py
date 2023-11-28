@@ -133,12 +133,12 @@ def CHART():
             plt.scatter(mu_star_STRU, sigma_STRU,    s=50, marker= 'P', color= "black")
             
             # Adding Confidences
-            plt.errorbar(mu_star_temp,  sigma_temp, xerr=mu_star_temp_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
-            plt.errorbar(mu_star_rh,    sigma_rh,   xerr=mu_star_rh_conf,   ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
-            plt.errorbar(mu_star_CO2,   sigma_CO2,  xerr=mu_star_CO2_conf,  ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
-            plt.errorbar(mu_star_PPFD,  sigma_PPFD, xerr=mu_star_PPFD_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
-            plt.errorbar(mu_star_H,     sigma_H,    xerr=mu_star_H_conf,    ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
-            plt.errorbar(mu_star_STRU,  sigma_STRU, xerr=mu_star_STRU_conf, ecolor='black', elinewidth=.5, capsize=2, capthick=.5)
+            plt.errorbar(mu_star_temp,  sigma_temp, xerr=mu_star_temp_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            plt.errorbar(mu_star_rh,    sigma_rh,   xerr=mu_star_rh_conf,   ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            plt.errorbar(mu_star_CO2,   sigma_CO2,  xerr=mu_star_CO2_conf,  ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            plt.errorbar(mu_star_PPFD,  sigma_PPFD, xerr=mu_star_PPFD_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            plt.errorbar(mu_star_H,     sigma_H,    xerr=mu_star_H_conf,    ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            plt.errorbar(mu_star_STRU,  sigma_STRU, xerr=mu_star_STRU_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
 
             # Add a 1:1 line
             # min_val = min(min(X), min(Y))
