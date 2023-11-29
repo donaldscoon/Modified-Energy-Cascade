@@ -237,96 +237,59 @@ def CHART():
                 model_short_name = item[0]
                 model_long_name = item[1]
 
-                # print(sobol_short_name, output_short_name, model_short_name)
                 
                 # assign color by model
                 if model_short_name == 'AMI':
                     color = ami_c
                     X_S1_ST = [0.8, 1.8, 2.8, 3.8, 4.8]
+                    X_S2 = [.8, 1.8, 2.8, 3.8, 4.8, 5.8, 6.8, 7.8, 8.8, 9.8]
                 elif model_short_name == 'BOS':
                     color = bos_c
                     X_S1_ST = [1.0, 2.0, 3.0, 4.0, 5.0]
+                    X_S2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
                 elif model_short_name == 'CAV':
                     color = cav_c
                     X_S1_ST = [1.2, 2.2, 3.2, 4.2, 5.2]
+                    X_S2 = [1.2, 2.2, 3.2, 4.2, 5.2, 6.2, 7.2, 8.2, 9.2, 10.2]
 
+                # This section builds the charts
                 column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
                 confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
 
                 if sobol_short_name == 'S2': # Charting for the S2 Results
-                    print("S2 results coming soon!")
+                    Y = S2_small_df[column_name]
+                    ciY = S2_small_df[confidence]
+                    ciY = np.nan_to_num(ciY, nan=0)
+                    plt.errorbar(X_S2, Y, yerr=ciY, fmt='o', color=color, elinewidth=.75, capsize=2, capthick=.75)
+                    ax.scatter(X_S2, Y, color=color, label=f'{model_short_name}')
                 else: # Charting for the S1 and ST resuls
-                    print(column_name)
-
-                    # X = [1, 2, 3, 4, 5]
                     Y = S1_ST_DF[column_name]
                     ciY = S1_ST_DF[confidence]
                     ciY = np.nan_to_num(ciY, nan=0)
-                    print(ciY)
                     plt.errorbar(X_S1_ST, Y, yerr=ciY, fmt = 'o', color=color, elinewidth=.75, capsize=2, capthick=.75)
-
                     ax.scatter(X_S1_ST, Y, color = color, label = f'{model_short_name}')
-            plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
-            plt.ylabel('Percent of Output Explained')
-            plt.xlabel('Equation Input')
-            plt.title(f'{sobol_long_name} Results of {output_short_name}')
 
-            plt.show()
-            # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-            plt.close()
-
-
-
-
-
-
-
-# #### I'M GOING TO NEED TO TRY THIS ONE ALL OVER AGAIN. 
-# #### LOOKS LIKE I LEFT IT AS A STEAMING HOT MESS....
- 
-#     for item in sobol_tests:
-#         sobol_short_name = item [0]
-#         sobol_long_name = item [1]
-#         fig, ax = plt.subplots()
-#         for item in outputs:   # loop for outputs
-#             fig, ax = plt.subplots()
-#             output_short_name = item[0]
-#             output_long_name = item[1]
-#             output_unit = item[2]
-#             for item in models:                 # loop for model names
-#                 model_short_name = item[0]
-#                 model_long_name = item[1]
-#                 # sets the color of each model for that loop.
-#                 if model_short_name == 'AMI':
-#                     color = ami_c
-#                 elif model_short_name == 'BOS':
-#                     color = bos_c
-#                 elif model_short_name == 'CAV':
-#                     color = cav_c
-#                 # # this if/else statment sets up loop for S1 and ST to share code
-#                 if sobol_short_name == 'S2': # Charting just for the S2 results
-#                     print(sobol_short_name)
-#                 else: #Charting for the S1 and ST results
-#                     print(sobol_short_name)
-#                     column_name = f'{model_short_name}_{output_short_name}_{sobol_short_name}'
-#                     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
-#                     if not S1_ST_DF[column_name].isna().all():
-#                         fig, ax = plt.subplots()
-                        
-#                         X = [1, 2, 3, 4, 5]
-#                         Y = S1_ST_DF[column_name]
-#                         ciY = S1_ST_DF[confidence]
-#                         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', color=color, elinewidth=.5, capsize=2, capthick=.5)
-
-#                         ax.scatter(X, Y)
-#                         plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
-#                         plt.ylabel('Percent of Output Explained')
-#                         plt.xlabel('Equation Input Interactions')
-#                         plt.title(f'{sobol_long_name} Results of {output_short_name}')
-#                         plt.show()
-#                         # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#                         # plt.close()
- 
+            #this section adds the labels and displays/saves them
+            if sobol_short_name == 'S2':
+                plt.xticks((1, 2, 3, 4, 5, 6, 7, 8, 9, 10), ('TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+                                                            'RHxCO2',  'RHxCO2',   'RHxH',      'CO2xPPFD',
+                                                            'CO2xH',   'PPFDxH'), rotation = 90)
+                plt.ylabel('Percent of Output Explained')
+                # plt.xlabel('Input Interaction')
+                plt.legend()
+                plt.title(f'{sobol_long_name} Results of {output_short_name}')
+                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # plt.show()
+                # plt.close()
+            else:
+                plt.xticks((1, 2, 3, 4, 5), ('TEMP', 'RH', 'CO2', 'PPFD', 'H'))
+                plt.ylabel('Percent of Output Explained')
+                # plt.xlabel('Input Interaction')
+                plt.legend()
+                plt.title(f'{sobol_long_name} Results of {output_short_name}')
+                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # plt.show()
+                # plt.close()
 
 if __name__==('__main__'):
     CHART()
