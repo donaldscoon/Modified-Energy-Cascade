@@ -11,20 +11,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
-# import naming_function
-import csv
-
-
-
+import naming_function
 
 ##########################################################
 ############## Defining the Model Inputs #################
-# ##########################################################
+##########################################################
 
-# inputs = naming_function.mec_input_names()
-# outputs = naming_function.mec_output_names()
-# models = naming_function.model_names()
-# sp = naming_function.prob_spec()
+inputs = naming_function.mec_input_names()
+outputs = naming_function.mec_output_names()
+models = naming_function.model_names()
+sp = naming_function.prob_spec()
 
 #########################################################
 ################### OTHER MODEL CONSTANTS ###############
@@ -42,33 +38,16 @@ bmin_GON = 0.0486455477321762    # amitrano 2020 calibrated with growth chamber 
 bmax_GN = 0.0451765692503675     # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 bmax_GON = 0.0564626043274799    # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 
-##################################################
-#################### CONSTANTS ###################
-##################################################
-BCF = 0.4           # Amitrano 2020 table 2 -> Adeyemi 2018
-XFRT = 0.95         # Amitrano 2020 table 2 -> Adeyemi 2018
-OPF = 1.08          # Amitrano 2020 table 2 -> Adeyemi 2018
-g_A = 2.5           # Amitrano 2020 table 2 -> Amitrano 2019
-t_D = 1             # 1 for green, 8 for red initial time of development(days) Amirtrano 2020 CQY experiments
-t_Mi = 16           # initial time of maturity (days) Amitrano 2020 table 2
-t_E = 1             # time at onset of organ formation Amitrano 2020 same as ewert table 4-112
-MWC = 12.01            # molecular weight of carbon amitrano 2020
-MW_W = 18.015       # molecular weight of water ewert table 4-110
-d_W = 998.23        # water density ewert table 4-110
-P_ATM = 100         # atmospheric pressure Number from Amitrano excel
-T_LEAF = 20.2       # experimental data from  amitrano        
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
 
-def timestep(i, row):
-    
-    SIM_TEMP = row['TEMP']
-    SIM_RH   = row['RH']
-    SIM_CO2  = row['CO2']
-    SIM_PPFD = row['PPFD']
-    SIM_H    = row['H']
-    SIM_TIMESTEP = row['Timestep']
-    SIM_NUM = i
-    SIM_LENGTH = 30
-    # print(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H)
+    # start=datetime.now()
+    # print("Begining Amitrano Simulations")
+    ##########################################################
+    ############## Defining the Model Inputs #################
+    ##########################################################
+
+    df_sims = pd.DataFrame({})
+
     ####################################################
     ################## RUN MODEL #######################
     ####################################################
@@ -80,6 +59,7 @@ def timestep(i, row):
     T_DARK = T_LIGHT -  5  # Dark Cycle Average. Instead of creating a range for this I simply subtract from T_LIGHT
     RH = SIM_RH           # relative humidty as a fraction bounded between 0 and 1. The 0.675 is a number pulled from a Dr. GH VPD table as ideal for lettuce
     t_M = SIM_LENGTH            # time at harvest/maturity ewert table 4-112
+    P_ATM = 101           # atmospheric pressure placeholder is gainesville FL value
     T_T = 10            # days to transplant, based on experimental design
 
 
@@ -87,13 +67,28 @@ def timestep(i, row):
     ################# INTIALIZATION  #################
     ##################################################
 
-    t = SIM_TIMESTEP               # time in days
+    t = 0               # time in days
     res = 1             # model resolution (in days)
     day = 0             # used in the seedling stage loop
     df_records = pd.DataFrame({})            # simulation record dataframe
     ts_to_harvest = int(t_M/res)             # calcs the timesteps needed to set up the matrix for each ts
     TEB = 8.53                               # The value of TEB at 10 DAE
 
+    ##################################################
+    #################### CONSTANTS ###################
+    ##################################################
+    BCF = 0.4           # Amitrano 2020 table 2 -> Adeyemi 2018
+    XFRT = 0.95         # Amitrano 2020 table 2 -> Adeyemi 2018
+    OPF = 1.08          # Amitrano 2020 table 2 -> Adeyemi 2018
+    g_A = 2.5           # Amitrano 2020 table 2 -> Amitrano 2019
+    t_D = 1             # 1 for green, 8 for red initial time of development(days) Amirtrano 2020 CQY experiments
+    t_Mi = 16           # initial time of maturity (days) Amitrano 2020 table 2
+    t_E = 1             # time at onset of organ formation Amitrano 2020 same as ewert table 4-112
+    MWC = 12.01            # molecular weight of carbon amitrano 2020
+    MW_W = 18.015       # molecular weight of water ewert table 4-110
+    d_W = 998.23        # water density ewert table 4-110
+    P_ATM = 100         # atmospheric pressure Number from Amitrano excel
+    T_LEAF = 20.2       # experimental data from  amitrano        
 
     # This first loop is needed to align dataframe across models.
     # It is the first 10 days from seedling to transplant. 
@@ -105,6 +100,7 @@ def timestep(i, row):
         t += res
         day += 1
     t=0
+    
 
     # This second loop continues from transplant to harvest.
     while t <= ts_to_harvest:                  # while time is less than harvest time
@@ -131,10 +127,9 @@ def timestep(i, row):
         g_C = g_A*g_S/(g_A+g_S)                # Amitrano 2020 eq 10
         DTR = 3600*H*(MW_W/d_W)*g_C*(VPD/P_ATM)
         dfts = pd.DataFrame({
-            'Simulation': [i],
+            'SIM_NUM': [SIM_NUM],
             'Timestep': [t],
             'H': [H],
-            # 'Days': [DAY],
             'A': [0],       # Not included in Amitranos Model
             'ALPHA':[ALPHA],
             'BETA':[BETA],
@@ -159,10 +154,89 @@ def timestep(i, row):
             'RH': [RH],
             'CO2': [CO2],
             'PPFD': [PPFD],
+            'STRU': [SIM_STRU],
         }) # creates a dataframe of all variables/outputs for each timestep. 
         df_records = pd.concat([df_records, dfts], ignore_index=True) # this adds the timestep dataframe to the historical values dataframe
-        # t += res                          # advance timestep
-        return df_records
-        exit
+        t += res                          # advance timestep
+    # print(df_records)                    # prints a copy of output in the terminal
+    df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
+    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', mode='a', index=False, header=False)
+    for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
+        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+            np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
 
+# print("Amitrano Simulations Complete")
+# time = datetime.now()-start
+# print(f"Simulations took {time}")
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_SIM()
+
+
+##########################################################
+############### VISUALIZATIONS ###########################
+##########################################################
+
+def RUN_CHART(models, inputs, outputs):
+    mec_inputs = inputs
+    outputs = outputs
+    df_sims_label = ['SIM_NUM','Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                     'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
+
+    start=datetime.now()
+    print("Begining Amitrano Visulizations")
+
+    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names = df_sims_label)
+
+    for item in mec_inputs:        # this allows easy injection of labels into chart elements
+        input_short_name = item[0]
+        input_long_name = item[1]
+        input_unit = item[2]
+        for item in outputs:
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+
+            """This chart bulding stuff works!"""
+            VIS_GSUA = df_AMI_sims[[output_short_name, input_short_name]]
+            VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+            x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+            y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+            fig, ax = plt.subplots()
+            ax.scatter(x, y)
+            ax.set_ylabel(f'{output_long_name} ({output_unit})')
+            ax.set_xlabel(f'{input_long_name} ({input_unit})')
+            plt.title(f'AMI {input_short_name} x {output_short_name}')
+            # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+
+            # calc the trendline
+            z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+            p = np.poly1d(z)
+            plt.plot(x,p(x),"red")
+
+            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            # in the likely rare event all of these need to be viewed...
+            # plt.show()
+
+    print("Amitrano Visulizations Complete")
+    time = datetime.now()-start
+    print(f"Charting took {time}")
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_CHART()
+
+def RUN_FULL():
+    print("Running Amitrano Simulations and Charting Functions")
+    start=datetime.now()
+    RUN_SIM()
+    RUN_CHART()
+    time = datetime.now()-start
+    print(f"Full Amitrano run completed. It took {time}")
+
+# Executes this program/function
+if __name__ ==('__main__'):
+    RUN_FULL()

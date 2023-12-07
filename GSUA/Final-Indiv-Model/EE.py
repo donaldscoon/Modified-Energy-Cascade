@@ -24,6 +24,8 @@ inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
+path = naming_function.path_names()
+
 
 # ###########################################################
 # #################### Analysis #############################
@@ -32,12 +34,12 @@ sp = naming_function.prob_spec()
 def ANALYZE():
 
     # Create dataframes for each models GSUA runs
-    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+    df_AMI_sims = pd.read_csv(f'{path}/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_BOS_sims = pd.read_csv(f'{path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_CAV_sims = pd.read_csv(f'{path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
     N = 128 # number of unique levels resulting from the sobol sampling
-    X = np.loadtxt('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/SOBOL_parameters.txt')
+    X = np.loadtxt(f'{path}/SOBOL_parameters.txt')
 
     EE_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
     EE_out_df.set_index('Index')
@@ -50,10 +52,10 @@ def ANALYZE():
             output_long_name = item[1]
             output_unit = item[2]
             # Loading specific outputs for Morris EE analysis 
-            Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+            Y = np.loadtxt(f'{path}/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
             EE = SALib.analyze.morris.analyze(sp, X, Y, conf_level=0.95, num_levels=N) # analyzes the Elementary effects for each models ouput
 
-            with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
+            with open(f'{path}l/results/full_out/{model_short_name}_{output_short_name}_EE_results.txt', 'w') as f:
                 results_df = EE.to_df()
                 f.write(str(results_df))
             f.close
@@ -68,7 +70,7 @@ def ANALYZE():
             EE_out_df[mu_star_output_key] = EE['mu_star']
             EE_out_df[mu_star_conf_output_key] = EE['mu_star_conf']
             EE_out_df[sigma_output_key] = EE['sigma']
-    EE_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/EE_out.csv', index=False)
+    EE_out_df.to_csv(f'{path}/results/EE_out.csv', index=False)
 
 # Executes this program/function
 if __name__ ==('__main__'):
@@ -96,7 +98,7 @@ def CHART():
     SEM_legend_multi_model       = [AMI_patch, BOS_patch, CAV_patch, temp_point, rh_point, CO2_point, PPFD_point, H_point, SEM_line]
 
     # read in the data
-    EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/EE_out.csv')
+    EE_out_df = pd.read_csv(f'{path}/results/EE_out.csv')
 
     '''##########################################################
      mu star by sigma with a 1/1 line MULTIMODEL
@@ -170,7 +172,7 @@ def CHART():
         plt.title(f'EE of {output_short_name}')
         plt.legend(handles=onetoone_legend_multi_model)
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Elementary_Effects/EE_1-1_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'{path}/figures/Elementary_Effects/EE_1-1_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
 
     '''##########################################################
@@ -245,7 +247,7 @@ def CHART():
                 plt.title(f'EE of {model_short_name}_{output_short_name}')
                 plt.legend(handles=onetoone_legend_single_model)
                 # plt.show()
-                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/figures/EE/EE_1-1{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{path}/GSUA_{model_short_name}_out/figures/EE/EE_1-1{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 plt.close()
 
     '''###############################################################################
@@ -316,7 +318,7 @@ def CHART():
         plt.title(f'EE of {output_short_name}')
         plt.legend(handles=SEM_legend_multi_model)
         # plt.show()
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'{path}/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
         plt.close()
 
     '''###############################################################################
@@ -387,7 +389,7 @@ def CHART():
                 plt.title(f'EE of {model_short_name}_{output_short_name}')
                 plt.legend(handles=SEM_legend_single_model)
                 # plt.show()
-                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/figures/EE/EE_SEM_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{path}/GSUA_{model_short_name}_out/figures/EE/EE_SEM_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 plt.close()
 
 

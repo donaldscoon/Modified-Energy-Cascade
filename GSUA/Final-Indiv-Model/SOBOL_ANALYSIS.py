@@ -22,6 +22,7 @@ inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
+path = naming_function.path_names()
 
 sobol_tests = [
          ["ST", "Total Order"], 
@@ -35,7 +36,7 @@ sobol_tests = [
 #     for i, X in enumerate(sp.samples):
 #     #     # this saves each of the sample parameters.
 #     #     # Columns are Temp, Humidity, CO2, PPFD, H
-#         np.savetxt("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/SOBOL_parameters.txt", sp.samples)
+#         np.savetxt(f'{path}/SOBOL_parameters.txt', sp.samples)
 #         SIM_TEMP = X[0]
 #         SIM_RH   = X[1]
 #         SIM_CO2  = X[2]
@@ -49,9 +50,9 @@ sobol_tests = [
 
 # def ANALYZE():
 #     # Create dataframes for each models GSUA runs
-#     df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-#     df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-#     df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+#     df_AMI_sims = pd.read_csv(f'{path}/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+#     df_BOS_sims = pd.read_csv(f'{path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+#     df_CAV_sims = pd.read_csv(f'{path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
 #     sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
 #     sobol_ST_out_df.set_index('Index')
@@ -73,7 +74,7 @@ sobol_tests = [
 #             output_long_name = item[1]
 #             output_unit = item[2]
 #             # Loading specific outputs for GSUA analysis 
-#             Y = np.loadtxt(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+#             Y = np.loadtxt(f'{path}/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
 #             # print(Y)
 #             sp.set_results(Y)
 #             # forgive me, I want the output files to contain everything, even the constant/nonexistent outputs
@@ -92,7 +93,7 @@ sobol_tests = [
 
 #             # this saving the results part is still pretty garbage, 
 #             # diverted them to a special folder just in case though. 
-#             with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/full_out/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
+#             with open(f'{path}/results/full_out/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
 #                 results_df = sp.to_df()
 #                 f.write(str(results_df))
 #             f.close
@@ -119,9 +120,9 @@ sobol_tests = [
 
 
 #     # # Saving all of these to CSV's
-#     sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+#     sobol_S1_out_df.to_csv(f'{path}/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
+#     sobol_S2_out_df.to_csv(f'{path}/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
+#     sobol_ST_out_df.to_csv(f'{path}/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
 
 # # Executes this program/function
 # if __name__ ==('__main__'):
@@ -133,9 +134,9 @@ def CHART():
     bos_c = '#067300'
     cav_c = '#8C0004'
 
-    S1_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_S1_out.csv')    
-    S2_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_S2_out.csv')    
-    ST_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/results/sobol_ST_out.csv')    
+    S1_df = pd.read_csv(f'{path}/results/sobol_S1_out.csv')    
+    S2_df = pd.read_csv(f'{path}/results/sobol_S2_out.csv')    
+    ST_df = pd.read_csv(f'{path}/results/sobol_ST_out.csv')    
 
     S1_ST_DF = pd.concat([S1_df, ST_df], axis=1) #combining the S1 and S2 dataframes for better looping
 
@@ -216,7 +217,7 @@ def CHART():
     #                     plt.xlabel('Equation Inputs')
     #                     plt.title(f'{sobol_long_name} Results of {model_short_name} {output_short_name}')
     #                     plt.show()
-    #                     # plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+    #                     # plt.savefig(f'{path}/GSUA_{model_short_name}_out/figures/sobol/{sobol_short_name}_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
     #                     # plt.close()
 
 
@@ -277,7 +278,7 @@ def CHART():
                 # plt.xlabel('Input Interaction')
                 plt.legend()
                 plt.title(f'{sobol_long_name} Results of {output_long_name}')
-                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{path}/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 # plt.show()
                 # plt.close()
             else:
@@ -286,7 +287,7 @@ def CHART():
                 # plt.xlabel('Input Interaction')
                 plt.legend()
                 plt.title(f'{sobol_long_name} Results of {output_long_name}')
-                plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{path}/figures/Sobol/{sobol_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 # plt.show()
                 # plt.close()
 

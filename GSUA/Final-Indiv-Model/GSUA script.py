@@ -29,6 +29,7 @@ inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
+path = naming_function.path_names()
 
 
 ##########################################################

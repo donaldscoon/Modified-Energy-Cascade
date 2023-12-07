@@ -35,8 +35,11 @@ if __name__ ==('__main__'):
 
 
 def path_names():
-    path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Indiv'
-    return path
+    gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/'
+    indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Indiv/'
+    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Structure'
+
+    return gen_path, indiv_path, structure_path
 
 if __name__ ==('__main__'):
     path_names()

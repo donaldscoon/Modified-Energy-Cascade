@@ -12,6 +12,8 @@ inputs = naming_function.mec_input_names()
 outputs = naming_function.mec_output_names()
 models = naming_function.model_names()
 sp = naming_function.prob_spec()
+path = naming_function.path_names()
+
 
 ami_c = '#2A119B'
 bos_c = '#067300'
@@ -38,10 +40,10 @@ cav_c = '#8C0004'
 import numpy as np
 
 def GSUA_CHARTS():
-    model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/SOBOL_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H'])
-    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
+    model_inputs = pd.read_csv(f'{path}/SOBOL_parameters.txt', sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H'])
+    df_AMI_sims = pd.read_csv(f'{path}/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_BOS_sims = pd.read_csv(f'{path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+    df_CAV_sims = pd.read_csv(f'{path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
     ##############################################
     ########### Input  Historgram ################
@@ -60,7 +62,7 @@ def GSUA_CHARTS():
         ax.set_ylabel('Frequency')
         ax.set_xlabel(f'{hist_units[i]}')
         ax.set_title(f'{hist_long_name[i]}')
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'{path}/figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
         # plt.show()
 
     ####################################################
@@ -108,7 +110,7 @@ def GSUA_CHARTS():
             plt.plot(xA,pA(xA), color="#0000FF")
             plt.plot(xB,pB(xB), color="darkgreen")
             plt.plot(xC,pC(xC), color="#FF0000")
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/scatter/MEC_Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'{path}/figures/scatter/MEC_Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # plt.show()
             plt.close()
 
@@ -122,7 +124,7 @@ def GSUA_CHARTS():
             light_colors = ['#A798EC', '#96F391', '#FE989A']
             for patch, light_colors in zip(bplot['boxes'], light_colors):
                 patch.set_facecolor(light_colors)
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/figures/histogram/MEC_Histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'{path}/figures/histogram/MEC_Histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             plt.close()
             # plt.show()
             
