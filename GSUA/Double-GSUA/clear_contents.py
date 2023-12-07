@@ -4,9 +4,6 @@ import tkinter as tk
 from tkinter import messagebox
 import naming_function
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
 gen_path, indiv_path, structure_path = naming_function.path_names()
 
 
@@ -33,3 +30,8 @@ def erase_files_in_folder(folder_path):
 
 def confirm_and_erase(folder_path):
     erase_files_in_folder(folder_path)
+
+def clear_GSUA_sim_csv():
+    if os.path.exists(f'{structure_path}GSUA_simulations.csv'):
+        os.remove(f'{structure_path}GSUA_simulations.csv')
+

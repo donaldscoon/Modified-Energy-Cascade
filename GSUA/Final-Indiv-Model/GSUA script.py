@@ -45,7 +45,7 @@ if __name__ == '__main__':
     sim_start=datetime.now()
     print("Generating the samples")
 
-    SOBOL_ANALYSIS.SAMPLE()
+    # SOBOL_ANALYSIS.SAMPLE()
     
     print('sobol sampling completed, proceeding to the simulations')
 
@@ -60,40 +60,40 @@ if __name__ == '__main__':
 #     # MEC_BOS_GSUA.RUN_SIM()      # Runs just the simulations for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_SIM()      # Runs just the simulations for the Cavazzoni Model
 
-#     # MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
+    MEC_AMI_GSUA.RUN_CHART()    # Runs just the charting for the Amitrano Model
 #     # MEC_BOS_GSUA.RUN_CHART()    # Runs just the charting for the Boscheri Model
 #     # MEC_CAV_GSUA.RUN_CHART()    # Runs just the charting for the Cavazzoni Model
 
-    MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
-    MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
-    MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
-    sim_time = datetime.now()-sim_start
-    print(f"All three models have run. It took {sim_time}")
+    # MEC_AMI_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Amitrano Model
+    # MEC_BOS_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Boscheri Model
+    # MEC_CAV_GSUA.RUN_FULL()     # Runs both the simulations and charting for the Cavazzoni Model
+    # sim_time = datetime.now()-sim_start
+    # print(f"All three models have run. It took {sim_time}")
 
 ###########################################################
-#################### Analysis #############################
-###########################################################
-    print("Beginning Analysis of simulations")
-    analysis_start=datetime.now()
+# #################### Analysis #############################
+# ###########################################################
+#     print("Beginning Analysis of simulations")
+#     analysis_start=datetime.now()
 
-    SOBOL_ANALYSIS.ANALYZE()
-    EE.ANALYZE()
+#     SOBOL_ANALYSIS.ANALYZE()
+#     EE.ANALYZE()
 
-###########################################################
-#################### VISUALIZATIONS #######################
-###########################################################
+# ###########################################################
+# #################### VISUALIZATIONS #######################
+# ###########################################################
 
-    GSUA_visulization.GSUA_CHARTS()
-    EE.CHART()
-    SOBOL_ANALYSIS.CHART()
+#     GSUA_visulization.GSUA_CHARTS()
+#     EE.CHART()
+#     SOBOL_ANALYSIS.CHART()
 
 
-    analysis_time = datetime.now()-analysis_start
-    print(f"All three models analyzed. It took {analysis_time}")
+#     analysis_time = datetime.now()-analysis_start
+#     print(f"All three models analyzed. It took {analysis_time}")
 
-    total_time = datetime.now()-sim_start
-    print(f"Individual Model GSUA Complete: {total_time}")
+#     total_time = datetime.now()-sim_start
+#     print(f"Individual Model GSUA Complete: {total_time}")
 
-###########################################
-############ To Do ########################
-###########################################
+# ###########################################
+# ############ To Do ########################
+# ###########################################

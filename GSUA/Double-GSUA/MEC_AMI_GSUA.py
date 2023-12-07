@@ -17,10 +17,7 @@ import naming_function
 ############## Defining the Model Inputs #################
 ##########################################################
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
-sp = naming_function.prob_spec()
+gen_path, indiv_path, structure_path = naming_function.path_names()
 
 #########################################################
 ################### OTHER MODEL CONSTANTS ###############
@@ -38,13 +35,15 @@ bmin_GON = 0.0486455477321762    # amitrano 2020 calibrated with growth chamber 
 bmax_GN = 0.0451765692503675     # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 bmax_GON = 0.0564626043274799    # amitrano 2020 calibrated with growth chamber experiment exact value from excel
 
-def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, GSUA_type, inputs, outputs, models):     # used to package this version of the MEC as a function callable by other programs
 
-    # start=datetime.now()
-    # print("Begining Amitrano Simulations")
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
+    if GSUA_type == 'Individual':
+        path = indiv_path
+    elif GSUA_type == 'Structure':
+        path = structure_path
 
     df_sims = pd.DataFrame({})
 
@@ -160,83 +159,111 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         t += res                          # advance timestep
     # print(df_records)                    # prints a copy of output in the terminal
     df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
-    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', mode='a', index=False, header=False)
+    df_sims.to_csv(f'{path}GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', mode='a', index=False, header=False)
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+        with open(f'{path}GSUA_AMI_out/data/GSUA_AMI_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
-
-# print("Amitrano Simulations Complete")
-# time = datetime.now()-start
-# print(f"Simulations took {time}")
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_SIM()
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     RUN_SIM()
 
 
 ##########################################################
 ############### VISUALIZATIONS ###########################
 ##########################################################
 
-def RUN_CHART(models, inputs, outputs):
+def RUN_CHART(GSUA_type, models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['SIM_NUM','Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
-                     'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
-    start=datetime.now()
-    print("Begining Amitrano Visulizations")
 
-    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names = df_sims_label)
+    if GSUA_type == 'Individual':
+        df_sims_label = ['SIM_NUM','Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                         'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                         'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'STRU']
 
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
-        input_short_name = item[0]
-        input_long_name = item[1]
-        input_unit = item[2]
-        for item in outputs:
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
+        df_AMI_sims = pd.read_csv(f'{indiv_path}GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names=df_sims_label)
 
-            """This chart bulding stuff works!"""
-            VIS_GSUA = df_AMI_sims[[output_short_name, input_short_name]]
-            VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
-            x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-            y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-            fig, ax = plt.subplots()
-            ax.scatter(x, y)
-            ax.set_ylabel(f'{output_long_name} ({output_unit})')
-            ax.set_xlabel(f'{input_long_name} ({input_unit})')
-            plt.title(f'AMI {input_short_name} x {output_short_name}')
-            # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
+        for item in mec_inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
 
-            # calc the trendline
-            z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
-            p = np.poly1d(z)
-            plt.plot(x,p(x),"red")
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_AMI_sims[['SIM_NUM', output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'AMI {input_short_name} x {output_short_name}')
+                # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-            # in the likely rare event all of these need to be viewed...
-            # plt.show()
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
 
-    print("Amitrano Visulizations Complete")
-    time = datetime.now()-start
-    print(f"Charting took {time}")
+                plt.savefig(f'{indiv_path}/GSUA_AMi_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_CHART()
+    if GSUA_type == 'Structure':
 
-def RUN_FULL():
-    print("Running Amitrano Simulations and Charting Functions")
-    start=datetime.now()
-    RUN_SIM()
-    RUN_CHART()
-    time = datetime.now()-start
-    print(f"Full Amitrano run completed. It took {time}")
+        df_sims_label = ['Timestep','skip?','SIM_NUM', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                         'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                         'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_FULL()
+        df_AMI_sims = pd.read_csv(f'{structure_path}GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names = df_sims_label)
+
+        for item in mec_inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_AMI_sims[[output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'AMI {input_short_name} x {output_short_name}')
+
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
+
+                plt.savefig(f'{structure_path}GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
+
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     RUN_CHART()
+
+# def RUN_FULL():
+#     print("Running Amitrano Simulations and Charting Functions")
+#     start=datetime.now()
+#     RUN_SIM()
+#     RUN_CHART()
+#     time = datetime.now()-start
+#     print(f"Full Amitrano run completed. It took {time}")
+
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     RUN_FULL()

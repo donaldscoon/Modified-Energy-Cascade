@@ -18,17 +18,16 @@ import naming_function
 ############## Defining the Model Inputs #################
 ##########################################################
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
-sp = naming_function.prob_spec()
+gen_path, indiv_path, structure_path = naming_function.path_names()
 
-def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
-    # start=datetime.now()
-    # print("Begining Boscheri Simulations")
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, GSUA_type, inputs, outputs, models):     # used to package this version of the MEC as a function callable by other programs
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
+    if GSUA_type == 'Individual':
+        path = indiv_path
+    elif GSUA_type == 'Structure':
+        path = structure_path
 
     df_sims = pd.DataFrame({})
 
@@ -344,15 +343,11 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
     df_sims = df_avg_sims
     df_sims['DCG'] = df_sum_sims['DCG']
     df_sims['CGR'] = df_sum_sims['CGR']
-    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', mode='a', index=False, header=False) # exports entire final data frame to a CSV
+    df_sims.to_csv(f'{path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', mode='a', index=False, header=False) # exports entire final data frame to a CSV
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+        with open(f'{path}/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
-# print("NOTE: Boscheri did not calculate P_GROSS, VP_AIR, TCB, TEB")
-# print("Boscheri Simulations Complete")
-# time = datetime.now()-start
-# print(f"Simulations took {time}")
 
 # Executes this program/function
 if __name__ ==('__main__'):
@@ -361,70 +356,95 @@ if __name__ ==('__main__'):
 ###########################################################
 #################### VISUALIZATIONS #######################
 # ###########################################################
-def RUN_CHART(models, inputs, outputs):
+def RUN_CHART(GSUA_type, models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
-                     'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
-                     'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
-                     'DOP','DOC','g_S','g_A','g_C','DTR',
-                     'DCO2C','DCO2P','DNC', 'DWC','TEMP',
-                     'T_DARK','RH','CO2','PPFD', 'STRU']
+
+    if GSUA_type == 'Individual':
+        df_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+                        'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
+                        'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
+                        'DOP','DOC','g_S','g_A','g_C','DTR',
+                        'DCO2C','DCO2P','DNC', 'DWC','T_LIGHT',
+                        'T_DARK','RH','CO2','PPFD', 'STRU']
+        df_BOS_sims = pd.read_csv(f'{indiv_path}GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_sims_label)
+
+        for item in mec_inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+                
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_BOS_sims[['SIM_NUM', output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'BOS {input_short_name} x {output_short_name}')
+
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
+
+                plt.savefig(f'{indiv_path}/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
+
+    if GSUA_type == 'Structure':
+        df_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+                        'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
+                        'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
+                        'DOP','DOC','g_S','g_A','g_C','DTR',
+                        'DCO2C','DCO2P','DNC', 'DWC','TEMP',
+                        'T_DARK','RH','CO2','PPFD', 'STRU']
+
+        df_BOS_sims = pd.read_csv(f'{structure_path}GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_sims_label)
+
+        for item in mec_inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_BOS_sims[[output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'BOS {input_short_name} x {output_short_name}')
+
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
+
+                plt.savefig(f'{structure_path}GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
 
 
-
-    start=datetime.now()
-
-    print("Begining Boscheri Visulizations")
-
-    df_BOS_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_sims_label)
-
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
-        input_short_name = item[0]
-        input_long_name = item[1]
-        input_unit = item[2]
-        for item in outputs:
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
-            # print(input_short_name, output_short_name)
-
-            """This chart bulding stuff works!"""
-            VIS_GSUA = df_BOS_sims[[output_short_name, input_short_name]]
-            VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
-            x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-            y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-            fig, ax = plt.subplots()
-            ax.scatter(x, y)
-            ax.set_ylabel(f'{output_long_name} ({output_unit})')
-            ax.set_xlabel(f'{input_long_name} ({input_unit})')
-            plt.title(f'BOS {input_short_name} x {output_short_name}')
-            # plt.axhline(y=np.nanmean(y), color='red', linestyle='--', linewidth=3, label='Avg')     # just the straight average of the DTR for all simulations
-
-            # calc the trendline
-            z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
-            p = np.poly1d(z)
-            plt.plot(x,p(x),"red")
-
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-            # in the likely rare event all of these need to be viewed...
-            # plt.show()
-
-    print("Boscheri Visulizations Complete")
-    time = datetime.now()-start
-    print(f"Charting took {time}")
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_CHART()
-
-def RUN_FULL():
-    print("Running Boscheri Simulations and Charting Functions")
-    start=datetime.now()
-    RUN_SIM()
-    RUN_CHART()
-    time = datetime.now()-start
-    print(f"Full Boscheri run completed. It took {time}")
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_FULL()
+# def RUN_FULL():
+#     print("Running Boscheri Simulations and Charting Functions")
+#     start=datetime.now()
+#     RUN_SIM()
+#     RUN_CHART()
+#     time = datetime.now()-start
+#     print(f"Full Boscheri run completed. It took {time}")
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     RUN_FULL()

@@ -7,26 +7,47 @@ input names, and output names for consistency throughout the code.
 
 from SALib import ProblemSpec
 
-def prob_spec():
-    sp = ProblemSpec({
-    'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
-    'num_vars': 5,
-    # NORMAL Notation [Average, Standard Deviation]
-    # TRIANGLE Notation [min, max, peak as % of that range]
-    # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
-    # which would actually give a peak at 24 since the range starts at 5.
-    'bounds': [[21.20, 0.30],    # Temperature Average, SD 
-               [72.14, 8.13],    # Relative Humidity Average, SD 
-               [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
-               [236.95, 13.47],  # PPFD Level Average, SD 
-               [10,22, 0.5]],    # Photoperiod Peak at 16 +- 6 hours
-    'dists': ['norm',             # Temperature
-              'norm',             # Relative Humidity
-              'norm',             # Atmo CO2
-              'norm',             # PPFD
-              'triang'],            # Photoperiod
-    'outputs': ['Y']
-    })
+def prob_spec(GSUA_type):
+    if GSUA_type == 'Individual': # Sampling procedure for the Structure GSUA
+        sp = ProblemSpec({
+        'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H'],
+        'num_vars': 5,
+        # NORMAL Notation [Average, Standard Deviation]
+        # TRIANGLE Notation [min, max, peak as % of that range]
+        # for example, with  Temp the range is 35. 54.286% of that would equal 19, 
+        # which would actually give a peak at 24 since the range starts at 5.
+        'bounds': [[21.20, 0.30],    # Temperature Average, SD 
+                [72.14, 8.13],    # Relative Humidity Average, SD 
+                [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
+                [236.95, 13.47],  # PPFD Level Average, SD 
+                [10,22, 0.5]],    # Photoperiod Peak at 16 +- 6 hours
+        'dists': ['norm',             # Temperature
+                'norm',             # Relative Humidity
+                'norm',             # Atmo CO2
+                'norm',             # PPFD
+                'triang'],          # Photoperiod
+        'outputs': ['Y']
+        })
+
+    elif GSUA_type == 'Structure': # Sampling procedure for the Structure GSUA
+        sp = ProblemSpec({
+            'names': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'],
+            'num_vars': 6,
+            'bounds': [[21.20, 0.30],    # Temperature Average, SD 
+                    [72.14, 8.13],    # Relative Humidity Average, SD 
+                    [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
+                    [236.95, 13.47],  # PPFD Level Average, SD 
+                    [10,22, 0.5],     # Photoperiod Peak at 16 +- 6 hours
+                    [0,2]],           # Model structure, AMI, BOS, CAV, uniform distri
+            'dists': ['norm',             # Temperature
+                    'norm',             # Relative Humidity
+                    'norm',             # Atmo CO2
+                    'norm',             # PPFD
+                    'triang',             # Photoperiod
+                    'unif'],              # Model Structure
+            'outputs': ['Y']
+            })
+
     return sp
 
 # Executes this program/function
@@ -37,7 +58,7 @@ if __name__ ==('__main__'):
 def path_names():
     gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/'
     indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Indiv/'
-    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Structure'
+    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Structure/'
 
     return gen_path, indiv_path, structure_path
 
@@ -58,16 +79,28 @@ def model_names():          # Iterates through the model names
 if __name__ ==('__main__'):
     model_names()
 
-def mec_input_names():      # Iterates through the input names
+def mec_input_names(GSUA_type):      # Iterates through the input names
     u = "\u00B5"        # unicode for the micro symbol
-    mec_inputs = [
-                ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
-                ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
+    if GSUA_type == 'Individual':
+        mec_inputs = [
+                    ["T_LIGHT", "Light Cycle Temperature", "Degrees Celsius"],
+                    ["T_DARK", "Dark Cycle Temperature", "Degrees Celsius"],
+                    ["RH", "Relative Humidity", "%"],
+                    ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
+                    ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
+                    ["H", "Photoperiod", "hours day$^{-1}$"]
+                    ]
+
+    elif GSUA_type == 'Structure':
+        mec_inputs = [
+                ["TEMP", "Light Cycle Temperature", "Degrees Celsius"],
                 ["RH", "Relative Humidity", "%"],
                 ["CO2", "CO$_{2}$ Concentration", u+"mol$_{carbon}$ mol$_{air}$"],
                 ["PPFD", "Photosynthetic Photon Flux", u+"mol$_{photons}$ m$^{-2}$ second$^{-1}$"],
-                ["H", "Photoperiod", "hours day$^{-1}$"]
-    ]
+                ["H", "Photoperiod", "hours day$^{-1}$"],
+                ["STRU", "Structure", ""]
+                ]
+
     return mec_inputs
 
 # Executes this program/function

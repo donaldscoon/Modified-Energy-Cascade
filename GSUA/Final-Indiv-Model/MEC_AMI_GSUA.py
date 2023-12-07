@@ -199,7 +199,7 @@ def RUN_CHART():
     start=datetime.now()
     print("Begining Amitrano Visulizations")
 
-    df_AMI_sims = pd.read_csv(f'{path}/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+    df_AMI_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Indiv-Model/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
 
     for item in inputs:        # this allows easy injection of labels into chart elements
         input_short_name = item[0]

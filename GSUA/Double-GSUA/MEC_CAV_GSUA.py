@@ -17,25 +17,20 @@ import naming_function
 ############## Defining the Model Inputs #################
 ##########################################################
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
-sp = naming_function.prob_spec()
+gen_path, indiv_path, structure_path = naming_function.path_names()
 
-def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU):     # used to package this version of the MEC as a function callable by other programs
-    start=datetime.now()
-    # print("Begining Cavazzoni Simulations")
+def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, GSUA_type, inputs, outputs, models):     # used to package this version of the MEC as a function callable by other programs
+
     ##########################################################
     ############## Defining the Model Inputs #################
     ##########################################################
+    if GSUA_type == 'Individual':
+        path = indiv_path
+    elif GSUA_type == 'Structure':
+        path = structure_path
 
     df_sims = pd.DataFrame({})
 
-    ##########################################################
-    ######################### Run Model ######################
-    ##########################################################
-    """This was copy and pasted directly from the CAV model with the variable inputs 
-    adjusted to accept the param values generated with the saltelli sampler"""
     ##################################################
     ################## MODEL INPUTS ##################
     ##################################################
@@ -309,80 +304,104 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         t += res                          # advance timestep
     # print(df_records)                    # prints a copy of output in the terminal
     df_sims = pd.concat([df_sims, df_records.iloc[-1:]], ignore_index=True) # should save the last row of each version of df_records
-    df_sims.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', mode='a', index=False, header=False)
+    df_sims.to_csv(f'{path}GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', mode='a', index=False, header=False)
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
-        with open(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
+        with open(f'{path}GSUA_CAV_out/data/GSUA_CAV_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
             np.savetxt(file, df_sims[[f'{output[0]}']]) # saves the output to the proper txt file
 
-    # print("Cavazzoni Simulations Complete")
-    # time = datetime.now()-start
-    # print(f"Simulations took {time}")
-
 # Executes this program/function
 if __name__ ==('__main__'):
     RUN_SIM()
 
-##########################################################
-############### VISUALIZATIONS ###########################
-##########################################################
+# ##########################################################
+# ############### VISUALIZATIONS ###########################
+# ##########################################################
 
-def RUN_CHART(models, inputs, outputs):
+def RUN_CHART(GSUA_type, models, inputs, outputs):
     mec_inputs = inputs
     outputs = outputs
-    df_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
-                     'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
-    start=datetime.now()
-    print("Begining Cavazzoni Visulizations")
+    if GSUA_type == 'Individual':
+        df_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                         'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                         'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'STRU']
 
-    df_CAV_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_sims_label)
+        df_CAV_sims = pd.read_csv(f'{indiv_path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names= df_sims_label)
 
-    for item in mec_inputs:        # this allows easy injection of labels into chart elements
-        input_short_name = item[0]
-        input_long_name = item[1]
-        input_unit = item[2]
-        for item in outputs:
-            output_short_name = item[0]
-            output_long_name = item[1]
-            output_unit = item[2]
+        for item in inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
 
-            """This chart bulding stuff works!"""
-            VIS_GSUA = df_CAV_sims[[output_short_name, input_short_name]]
-            VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
-            x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
-            y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
-            fig, ax = plt.subplots()
-            ax.scatter(x, y)
-            ax.set_ylabel(f'{output_long_name} ({output_unit})')
-            ax.set_xlabel(f'{input_long_name} ({input_unit})')
-            plt.title(f'CAV {input_short_name} x {output_short_name}')
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_CAV_sims[['SIM_NUM', output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'CAV {input_short_name} x {output_short_name}')
 
-            # calc the trendline
-            z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
-            p = np.poly1d(z)
-            plt.plot(x,p(x),"red")
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
 
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-            # in the likely rare event all of these need to be viewed...
-            # plt.show()
+                plt.savefig(f'{indiv_path}/GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
 
-    print("Cavazzoni Visulizations Complete")
-    time = datetime.now()-start
-    print(f"Charting took {time}")
+    if GSUA_type == 'Structure':
+        df_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                        'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                        'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_CHART()
+        df_CAV_sims = pd.read_csv(f'{structure_path}GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_sims_label)
 
-def RUN_FULL():
-    print("Running Cavazzoni Simulations and Charting Functions")
-    start=datetime.now()
-    RUN_SIM()
-    RUN_CHART()
-    time = datetime.now()-start
-    print(f"Full Cavazzoni run completed. It took {time}")
+        for item in mec_inputs:        # this allows easy injection of labels into chart elements
+            input_short_name = item[0]
+            input_long_name = item[1]
+            input_unit = item[2]
+            for item in outputs:
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    RUN_FULL()
+                """This chart bulding stuff works!"""
+                VIS_GSUA = df_CAV_sims[[output_short_name, input_short_name]]
+                VIS_GSUA = VIS_GSUA.sort_values(input_short_name, ascending=True)
+                x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
+                y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+                fig, ax = plt.subplots()
+                ax.scatter(x, y)
+                ax.set_ylabel(f'{output_long_name} ({output_unit})')
+                ax.set_xlabel(f'{input_long_name} ({input_unit})')
+                plt.title(f'CAV {input_short_name} x {output_short_name}')
+
+                # calc the trendline
+                z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
+                p = np.poly1d(z)
+                plt.plot(x,p(x),"red")
+
+                plt.savefig(f'{structure_path}GSUA_CAV_out/figures/CAV {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                # in the likely rare event all of these need to be viewed...
+                # plt.show()
+
+
+# def RUN_FULL():
+#     print("Running Cavazzoni Simulations and Charting Functions")
+#     start=datetime.now()
+#     RUN_SIM()
+#     RUN_CHART()
+#     time = datetime.now()-start
+#     print(f"Full Cavazzoni run completed. It took {time}")
+
+# # Executes this program/function
+# if __name__ ==('__main__'):
+#     RUN_FULL()

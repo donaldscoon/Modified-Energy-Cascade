@@ -18,9 +18,10 @@ warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 ############## Defining the Model Inputs #################
 ##########################################################
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-sp = naming_function.prob_spec()
+# inputs = naming_function.mec_input_names()
+# outputs = naming_function.mec_output_names()
+# sp = naming_function.prob_spec()
+gen_path, indiv_path, structure_path = naming_function.path_names()
 
 ###########################################################
 #################### Analysis #############################

@@ -1,4 +1,3 @@
-from SALib import ProblemSpec
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -10,10 +9,10 @@ import naming_function
 ############## Defining the Model Inputs #################
 ##########################################################
 
-inputs = naming_function.mec_input_names()
-outputs = naming_function.mec_output_names()
-models = naming_function.model_names()
-sp = naming_function.prob_spec()
+# inputs = naming_function.mec_input_names()
+# outputs = naming_function.mec_output_names()
+# models = naming_function.model_names()
+gen_path, indiv_path, structure_path = naming_function.path_names()
 
 ami_c = '#2A119B'
 bos_c = '#067300'
