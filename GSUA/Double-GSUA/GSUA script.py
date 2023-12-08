@@ -182,21 +182,18 @@ if __name__ == '__main__':
         # ##########################################################
         # ################### VISUALIZATIONS #######################
         # ##########################################################
-        print(f'Creating charts for the results of {GSUA_type} simulations and analysis')
-        time_viz_start = datetime.now() 
+        # print(f'Creating charts for the results of {GSUA_type} simulations and analysis')
+        # time_viz_start = datetime.now() 
         # MEC_AMI_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Amitrano Model
         # MEC_BOS_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Boscheri Model
         # MEC_CAV_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
         # GSUA_visulization.GSUA_CHARTS(GSUA_type, models, inputs, outputs)
         EE.CHART(GSUA_type, models, inputs, outputs)
-        # SOBOL_ANALYSIS.CHART(GSUA_type, models, inputs, outputs)
-        time_viz_dun = datetime.now() - time_viz_start
-        print(f'Visulizations took {time_viz_dun}')
+        SOBOL_ANALYSIS.CHART(GSUA_type, models, inputs, outputs)
+        # time_viz_dun = datetime.now() - time_viz_start
+        # print(f'Visulizations took {time_viz_dun}')
 
 
-###########################################
-############ To Do ########################
-###########################################
 time_dun = datetime.now() - time_start
 print(f'BOOOP! GSUA Complete. It took {time_dun}')
 
@@ -205,6 +202,13 @@ freq = 440  # Hz
 winsound.Beep(freq, duration)
 
 
+###########################################
+############ To Do ########################
+###########################################
+
+
             #### DOUBLE CHECK THAT THE MODEL STRUC IS MAKING A UNIFORM DISTRI
             ##################################################################
             #### Does EE analysis need to iterate through the input columns?
+            ##################################################################
+            #### Maybe try to condense the EE and sobol charting functions?

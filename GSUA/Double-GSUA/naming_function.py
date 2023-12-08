@@ -155,3 +155,10 @@ def df_labels(GSUA_type):
                             'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
 
     return df_AMI_sims_label, df_BOS_sims_label, df_CAV_sims_label
+
+def conf_bars():
+    elinewidth = .75
+    capsize = 2
+    capthick = .75
+
+    return elinewidth, capsize, capthick

@@ -20,9 +20,12 @@ warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 ##########################################################
 
 gen_path, indiv_path, structure_path = naming_function.path_names()
+
 ami_c = '#2A119B'
 bos_c = '#067300'
 cav_c = '#8C0004'
+
+elinewidth, capsize, capthick = naming_function.conf_bars()
 
 ###########################################################
 #################### Analysis #############################
@@ -175,7 +178,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                         plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
 
                         # Adding Confidences
-                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=.75, capsize=2, capthick=.75)
+                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
         
                         # Add a 1:1 line
                         # min_val = min(min(X), min(Y))
@@ -228,7 +231,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                         plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
 
                         # Adding Confidences
-                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=.75, capsize=2, capthick=.75)
+                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
         
                     # Add a 1:1 line
                     # min_val = min(min(X), min(Y))
@@ -397,7 +400,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                     plt.scatter(mu_star, sigma, s=50, marker=marker, color='black')
 
                     # Adding Confidence bars
-                    plt.errorbar(mu_star, sigma, xerr=mu_star_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+                    plt.errorbar(mu_star, sigma, xerr=mu_star_conf, ecolor='black', elinewidth=elinewidth, capsize=capsize, capthick=capthick)
 
                     # Add a 1:1 line
                     # min_val = min(min(X), min(Y))
