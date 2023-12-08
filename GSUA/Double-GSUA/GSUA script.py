@@ -187,8 +187,8 @@ if __name__ == '__main__':
         # MEC_AMI_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Amitrano Model
         # MEC_BOS_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Boscheri Model
         # MEC_CAV_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
-        GSUA_visulization.GSUA_CHARTS(GSUA_type, models, inputs, outputs)
-        # EE.CHART(GSUA_type, models, inputs, outputs)
+        # GSUA_visulization.GSUA_CHARTS(GSUA_type, models, inputs, outputs)
+        EE.CHART(GSUA_type, models, inputs, outputs)
         # SOBOL_ANALYSIS.CHART(GSUA_type, models, inputs, outputs)
         time_viz_dun = datetime.now() - time_viz_start
         print(f'Visulizations took {time_viz_dun}')

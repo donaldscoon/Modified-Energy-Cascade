@@ -16,10 +16,13 @@ warnings.filterwarnings("ignore", category=pd.errors.PerformanceWarning)
 
 
 ##########################################################
-############## Defining the Model Inputs #################
+##############   #################
 ##########################################################
 
 gen_path, indiv_path, structure_path = naming_function.path_names()
+ami_c = '#2A119B'
+bos_c = '#067300'
+cav_c = '#8C0004'
 
 ###########################################################
 #################### Analysis #############################
@@ -110,167 +113,356 @@ def ANALYZE(GSUA_type, models, inputs, outputs):
             EE_out_df[sigma_output_key] = EE['sigma']
         EE_out_df.to_csv(f'{structure_path}results/EE_out.csv', index=False)
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    ANALYZE()
 
-# def CHART():
-    
-#     ### All of these creates a single point for all the legend entries!
-#     temp_point = Line2D([0], [0], linestyle= '', color='black', marker= 'o', label='TEMP' )
-#     rh_point   = Line2D([0], [0], linestyle= '', color='black', marker= 's', label='RH' )
-#     CO2_point  = Line2D([0], [0], linestyle= '', color='black', marker= '*', label='CO2' )
-#     PPFD_point = Line2D([0], [0], linestyle= '', color='black', marker= '^', label='PPFD' )
-#     H_point    = Line2D([0], [0], linestyle= '', color='black', marker= 'd', label='H' )
-#     STRU_point = Line2D([0], [0], linestyle= '', color='black', marker= 'P', label='STRU')
-#     SEM_line   = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
+def CHART(GSUA_type, models, inputs, outputs):
 
-#     onetoone_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point]
-#     SEM_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point, SEM_line]
+    ### All of these creates a single point for all the legend entries!
+    temp_point = Line2D([0], [0], linestyle= '', color='black', marker= 'o', label='TEMP' )
+    rh_point   = Line2D([0], [0], linestyle= '', color='black', marker= 's', label='RH' )
+    CO2_point  = Line2D([0], [0], linestyle= '', color='black', marker= '*', label='CO2' )
+    PPFD_point = Line2D([0], [0], linestyle= '', color='black', marker= '^', label='PPFD' )
+    H_point    = Line2D([0], [0], linestyle= '', color='black', marker= 'd', label='H' )
+    STRU_point = Line2D([0], [0], linestyle= '', color='black', marker= 'P', label='STRU')
+    SEM_line   = Line2D([0], [0], linestyle= '--', color='black', label='+- 2 SEM')
+    AMI_patch  = mpatches.Patch(color='#2A119B', label='AMI')
+    BOS_patch  = mpatches.Patch(color='#067300', label='BOS')
+    CAV_patch  = mpatches.Patch(color='#8C0004', label='CAV')
 
-#     # read in the data
-#     EE_out_df = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/EE_out.csv')
+    if GSUA_type == 'Individual':
+        onetoone_legend_single_model = [temp_point, rh_point, CO2_point, PPFD_point, H_point]
+        onetoone_legend_multi_model  = [AMI_patch, BOS_patch, CAV_patch, temp_point, rh_point, CO2_point, PPFD_point, H_point]
+        SEM_legend_single_model      = [temp_point, rh_point, CO2_point, PPFD_point, H_point, SEM_line]
+        SEM_legend_multi_model       = [AMI_patch, BOS_patch, CAV_patch, temp_point, rh_point, CO2_point, PPFD_point, H_point, SEM_line]
+        markers = ['o', 's', '*', '^', 'd']
 
-#     '''##########################################################
-#      mu star by sigma with a 1/1 line MULTIMODEL
-#      ########################################################'''
-#     for item in outputs:   # loop for outputs
-#         output_short_name = item[0]
-#         output_long_name = item[1]
-#         output_unit = item[2]
+        # read in the data
+        EE_out_df = pd.read_csv(f'{indiv_path}/results/EE_out.csv')
+
+        '''##########################################################
+        mu star by sigma with a 1/1 line MULTIMODEL
+        ########################################################'''
+        for item in outputs:   # loop for outputs
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+
+            plt.figure() # creates the figure for each output type, which is then iterated by model.
+            for item in models:                 # loop for model names
+                model_short_name = item[0]
+                model_long_name = item[1]
+
+                # sets the color of each model for that loop.
+                if model_short_name == 'AMI':
+                    color = ami_c
+                elif model_short_name == 'BOS':
+                    color = bos_c
+                elif model_short_name == 'CAV':
+                    color = cav_c
+                # print(model_short_name, output_short_name)
+                X = EE_out_df[f'{model_short_name}_{output_short_name}_mu_star']
+                Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
+                X_conf = EE_out_df[f'{model_short_name}_{output_short_name}__mu_star_conf']
+
+                # Check if both X and Y have all zero values
+                if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                    for i, marker in enumerate(markers):
+                        # Extract data
+                        mu_star = X[i]
+                        sigma = Y[i]
+                        mu_star_conf = X_conf[i]
+
+                        # Create the scatter plot
+                        plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
+
+                        # Adding Confidences
+                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=.75, capsize=2, capthick=.75)
         
-#         plt.figure() # creates the figure for each output type, which is then iterated by model.
+                        # Add a 1:1 line
+                        # min_val = min(min(X), min(Y))
+                        max_val = max(max(X), max(Y))
+                        plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
 
-#         # print(model_short_name, output_short_name)
-#         X = EE_out_df[f'{output_short_name}_mu_star']
-#         Y = EE_out_df[f'{output_short_name}_sigma']
-#         X_conf = EE_out_df[f'{output_short_name}__mu_star_conf']
+            # Set the labels and title
+            plt.xlabel('mu*')
+            plt.ylabel('sigma')
+            plt.title(f'EE of {output_short_name}')
+            plt.legend(handles=onetoone_legend_multi_model)
+            # plt.show()
+            plt.savefig(f'{indiv_path}figures/Elementary_Effects/EE_1-1_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+            plt.close()
 
-#         # Check if both X and Y have all zero values
-#         if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+        '''##########################################################
+        mu star by sigma with a 1/1 line SINGLE MODEL
+        #########################################################'''
+        for item in models:                 # loop for model names
+            model_short_name = item[0]
+            model_long_name = item[1]
+            for item in outputs:   # loop for outputs
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+
+                plt.figure() # creates the figure for each output type, which is then iterated by model.
+
+                # sets the color of each model for that loop.
+                if model_short_name == 'AMI':
+                    color = ami_c
+                elif model_short_name == 'BOS':
+                    color = bos_c
+                elif model_short_name == 'CAV':
+                    color = cav_c
+                # print(model_short_name, output_short_name)
+                X = EE_out_df[f'{model_short_name}_{output_short_name}_mu_star']
+                Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
+                X_conf = EE_out_df[f'{model_short_name}_{output_short_name}__mu_star_conf']
+
+                # Check if both X and Y have all zero values
+                if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                    for i, marker in enumerate(markers):
+                        # Extract data
+                        mu_star = X[i]
+                        sigma = Y[i]
+                        mu_star_conf = X_conf[i]
+
+                        # Create the scatter plot
+                        plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
+
+                        # Adding Confidences
+                        plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=.75, capsize=2, capthick=.75)
+        
+                    # Add a 1:1 line
+                    # min_val = min(min(X), min(Y))
+                    max_val = max(max(X), max(Y))
+                    plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
+
+                # Set the labels and title
+                plt.xlabel('mu*')
+                plt.ylabel('sigma')
+                plt.title(f'EE of {model_short_name}_{output_short_name}')
+                plt.legend(handles=onetoone_legend_single_model)
+                # plt.show()
+                plt.savefig(f'{indiv_path}GSUA_{model_short_name}_out/figures/EE/EE_1-1{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.close()
+
+        '''###############################################################################
+        mu by sigma with the V MULTIMODEL
+        ###############################################################################'''
+
+        for item in outputs:   # loop for outputs
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            fig, ax = plt.subplots() # creates the figure for each output type, which is then iterated by model.
+            for item in models:                 # loop for model names
+                model_short_name = item[0]
+                model_long_name = item[1]
+
+                # sets the color of each model for that loop.
+                if model_short_name == 'AMI':
+                    color = ami_c
+                elif model_short_name == 'BOS':
+                    color = bos_c
+                elif model_short_name == 'CAV':
+                    color = cav_c
+                # print(model_short_name, output_short_name)
+                X = EE_out_df[f'{model_short_name}_{output_short_name}_mu']
+                Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
+
+                # Check if both X and Y have all zero values
+                if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                    for i, marker in enumerate(markers):
+                        # Extract data
+                        mu = X[i]
+                        sigma = Y[i]                
+
+                        # Create the scatter plot
+                        plt.scatter(mu, sigma,    s=50, marker= marker, color= color)
                 
-#             # define which points correspond to which inputs
-#             mu_star_temp = X[0]
-#             mu_star_rh   = X[1]
-#             mu_star_CO2  = X[2]
-#             mu_star_PPFD = X[3]
-#             mu_star_H    = X[4]
-#             mu_star_STRU = X[5]
+                        # Add +-2SEM LINES
+                        # calc SD of mu, 
+                        mu_sd = EE_out_df[f'{model_short_name}_{output_short_name}_mu'].std()
 
-#             sigma_temp   = Y[0]
-#             sigma_rh     = Y[1]
-#             sigma_CO2    = Y[2]
-#             sigma_PPFD   = Y[3]
-#             sigma_H      = Y[4]
-#             sigma_STRU   = Y[5]
+                        # calc sqrt of N, 
+                        denom = np.emath.sqrt(128)
+                        pos2_SEM = 2*(mu_sd/denom)
+                        neg2_SEM = -2*(mu_sd/denom)
 
-#             mu_star_temp_conf        = X_conf[0]
-#             mu_star_rh_conf          = X_conf[1]
-#             mu_star_CO2_conf         = X_conf[2]
-#             mu_star_PPFD_conf        = X_conf[3]
-#             mu_star_H_conf           = X_conf[4]
-#             mu_star_STRU_conf        = X_conf[5]
+                        # I still don't fully understand how this centers the x axis to 0 but it does!
+                        x_max = np.abs(ax.get_xlim()).max()
+                        ax.set_xlim(xmin=-x_max, xmax=x_max)
 
-#             # Create the scatter plot
-#             plt.scatter(mu_star_temp, sigma_temp,    s=50, marker= 'o', color= "black")
-#             plt.scatter(mu_star_rh, sigma_rh,        s=50, marker= 's', color= "black")
-#             plt.scatter(mu_star_CO2, sigma_CO2,      s=50, marker= '*', color= "black")
-#             plt.scatter(mu_star_PPFD, sigma_PPFD,    s=50, marker= '^', color= "black")
-#             plt.scatter(mu_star_H, sigma_H,          s=50, marker= 'd', color= "black")
-#             plt.scatter(mu_star_STRU, sigma_STRU,    s=50, marker= 'P', color= "black")
+                        # Add lines from (0, 0) to SEM values
+                        plt.plot([0, neg2_SEM], [0, max(Y)], color=color, linestyle='--')
+                        plt.plot([0, pos2_SEM], [0, max(Y)], color=color, linestyle='--')
             
-#             # Adding Confidences
-#             plt.errorbar(mu_star_temp,  sigma_temp, xerr=mu_star_temp_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
-#             plt.errorbar(mu_star_rh,    sigma_rh,   xerr=mu_star_rh_conf,   ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
-#             plt.errorbar(mu_star_CO2,   sigma_CO2,  xerr=mu_star_CO2_conf,  ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
-#             plt.errorbar(mu_star_PPFD,  sigma_PPFD, xerr=mu_star_PPFD_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
-#             plt.errorbar(mu_star_H,     sigma_H,    xerr=mu_star_H_conf,    ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
-#             plt.errorbar(mu_star_STRU,  sigma_STRU, xerr=mu_star_STRU_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+            # Set the labels and title
+            plt.xlabel('mu')
+            plt.ylabel('sigma')
+            plt.title(f'EE of {output_short_name}')
+            plt.legend(handles=SEM_legend_multi_model)
+            # plt.show()
+            plt.savefig(f'{indiv_path}/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+            plt.close()
 
-#             # Add a 1:1 line
-#             # min_val = min(min(X), min(Y))
-#             max_val = max(max(X), max(Y))
-#             plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
+        '''###############################################################################
+        mu by sigma with the V SINGLE MODEL
+        ###############################################################################'''
 
-#         # Set the labels and title
-#         plt.xlabel('mu*')
-#         plt.ylabel('sigma')
-#         plt.title(f'EE of {output_short_name}')
-#         plt.legend(handles= onetoone_legend)
-#         # plt.show()
-#         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
-#         plt.close()
+        for item in models:                 # loop for model names
+            model_short_name = item[0]
+            model_long_name = item[1]
+            for item in outputs:   # loop for outputs
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+                fig, ax = plt.subplots() # creates the figure for each output type, which is then iterated by model.
 
-#     '''###############################################################################
-#     mu by sigma with the V MULTIMODEL
-#     ###############################################################################'''
+                # sets the color of each model for that loop.
+                if model_short_name == 'AMI':
+                    color = ami_c
+                elif model_short_name == 'BOS':
+                    color = bos_c
+                elif model_short_name == 'CAV':
+                    color = cav_c
+                # print(model_short_name, output_short_name)
+                X = EE_out_df[f'{model_short_name}_{output_short_name}_mu']
+                Y = EE_out_df[f'{model_short_name}_{output_short_name}_sigma']
 
-#     for item in outputs:   # loop for outputs
-#         output_short_name = item[0]
-#         output_long_name = item[1]
-#         output_unit = item[2]
+                # Check if both X and Y have all zero values
+                if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                    for i, marker in enumerate(markers):
+                        # Extract data
+                        mu = X[i]
+                        sigma = Y[i]                
 
-#         fig, ax = plt.subplots() # creates the figure for each output type, which is then iterated by model.
-
-#         # print(model_short_name, output_short_name)
-#         X = EE_out_df[f'{output_short_name}_mu']
-#         Y = EE_out_df[f'{output_short_name}_sigma']
-
-#         # Check if both X and Y have all zero values
-#         if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                        # Create the scatter plot
+                        plt.scatter(mu, sigma,    s=50, marker= marker, color= color)
                 
-#             # define which points correspond to which inputs
-#             mu_temp = X[0]
-#             mu_rh   = X[1]
-#             mu_CO2  = X[2]
-#             mu_PPFD = X[3]
-#             mu_H    = X[4]
-#             mu_STRU = X[5]
+                        # Add +-2SEM LINES
+                        # calc SD of mu, 
+                        mu_sd = EE_out_df[f'{model_short_name}_{output_short_name}_mu'].std()
 
-#             sigma_temp   = Y[0]
-#             sigma_rh     = Y[1]
-#             sigma_CO2    = Y[2]
-#             sigma_PPFD   = Y[3]
-#             sigma_H      = Y[4]
-#             sigma_STRU   = Y[5]
+                        # calc sqrt of N, 
+                        denom = np.emath.sqrt(128)
+                        pos2_SEM = 2*(mu_sd/denom)
+                        neg2_SEM = -2*(mu_sd/denom)
 
-#             # Create the scatter plot
-#             plt.scatter(mu_temp, sigma_temp,    s=50, marker= 'o', color= 'black')
-#             plt.scatter(mu_rh, sigma_rh,        s=50, marker= 's', color= 'black')
-#             plt.scatter(mu_CO2, sigma_CO2,      s=50, marker= '*', color= 'black')
-#             plt.scatter(mu_PPFD, sigma_PPFD,    s=50, marker= '^', color= 'black')
-#             plt.scatter(mu_H, sigma_H,          s=50, marker= 'd', color= 'black')
-#             plt.scatter(mu_STRU, sigma_STRU,    s=50, marker= 'P', color= 'black')
-     
-#             # Add +-2SEM LINES
-#             # calc SD of mu, 
-#             mu_sd = EE_out_df[f'{output_short_name}_mu'].std()
+                        # I still don't fully understand how this centers the x axis to 0 but it does!
+                        x_max = np.abs(ax.get_xlim()).max()
+                        ax.set_xlim(xmin=-x_max, xmax=x_max)
 
-#             # calc sqrt of N, 
-#             denom = np.emath.sqrt(128)
-#             pos2_SEM = 2*(mu_sd/denom)
-#             neg2_SEM = -2*(mu_sd/denom)
+                        # Add lines from (0, 0) to SEM values
+                        plt.plot([0, neg2_SEM], [0, max(Y)], color=color, linestyle='--')
+                        plt.plot([0, pos2_SEM], [0, max(Y)], color=color, linestyle='--')
+            
+                    # Set the labels and title
+                    plt.xlabel('mu')
+                    plt.ylabel('sigma')
+                    plt.title(f'EE of {model_short_name}_{output_short_name}')
+                    plt.legend(handles=SEM_legend_single_model)
+                    # plt.show()
+                    plt.savefig(f'{indiv_path}/GSUA_{model_short_name}_out/figures/EE/EE_SEM_{model_short_name}_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                    plt.close()
 
-#             # I still don't fully understand how this centers the x axis to 0 but it does!
-#             x_max = np.abs(ax.get_xlim()).max()
-#             ax.set_xlim(xmin=-x_max, xmax=x_max)
+    if GSUA_type =='Structure':
+        onetoone_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point]
+        SEM_legend = [temp_point, rh_point, CO2_point, PPFD_point, H_point, STRU_point, SEM_line]
+        EE_out_df = pd.read_csv(f'{structure_path}results/EE_out.csv')
+        markers = ['o', 's', '*', '^', 'd', 'P']
+            
+        '''##########################################################
+        mu star by sigma with a 1/1 line MULTIMODEL
+        ########################################################'''
+        for item in outputs:   # loop for outputs
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            
+            plt.figure() # creates the figure for each output type, which is then iterated by model.
 
-#             # Add lines from (0, 0) to SEM values
-#             plt.plot([0, neg2_SEM], [0, max(Y)], color='black', linestyle='--')
-#             plt.plot([0, pos2_SEM], [0, max(Y)], color='black', linestyle='--')
+            # print(model_short_name, output_short_name)
+            X = EE_out_df[f'{output_short_name}_mu_star']
+            Y = EE_out_df[f'{output_short_name}_sigma']
+            X_conf = EE_out_df[f'{output_short_name}__mu_star_conf']
 
-#         # Set the labels and title
-#         plt.xlabel('mu')
-#         plt.ylabel('sigma')
-#         plt.title(f'EE of {output_short_name}')
-#         plt.legend(handles = SEM_legend)
-#         # plt.show()
-#         plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
-#         plt.close()
+            # Check if both X and Y have all zero values
+            if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                for i, marker in enumerate(markers):
+                    # Extract data
+                    mu_star = X[i]
+                    sigma = Y[i]
+                    mu_star_conf = X_conf[i]
 
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     CHART()
+                    # Create scatter plot
+                    plt.scatter(mu_star, sigma, s=50, marker=marker, color='black')
+
+                    # Adding Confidence bars
+                    plt.errorbar(mu_star, sigma, xerr=mu_star_conf, ecolor='black', elinewidth=.75, capsize=2, capthick=.75)
+
+                    # Add a 1:1 line
+                    # min_val = min(min(X), min(Y))
+                    max_val = max(max(X), max(Y))
+                    plt.plot([0, max_val], [0, max_val], color='gray', linestyle='-')
+
+                # Set the labels and title
+                plt.xlabel('mu*')
+                plt.ylabel('sigma')
+                plt.title(f'EE of {output_short_name}')
+                plt.legend(handles= onetoone_legend)
+                # plt.show()
+                plt.savefig(f'{structure_path}figures/Elementary_Effects/EE_1-1_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.close()
+
+        '''###############################################################################
+        mu by sigma with the V MULTIMODEL
+        ###############################################################################'''
+
+        for item in outputs:   # loop for outputs
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+
+            fig, ax = plt.subplots() # creates the figure for each output type, which is then iterated by model.
+
+            # print(model_short_name, output_short_name)
+            X = EE_out_df[f'{output_short_name}_mu']
+            Y = EE_out_df[f'{output_short_name}_sigma']
+
+            # Check if both X and Y have all zero values
+            if not all(x == 0 for x in X) or not all(y == 0 for y in Y):
+                for i, marker in enumerate(markers):
+                    # Extract data
+                    mu = X[i]
+                    sigma = Y[i]                
+
+                    # Create the scatter plot
+                    plt.scatter(mu, sigma,    s=50, marker= marker, color= 'black')
+            
+                    # Add +-2SEM LINES
+                    # calc SD of mu, 
+                    mu_sd = EE_out_df[f'{output_short_name}_mu'].std()
+
+                    # calc sqrt of N, 
+                    denom = np.emath.sqrt(128)
+                    pos2_SEM = 2*(mu_sd/denom)
+                    neg2_SEM = -2*(mu_sd/denom)
+
+                    # I still don't fully understand how this centers the x axis to 0 but it does!
+                    x_max = np.abs(ax.get_xlim()).max()
+                    ax.set_xlim(xmin=-x_max, xmax=x_max)
+
+                    # Add lines from (0, 0) to SEM values
+                    plt.plot([0, neg2_SEM], [0, max(Y)], color='black', linestyle='--')
+                    plt.plot([0, pos2_SEM], [0, max(Y)], color='black', linestyle='--')
+
+                # Set the labels and title
+                plt.xlabel('mu')
+                plt.ylabel('sigma')
+                plt.title(f'EE of {output_short_name}')
+                plt.legend(handles = SEM_legend)
+                # plt.show()
+                plt.savefig(f'{structure_path}figures/Elementary_Effects/EE_SEM_{output_short_name}_multimodel.png', bbox_inches='tight') #there are many options for savefig
+                plt.close()
 
 # """ NOTES FROM THE MATLAB CODE `EE_SENMAE_CALC.M`
 
