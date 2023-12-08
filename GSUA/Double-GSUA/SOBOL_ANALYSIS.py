@@ -19,9 +19,6 @@ warnings.filterwarnings("ignore", category=UserWarning)
 ############## Defining the Model Inputs #################
 ##########################################################
 
-# inputs = naming_function.mec_input_names()
-# outputs = naming_function.mec_output_names()
-# models = naming_function.model_names()
 gen_path, indiv_path, structure_path = naming_function.path_names()
 
 sobol_tests = [
@@ -59,65 +56,124 @@ def SAMPLE(GSUA_type):
             SIM_H    = X[4]
             SIM_NUM = i
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    SAMPLE()
+def ANALYZE(GSUA_type, models, inputs, outputs):
+    # Create dataframe
+    sp = naming_function.prob_spec(GSUA_type)
 
-# def ANALYZE():
-#     # Create dataframe
-#     df_sims = pd.read_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_simulations.csv')
+    if GSUA_type == 'Individual':
+        # Create dataframes for each models GSUA runs
+        df_AMI_sims = pd.read_csv(f'{indiv_path}/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv')
+        df_BOS_sims = pd.read_csv(f'{indiv_path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv')
+        df_CAV_sims = pd.read_csv(f'{indiv_path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv')
 
-#     sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
-#     sobol_ST_out_df.set_index('Index')
-#     sobol_S1_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
-#     sobol_S1_out_df.set_index('Index')
-#     sobol_S2_out_df = pd.DataFrame({'Index': ['TEMPxTEMP', 'TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'TEMPxSTRU',
-#                                               'RHxTEMP', 'RHxRH', 'RHxCO2', 'RHxPPFD', 'RHxH', 'RHxSTRU',
-#                                               'CO2xTEMP', 'CO2xRH', 'CO2xCO2', 'CO2xPPFD', 'CO2xH', 'CO2xSTRU',
-#                                               'PPFDxTEMP', 'PPFDxRH', 'PPFDxCO2', 'PPFDxPPFD', 'PPFDxH', 'PPFDxSTRU',
-#                                               'HxTEMP', 'HxRH', 'HxCO2', 'HxPPFD', 'HxH', 'HxSTRU',
-#                                               'STRUxTEMP', 'STRUxRH', 'STRUxCO2', 'STRUxPPFD', 'STRUxH', 'STRUxSTRU']})
-#     sobol_S2_out_df.set_index('Index')
-
-
-#     for item in outputs:        # loop for output names
-#         output_short_name = item[0]
-#         output_long_name = item[1]
-#         output_unit = item[2]
-#         # Loading specific outputs for GSUA analysis 
-#         Y = df_sims[f'{output_short_name}'].to_numpy()
-#         sp.set_results(Y)
-
-# ##################################### Sobol Analysis ###############################################
-#         sp.analyze_sobol()
-
-#         # First Order Analysis
-#         S1_output_key = f'{output_short_name}_S1'
-#         S1_CONF_output_key = f'{output_short_name}_S1_conf'
-#         sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
-#         sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
-
-#         # Second Order Analysis
-#         S2_output_key = f'{output_short_name}_S2'
-#         S2_CONF_output_key = f'{output_short_name}_S2_conf'
-#         sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
-#         sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
-
-#         # Total Order Analysis
-#         ST_output_key = f'{output_short_name}_ST'
-#         ST_CONF_output_key = f'{output_short_name}_ST_conf'
-#         sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
-#         sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
+        sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
+        sobol_ST_out_df.set_index('Index')
+        sobol_S1_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H']})
+        sobol_S1_out_df.set_index('Index')
+        sobol_S2_out_df = pd.DataFrame({'Index': ['TEMPxTEMP', 'TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH',
+                                                'RHxTEMP', 'RHxRH', 'RHxCO2', 'RHxPPFD', 'RHxH',
+                                                'CO2xTEMP', 'CO2xRH', 'CO2xCO2', 'CO2xPPFD', 'CO2xH',
+                                                'PPFDxTEMP', 'PPFDxRH', 'PPFDxCO2', 'PPFDxPPFD', 'PPFDxH',
+                                                'HxTEMP', 'HxRH', 'HxCO2', 'HxPPFD', 'HxH']})
+        sobol_S2_out_df.set_index('Index')
 
 
-#     # # Saving all of these to CSV's
-#     sobol_S1_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_S2_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
-#     sobol_ST_out_df.to_csv('C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+        for item in models:                 # loop for model names
+            model_short_name = item[0]
+            model_long_name = item[1]
+            for item in outputs:        # loop for output names
+                output_short_name = item[0]
+                output_long_name = item[1]
+                output_unit = item[2]
+                # Loading specific outputs for GSUA analysis 
+                Y = np.loadtxt(f'{indiv_path}/GSUA_{model_short_name}_out/data/GSUA_{model_short_name}_data_{output_short_name}.txt') # done to match the SALib example, imports the text file result
+                sp.set_results(Y)
 
-# # Executes this program/function
-# if __name__ ==('__main__'):
-#     ANALYZE()
+                sp.analyze_sobol()
+
+                # this saving the results part is still pretty garbage, 
+                # diverted them to a special folder just in case though. 
+                with open(f'{indiv_path}/results/full_out/{model_short_name}_{output_short_name}_SOBOL_results.txt', 'w') as f:
+                    results_df = sp.to_df()
+                    f.write(str(results_df))
+                f.close
+
+
+                # First Order Analysis
+                S1_output_key = f'{model_short_name}_{output_short_name}_S1'
+                S1_CONF_output_key = f'{model_short_name}_{output_short_name}_S1_conf'
+                sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
+                sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
+
+                # Second Order Analysis
+                S2_output_key = f'{model_short_name}_{output_short_name}_S2'
+                S2_CONF_output_key = f'{model_short_name}_{output_short_name}_S2_conf'
+                sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
+                sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
+
+
+                # Total Order Analysis
+                ST_output_key = f'{model_short_name}_{output_short_name}_ST'
+                ST_CONF_output_key = f'{model_short_name}_{output_short_name}_ST_conf'
+                sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
+                sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
+
+
+        # # Saving all of these to CSV's
+        sobol_S1_out_df.to_csv(f'{indiv_path}/results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
+        sobol_S2_out_df.to_csv(f'{indiv_path}/results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
+        sobol_ST_out_df.to_csv(f'{indiv_path}/results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
+
+
+    elif GSUA_type == 'Structure':
+        df_sims = pd.read_csv(f'{structure_path}/GSUA_simulations.csv')
+
+        sobol_ST_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
+        sobol_ST_out_df.set_index('Index')
+        sobol_S1_out_df = pd.DataFrame({'Index': ['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU']})
+        sobol_S1_out_df.set_index('Index')
+        sobol_S2_out_df = pd.DataFrame({'Index': ['TEMPxTEMP', 'TEMPxRH', 'TEMPxCO2', 'TEMPxPPFD', 'TEMPxH', 'TEMPxSTRU',
+                                                'RHxTEMP', 'RHxRH', 'RHxCO2', 'RHxPPFD', 'RHxH', 'RHxSTRU',
+                                                'CO2xTEMP', 'CO2xRH', 'CO2xCO2', 'CO2xPPFD', 'CO2xH', 'CO2xSTRU',
+                                                'PPFDxTEMP', 'PPFDxRH', 'PPFDxCO2', 'PPFDxPPFD', 'PPFDxH', 'PPFDxSTRU',
+                                                'HxTEMP', 'HxRH', 'HxCO2', 'HxPPFD', 'HxH', 'HxSTRU',
+                                                'STRUxTEMP', 'STRUxRH', 'STRUxCO2', 'STRUxPPFD', 'STRUxH', 'STRUxSTRU']})
+        sobol_S2_out_df.set_index('Index')
+
+
+        for item in outputs:        # loop for output names
+            output_short_name = item[0]
+            output_long_name = item[1]
+            output_unit = item[2]
+            # Loading specific outputs for GSUA analysis 
+            Y = df_sims[f'{output_short_name}'].to_numpy()
+            sp.set_results(Y)
+
+            sp.analyze_sobol()
+
+            # First Order Analysis
+            S1_output_key = f'{output_short_name}_S1'
+            S1_CONF_output_key = f'{output_short_name}_S1_conf'
+            sobol_S1_out_df[S1_output_key] = sp.analysis['S1'].flatten().tolist()
+            sobol_S1_out_df[S1_CONF_output_key] = sp.analysis['S1_conf'].flatten().tolist()
+
+            # Second Order Analysis
+            S2_output_key = f'{output_short_name}_S2'
+            S2_CONF_output_key = f'{output_short_name}_S2_conf'
+            sobol_S2_out_df[S2_output_key] = sp.analysis['S2'].flatten().tolist()
+            sobol_S2_out_df[S2_CONF_output_key] = sp.analysis['S2_conf'].flatten().tolist()
+
+            # Total Order Analysis
+            ST_output_key = f'{output_short_name}_ST'
+            ST_CONF_output_key = f'{output_short_name}_ST_conf'
+            sobol_ST_out_df[ST_output_key] = sp.analysis['ST'].flatten().tolist()
+            sobol_ST_out_df[ST_CONF_output_key] = sp.analysis['ST_conf'].flatten().tolist()
+
+
+        # # Saving all of these to CSV's
+        sobol_S1_out_df.to_csv(f'{structure_path}results/sobol_S1_out.csv', index=False) # exports entire final data frame to a CSV
+        sobol_S2_out_df.to_csv(f'{structure_path}results/sobol_S2_out.csv', index=False) # exports entire final data frame to a CSV
+        sobol_ST_out_df.to_csv(f'{structure_path}results/sobol_ST_out.csv', index=False) # exports entire final data frame to a CSV
 
 # def CHART():
 
