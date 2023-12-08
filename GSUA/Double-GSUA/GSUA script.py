@@ -173,7 +173,7 @@ if __name__ == '__main__':
         time_ana_start = datetime.now()
         print(f'Beginning analysis of {GSUA_type} simulations')
 
-        SOBOL_ANALYSIS.ANALYZE(GSUA_type, models, inputs, outputs)
+        # SOBOL_ANALYSIS.ANALYZE(GSUA_type, models, inputs, outputs)
         # EE.ANALYZE(GSUA_type, models, inputs, outputs)
 
         time_ana_dun = datetime.now() - time_ana_start
@@ -206,3 +206,5 @@ winsound.Beep(freq, duration)
 
 
             #### DOUBLE CHECK THAT THE MODEL STRUC IS MAKING A UNIFORM DISTRI
+            ##################################################################
+            #### Does EE analysis need to iterate through the input columns?
