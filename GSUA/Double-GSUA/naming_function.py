@@ -50,10 +50,6 @@ def prob_spec(GSUA_type):
 
     return sp
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    prob_spec()
-
 
 def path_names():
     gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/'
@@ -61,10 +57,6 @@ def path_names():
     structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Double-GSUA/Final-Structure/'
 
     return gen_path, indiv_path, structure_path
-
-if __name__ ==('__main__'):
-    path_names()
-
 
 
 def model_names():          # Iterates through the model names
@@ -74,10 +66,6 @@ def model_names():          # Iterates through the model names
             ["CAV", "Cavazzoni"]
             ]
     return models
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    model_names()
 
 def mec_input_names(GSUA_type):      # Iterates through the input names
     u = "\u00B5"        # unicode for the micro symbol
@@ -103,11 +91,6 @@ def mec_input_names(GSUA_type):      # Iterates through the input names
 
     return mec_inputs
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    mec_input_names()
-
-
 def mec_output_names():     # Iterates through the output names
     u = "\u00B5"        # unicode for the micro symbol
     outputs = [  
@@ -132,17 +115,43 @@ def mec_output_names():     # Iterates through the output names
         ]
     return outputs
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    mec_output_names()
-
-
 def colors(): # combines all these functions into one!
     # Model, dark color, light color, med/bright color, marker
     colors = [['AMI', '#2A119B', '#A798EC', '#5E46C6', 'o'],     # blues
               ['BOS', '#2A119B', '#96F391', '#09B600', 's'],     # greens
               ['CAV', '#2A119B', '#FE989A', '#DF0006', '^']]    # reds
 
-# Executes this program/function
-if __name__ ==('__main__'):
-    colors()
+def df_labels(GSUA_type):
+    if GSUA_type =='Individual':
+        df_AMI_sims_label = ['SIM_NUM','Timestep','skip?', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                            'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                            'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'STRU']
+
+        df_BOS_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+                            'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
+                            'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
+                            'DOP','DOC','g_S','g_A','g_C','DTR',
+                            'DCO2C','DCO2P','DNC', 'DWC','T_LIGHT',
+                            'T_DARK','RH','CO2','PPFD', 'STRU']
+
+        df_CAV_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                            'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                            'P_NET','g_S','g_A','g_C','DTR','T_LIGHT','T_DARK','RH','CO2','PPFD', 'STRU']
+
+    elif GSUA_type == 'Structure':
+        df_AMI_sims_label = ['Timestep','skip?','SIM_NUM', 'H','A','ALPHA','BETA','CQY','CUE_24',
+                            'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                            'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
+
+        df_BOS_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
+                            'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
+                            'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
+                            'DOP','DOC','g_S','g_A','g_C','DTR',
+                            'DCO2C','DCO2P','DNC', 'DWC','TEMP',
+                            'T_DARK','RH','CO2','PPFD', 'STRU']
+
+        df_CAV_sims_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
+                            'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
+                            'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
+
+    return df_AMI_sims_label, df_BOS_sims_label, df_CAV_sims_label

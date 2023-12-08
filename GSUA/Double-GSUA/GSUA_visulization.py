@@ -9,57 +9,31 @@ import naming_function
 ############## Defining the Model Inputs #################
 ##########################################################
 
-# inputs = naming_function.mec_input_names()
-# outputs = naming_function.mec_output_names()
-# models = naming_function.model_names()
 gen_path, indiv_path, structure_path = naming_function.path_names()
+
 
 ami_c = '#2A119B'
 bos_c = '#067300'
 cav_c = '#8C0004'
 
-# perhaps I can write some kind of script to set these
-# so I don't have to write it out completely each time?
-# symbols differntiate models
-# AMI= 'o' blue
-# BOS= 's' green
-# CAV= '^' red
+def GSUA_CHARTS(GSUA_type, models, inputs, outputs):
 
-# colors differentiate from paletton.com
-#     dark blue   = #2A119B
-#     blue        = #5E46C6
-#     light blue  = #A798EC
-#     dark green  = #067300
-#     green       = #09B600
-#     light green = #96F391
-#     dark red    = #8C0004
-#     red         = #DF0006
-#     light red   = #FE989A
+    if GSUA_type == 'Individual':
+        df_AMI_sims_label, df_BOS_sims_label, df_CAV_sims_label = naming_function.df_labels(GSUA_type)
 
-import numpy as np
+        model_inputs = pd.read_csv(f'{gen_path}INDIV_SOBOL_parameters.txt', sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H'])
+        AMI_df = pd.read_csv(f'{indiv_path}GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names=df_AMI_sims_label)
+        BOS_df = pd.read_csv(f'{indiv_path}GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names= df_BOS_sims_label)
+        CAV_df = pd.read_csv(f'{indiv_path}/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names= df_CAV_sims_label)
 
-def GSUA_CHARTS():
-    model_inputs = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/SOBOL_parameters.txt", sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'])
-    # Combining all the seperate datafiles into one for the anaylsis portion
-    AMI_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_AMI_out/data/GSUA_AMI_Simulations.csv", header=None)
-    AMI_df_label = ['Timestep','skip?','SIM_NUM', 'H','A','ALPHA','BETA','CQY','CUE_24',
-                     'DCG','CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
-    AMI_df.columns = AMI_df_label
-    BOS_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv", header=None)
-    BOS_df_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
-                     'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
-                     'VP_SAT','VP_AIR','VPD','P_NET','P_GROSS',
-                     'DOP','DOC','g_S','g_A','g_C','DTR',
-                     'DCO2C','DCO2P','DNC', 'DWC','TEMP',
-                     'T_DARK','RH','CO2','PPFD', 'STRU']
-    BOS_df.columns = BOS_df_label
-    CAV_df = pd.read_csv("C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/GSUA_CAV_out/data/GSUA_CAV_Simulations.csv", header=None)
-    CAV_df_label = ['SIM_NUM','Timestep','H','A','ALPHA','BETA','CQY','CUE_24','DCG',
-                     'CGR','TCB','TEB','DOP','VP_SAT','VP_AIR','VPD','P_GROSS',
-                     'P_NET','g_S','g_A','g_C','DTR','TEMP','T_DARK','RH','CO2','PPFD', 'STRU']
-    CAV_df.columns = CAV_df_label
-    
+    if GSUA_type == 'Structure':
+        model_inputs = pd.read_csv(f'{gen_path}STRUCTURE_SOBOL_parameters.txt', sep=" ", names=['TEMP', 'RH', 'CO2', 'PPFD', 'H', 'STRU'])
+        df_AMI_sims_label, df_BOS_sims_label, df_CAV_sims_label = naming_function.df_labels(GSUA_type)
+
+        # Combining all the seperate datafiles into one for the anaylsis portion
+        AMI_df = pd.read_csv(f'{structure_path}GSUA_AMI_out/data/GSUA_AMI_Simulations.csv', names=df_AMI_sims_label)
+        BOS_df = pd.read_csv(f'{structure_path}GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', names=df_BOS_sims_label)
+        CAV_df = pd.read_csv(f'{structure_path}GSUA_CAV_out/data/GSUA_CAV_Simulations.csv', names=df_CAV_sims_label)
 
     ##############################################
     ########### Input  Historgram ################
@@ -75,15 +49,12 @@ def GSUA_CHARTS():
         ax.set_ylabel('Frequency')
         ax.set_xlabel(f'{hist_units[i]}')
         ax.set_title(f'{hist_long_name[i]}')
-        plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
+        plt.savefig(f'{structure_path}figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
         # plt.show()
-
-
 
     #####################################################
     ############## Input x Output #######################
     #####################################################
-
     for item in inputs:        # loop for inputs
         input_short_name = item[0]
         input_long_name = item[1]
@@ -92,7 +63,7 @@ def GSUA_CHARTS():
             output_short_name = item[0]
             output_long_name = item[1]
             output_unit = item[2]
-            """This chart bulding stuff works!, but is there a better way?"""
+            """This chart bulding stuff works!"""
             AMI_DATA = AMI_df[['SIM_NUM', output_short_name, input_short_name]]
             BOS_DATA = BOS_df[['SIM_NUM', output_short_name, input_short_name]]
             CAV_DATA = CAV_df[['SIM_NUM', output_short_name, input_short_name]]
@@ -106,6 +77,7 @@ def GSUA_CHARTS():
             yB = BOS_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
             xC = CAV_DATA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
             yC = CAV_DATA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
+
             fig, ax = plt.subplots()
             ax.scatter(xA, yA, marker='o', label='AMI', color='#A798EC')
             ax.scatter(xB, yB, marker='s', label='BOS', color='#96F391')
@@ -125,7 +97,7 @@ def GSUA_CHARTS():
             plt.plot(xA,pA(xA), color="#0000FF")
             plt.plot(xB,pB(xB), color="darkgreen")
             plt.plot(xC,pC(xC), color="#FF0000")
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'{structure_path}figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # plt.show()
             plt.close()
 
@@ -139,11 +111,6 @@ def GSUA_CHARTS():
             light_colors = ['#A798EC', '#96F391', '#FE989A']
             for patch, light_colors in zip(bplot['boxes'], light_colors):
                 patch.set_facecolor(light_colors)
-            plt.savefig(f'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/Final-Structure/figures/histogram/output_histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.savefig(f'{structure_path}figures/histogram/output_histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             plt.close()
             # plt.show()
-            
-
-# Executes this program/function
-if __name__ ==('__main__'):
-    GSUA_CHARTS()
