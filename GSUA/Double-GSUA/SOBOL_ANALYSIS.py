@@ -31,12 +31,17 @@ elinewidth, capsize, capthick = naming_function.conf_bars()
 
 def SAMPLE(GSUA_type):
     sp = naming_function.prob_spec(GSUA_type)
-    multiplier = 2**1
+    multiplier = 2**10
     if GSUA_type == 'Structure': # Sampling procedure for the Structure GSUA
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
 
+        # Define the range of SIM_STRU values
+        sim_stru_values = [1, 2, 3]
+
         for i, X in enumerate(sp.samples):
-            X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+            # Use modulo operator to cycle through sim_stru_values
+            X[5] = sim_stru_values[i % len(sim_stru_values)]
+            # X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
             np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
             SIM_TEMP = X[0]
             SIM_RH   = X[1]
