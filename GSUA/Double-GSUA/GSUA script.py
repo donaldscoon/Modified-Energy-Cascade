@@ -36,8 +36,8 @@ models = naming_function.model_names()
 GSUA_types = ['Individual', 'Structure']
 gen_path, indiv_path, structure_path = naming_function.path_names()
 
-confirm_and_erase(structure_path)
-confirm_and_erase(indiv_path)
+# confirm_and_erase(structure_path)
+# confirm_and_erase(indiv_path)
 
 ########################################################
 ############ Generate the Samples ######################
@@ -49,54 +49,54 @@ confirm_and_erase(indiv_path)
 """
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     time_start = datetime.now()
-#     for item in GSUA_types:
-#         GSUA_type = item
-#         inputs = naming_function.mec_input_names(GSUA_type)
+    time_start = datetime.now()
+    for item in GSUA_types:
+        GSUA_type = item
+        inputs = naming_function.mec_input_names(GSUA_type)
 
-#         type_start = datetime.now()
+        type_start = datetime.now()
 
-#         print(f"Generating the {GSUA_type} samples")
-#         SOBOL_ANALYSIS.SAMPLE(GSUA_type)
+    #     print(f"Generating the {GSUA_type} samples")
+    #     SOBOL_ANALYSIS.SAMPLE(GSUA_type)
         
-#         time_sampling = datetime.now() - type_start
-#         print(f'{GSUA_type} samples generated it took {time_sampling}')
+    #     time_sampling = datetime.now() - type_start
+    #     print(f'{GSUA_type} samples generated it took {time_sampling}')
 
-#         time_sim_start = datetime.now()
-#         if GSUA_type == 'Individual':
-#             time_indiv_start = datetime.now()
-#             SIM_STRU = 0 # Here to successfully run the MEC scripts
-#             print(f'Proceeding to the {GSUA_type} simulations')
-#             param_values = np.loadtxt(f'{gen_path}INDIV_SOBOL_parameters.txt')
-#             total_sims = len(param_values)
+        time_sim_start = datetime.now()
+        if GSUA_type == 'Individual':
+            time_indiv_start = datetime.now()
+            SIM_STRU = 0 # Here to successfully run the MEC scripts
+            print(f'Proceeding to the {GSUA_type} simulations')
+            param_values = np.loadtxt(f'{gen_path}INDIV_SOBOL_parameters.txt')
+            total_sims = len(param_values)
 
-#             for i, X in enumerate(param_values):
-#                 """ the structure of this for loop sets the model inputs equal to a
-#                     row from the sampled parameters for each simulation iteration.
-#                 """
-#                 # Columns are Temp, Humidity, CO2, PPFD, H,
-#                 SIM_TEMP = X[0]
-#                 SIM_RH   = X[1]
-#                 SIM_CO2  = X[2]
-#                 SIM_PPFD = X[3]
-#                 SIM_H    = X[4]
-#                 SIM_NUM = i
-#                 # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H)
-#                 SIM_LENGTH = 30
-#                 if SIM_NUM % 50 == 0:
-#                     print(f"{SIM_NUM} / {total_sims} simulations completed")
-#                 MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-#                                     GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Amitrano Model
+            for i, X in enumerate(param_values):
+                """ the structure of this for loop sets the model inputs equal to a
+                    row from the sampled parameters for each simulation iteration.
+                """
+                # Columns are Temp, Humidity, CO2, PPFD, H,
+                SIM_TEMP = X[0]
+                SIM_RH   = X[1]
+                SIM_CO2  = X[2]
+                SIM_PPFD = X[3]
+                SIM_H    = X[4]
+                SIM_NUM = i
+                # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H)
+                SIM_LENGTH = 30
+                if SIM_NUM % 50 == 0:
+                    print(f"{SIM_NUM} / {total_sims} simulations completed")
+                MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Amitrano Model
 
-#                 MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-#                                     GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Boscheri Model
+                MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Boscheri Model
 
-#                 MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-#                                     GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Cavazzoni Model
-#             time_indiv_dun = datetime.now() - time_indiv_start
-#             print(f'{total_sims} simulations complete, it took {time_indiv_dun}')
+                MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Cavazzoni Model
+            time_indiv_dun = datetime.now() - time_indiv_start
+            print(f'{total_sims} simulations complete, it took {time_indiv_dun}')
 
 #         elif GSUA_type == 'Structure':
 #             time_stru_start = datetime.now()
