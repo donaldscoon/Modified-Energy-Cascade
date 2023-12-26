@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage{amsmath, siunitx}
+
+\title{Energy Cascade Equations}
+\date{2023-12-12}
+\author{Donald Coon}
+
+\begin{document}
+\maketitle
+\pagenumbering{gobble}
+\newpage
+
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Document Introduction}
+This document is intended to be a quick reference guide to mathematics and model structure the first Energy Cascade (EC) and subsequent derivations. It only presents the equations and their dependencies as referenced in the literature for each model so that they may be used in further documentation easily and uniformly. 
+
+Each section contains a brief description of the model version followed by subsections that detail the components. \textbf{State variables} are the center of most dynamic crop models such as the EC models. They serve to describe and quantify the conditions of a systems components at any specific time. State variables change over time to reflect interactions of the components with each other and with the environment. \textbf{Explanatory variables} all environmental and management variables that are known and measured directly in some manner. \textbf{Parameters} are quantities that are not know and as a result, not measured directly. They can however be estimated with with observations of system behavior and other explanatory variables.
+
+\subsection{Volk, Wheeler, Bugbee Energy Cascade}
+\subsubsection{State Variables}
+\begin{table}[h!]
+	\begin{center}
+		\caption{Energy Cascade State Variables}
+		\label{tab:table1}
+		\begin{tabular}{l|l|l|l}
+			\textbf{Symbol} & \textbf{Name} & \textbf{Equation} & \textbf{Unit}\\
+			\hline
+			$P_g$ & Gross Photosynthesis& $\textit{Q A } \text{PPF}$  &  \SI{}{\micro\mol\per\metre\squared\per\second}\\
+			$P_n$  & Net Photosynthesis &  $\textit{C Q A } \text{PPF}$ & \SI{}{\micro\mol\per\metre\squared\per\second}\\ 
+			%$R$ & $(1- \textit{C}) \texit{Q A} \text{PPF}$ & \SI{}{\micro\mol} $CO_2$ \SI{}{\per\metre\squared\per\second}
+		\end{tabular}
+	\end{center}
+\end{table}
+		
+\subsubsection{Explanatory Variables}
+\subsubsection{Parameters}
+\subsection{Cavazzoni Modified Energy Cascade}
+\subsubsection{State Variables}
+\subsubsection{Explanatory Variables}
+\subsubsection{Parameters}
+
+\subsection{Boscheri Modified Energy Cascade}
+\subsubsection{State Variables}
+\subsubsection{Explanatory Variables}
+\subsubsection{Parameters}
+
+\subsection{Amitrano Modified Energy Cascade}
+\subsubsection{State Variables}
+\subsubsection{Explanatory Variables}
+\subsubsection{Parameters}
+
+\end{document}

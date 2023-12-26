@@ -64,39 +64,39 @@ if __name__ == '__main__':
     #     time_sampling = datetime.now() - type_start
     #     print(f'{GSUA_type} samples generated it took {time_sampling}')
 
-        time_sim_start = datetime.now()
-        if GSUA_type == 'Individual':
-            time_indiv_start = datetime.now()
-            SIM_STRU = 0 # Here to successfully run the MEC scripts
-            print(f'Proceeding to the {GSUA_type} simulations')
-            param_values = np.loadtxt(f'{gen_path}INDIV_SOBOL_parameters.txt')
-            total_sims = len(param_values)
+        # time_sim_start = datetime.now()
+        # if GSUA_type == 'Individual':
+        #     time_indiv_start = datetime.now()
+        #     SIM_STRU = 0 # Here to successfully run the MEC scripts
+        #     print(f'Proceeding to the {GSUA_type} simulations')
+        #     param_values = np.loadtxt(f'{gen_path}INDIV_SOBOL_parameters.txt')
+        #     total_sims = len(param_values)
 
-            for i, X in enumerate(param_values):
-                """ the structure of this for loop sets the model inputs equal to a
-                    row from the sampled parameters for each simulation iteration.
-                """
-                # Columns are Temp, Humidity, CO2, PPFD, H,
-                SIM_TEMP = X[0]
-                SIM_RH   = X[1]
-                SIM_CO2  = X[2]
-                SIM_PPFD = X[3]
-                SIM_H    = X[4]
-                SIM_NUM = i
-                # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H)
-                SIM_LENGTH = 30
-                if SIM_NUM % 50 == 0:
-                    print(f"{SIM_NUM} / {total_sims} simulations completed")
-                MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Amitrano Model
+        #     for i, X in enumerate(param_values):
+        #         """ the structure of this for loop sets the model inputs equal to a
+        #             row from the sampled parameters for each simulation iteration.
+        #         """
+        #         # Columns are Temp, Humidity, CO2, PPFD, H,
+        #         SIM_TEMP = X[0]
+        #         SIM_RH   = X[1]
+        #         SIM_CO2  = X[2]
+        #         SIM_PPFD = X[3]
+        #         SIM_H    = X[4]
+        #         SIM_NUM = i
+        #         # print(SIM_NUM,SIM_TEMP,SIM_RH,SIM_CO2,SIM_PPFD,SIM_H)
+        #         SIM_LENGTH = 30
+        #         if SIM_NUM % 50 == 0:
+        #             print(f"{SIM_NUM} / {total_sims} simulations completed")
+        #         MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+        #                             GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Amitrano Model
 
-                MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Boscheri Model
+        #         MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+        #                             GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Boscheri Model
 
-                MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
-                                    GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Cavazzoni Model
-            time_indiv_dun = datetime.now() - time_indiv_start
-            print(f'{total_sims} simulations complete, it took {time_indiv_dun}')
+        #         MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
+        #                             GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Cavazzoni Model
+        #     time_indiv_dun = datetime.now() - time_indiv_start
+        #     print(f'{total_sims} simulations complete, it took {time_indiv_dun}')
 
 #         elif GSUA_type == 'Structure':
 #             time_stru_start = datetime.now()
@@ -167,31 +167,31 @@ if __name__ == '__main__':
 #         time_sim_dun = datetime.now() - time_sim_start
 #         print(f'All simulations complete. It took {time_sim_dun}')
 
-#         ##########################################################
-#         ################### Analysis #############################
-#         ##########################################################
-#         time_ana_start = datetime.now()
-#         print(f'Beginning analysis of {GSUA_type} simulations')
+        ##########################################################
+        ################### Analysis #############################
+        ##########################################################
+        time_ana_start = datetime.now()
+        print(f'Beginning analysis of {GSUA_type} simulations')
 
-#         SOBOL_ANALYSIS.ANALYZE(GSUA_type, models, inputs, outputs)
-#         EE.ANALYZE(GSUA_type, models, inputs, outputs)
+        SOBOL_ANALYSIS.ANALYZE(GSUA_type, models, inputs, outputs)
+        EE.ANALYZE(GSUA_type, models, inputs, outputs)
 
-#         time_ana_dun = datetime.now() - time_ana_start
-#         print(f'Analysis complete. It took {time_ana_dun}')
+        time_ana_dun = datetime.now() - time_ana_start
+        print(f'Analysis complete. It took {time_ana_dun}')
 
-#         ##########################################################
-#         ################### VISUALIZATIONS #######################
-#         ##########################################################
-#         print(f'Creating charts for the results of {GSUA_type} simulations and analysis')
-#         time_viz_start = datetime.now() 
-#         MEC_AMI_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Amitrano Model
-#         MEC_BOS_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Boscheri Model
-#         MEC_CAV_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
-#         GSUA_visulization.GSUA_CHARTS(GSUA_type, models, inputs, outputs)
-#         EE.CHART(GSUA_type, models, inputs, outputs)
-#         SOBOL_ANALYSIS.CHART(GSUA_type, models, inputs, outputs)
-#         time_viz_dun = datetime.now() - time_viz_start
-#         print(f'Visulizations took {time_viz_dun}')
+        ##########################################################
+        ################### VISUALIZATIONS #######################
+        ##########################################################
+        print(f'Creating charts for the results of {GSUA_type} simulations and analysis')
+        time_viz_start = datetime.now() 
+        MEC_AMI_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Amitrano Model
+        MEC_BOS_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Boscheri Model
+        MEC_CAV_GSUA.RUN_CHART(GSUA_type, models, inputs, outputs)    # Runs just the charting for the Cavazzoni Model
+        GSUA_visulization.GSUA_CHARTS(GSUA_type, models, inputs, outputs)
+        EE.CHART(GSUA_type, models, inputs, outputs)
+        SOBOL_ANALYSIS.CHART(GSUA_type, models, inputs, outputs)
+        time_viz_dun = datetime.now() - time_viz_start
+        print(f'Visulizations took {time_viz_dun}')
 
 
 time_dun = datetime.now() - time_start
