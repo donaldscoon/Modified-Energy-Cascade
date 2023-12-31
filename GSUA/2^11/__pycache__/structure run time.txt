@@ -1,0 +1,5 @@
+28672 simulations complete, it took 9:14:17.684499
+All simulations complete. It took 9:14:17.684499
+Beginning analysis of Structure simulations
+Analysis complete. It took 0:00:16.247708
+BOOOP! GSUA Complete. It took 9:14:33.932207
