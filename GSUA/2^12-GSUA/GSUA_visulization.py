@@ -49,7 +49,10 @@ def GSUA_CHARTS(GSUA_type, models, inputs, outputs):
         ax.set_ylabel('Frequency')
         ax.set_xlabel(f'{hist_units[i]}')
         ax.set_title(f'{hist_long_name[i]}')
-        plt.savefig(f'{structure_path}figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
+        if GSUA_type =='Individual':
+            plt.savefig(f'{indiv_path}figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
+        if GSUA_type =='Structure':
+            plt.savefig(f'{structure_path}figures/MEC_Histogram_{hist_long_name[i]}', bbox_inches='tight') #there are many options for savefig
         # plt.show()
 
     #####################################################
@@ -97,13 +100,17 @@ def GSUA_CHARTS(GSUA_type, models, inputs, outputs):
             plt.plot(xA,pA(xA), color="#0000FF")
             plt.plot(xB,pB(xB), color="darkgreen")
             plt.plot(xC,pC(xC), color="#FF0000")
-            plt.savefig(f'{structure_path}figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            if GSUA_type =='Individual':
+                plt.savefig(f'{indiv_path}figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            if GSUA_type =='Structure':
+                plt.savefig(f'{structure_path}figures/scatter/Scatter_{input_short_name}_X_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             # plt.show()
             plt.close()
 
-            # HISTOGRAM OF OUTPUTS
+            # # Box and Whisker OF OUTPUTS
             labels = ['AMI','BOS', 'CAV']
             data = yA, yB, yC
+            
             fig, ax = plt.subplots()
             bplot = ax.boxplot(data, vert=True, patch_artist=True, labels=labels, showfliers=False, meanline=True)
             ax.set_title(f'{output_long_name}')
@@ -111,6 +118,26 @@ def GSUA_CHARTS(GSUA_type, models, inputs, outputs):
             light_colors = ['#A798EC', '#96F391', '#FE989A']
             for patch, light_colors in zip(bplot['boxes'], light_colors):
                 patch.set_facecolor(light_colors)
-            plt.savefig(f'{structure_path}figures/histogram/output_histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            if GSUA_type =='Individual':
+                plt.savefig(f'{indiv_path}figures/Box_and_whisker/B&W_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            if GSUA_type =='Structure':
+                plt.savefig(f'{structure_path}figures/Box_and_whisker/B&W_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
             plt.close()
+            # plt.show()
+
+            fig, axs = plt.subplots(3,1, figsize=(8,12), sharex=True)
+            axs[0].hist(yA, label='AMI', bins=20, density=True, histtype='bar', color='#2A119B', edgecolor='white')
+            axs[1].hist(yB, label='BOS', bins=20, density=True, histtype='bar', color='#067300', edgecolor='white')
+            axs[2].hist(yC, label='CAV', bins=20, density=True, histtype='bar', color='#8C0004', edgecolor='white')
+            
+            axs[0].set_title(f'{output_long_name}')
+            axs[1].set_ylabel('Frequency')
+            axs[2].set_xlabel(f'{output_unit}')
+            
+            if GSUA_type =='Individual':
+                plt.savefig(f'{indiv_path}figures/histogram/histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            if GSUA_type =='Structure':
+                plt.savefig(f'{structure_path}figures/histogram/histogram_{output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+            plt.close()
+            
             # plt.show()

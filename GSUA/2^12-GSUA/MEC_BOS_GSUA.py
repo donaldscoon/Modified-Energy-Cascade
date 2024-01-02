@@ -384,7 +384,7 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
                 y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
                 fig, ax = plt.subplots()
-                ax.scatter(x, y)
+                ax.scatter(x, y, color='#067300')
                 ax.set_ylabel(f'{output_long_name} ({output_unit})')
                 ax.set_xlabel(f'{input_long_name} ({input_unit})')
                 plt.title(f'BOS {input_short_name} x {output_short_name}')
@@ -394,10 +394,18 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 p = np.poly1d(z)
                 plt.plot(x,p(x),"red")
 
-                plt.savefig(f'{indiv_path}/GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{indiv_path}/GSUA_BOS_out/figures/scatter/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+
+                # histogram of the results
+                fig, ax = plt.subplots()
+                ax.hist(y, bins=20, density=True, histtype='bar', color='#067300', edgecolor='white')
+                ax.set_ylabel('Frequency')
+                ax.set_xlabel(f'{output_unit}')
+                ax.set_title(f'{output_long_name}')
+                plt.savefig(f'{indiv_path}/GSUA_BOS_out/figures/histogram/BOS_{output_short_name}_historgram.png', bbox_inches='tight')
+
                 # in the likely rare event all of these need to be viewed...
                 # plt.show()
-
     if GSUA_type == 'Structure':
         df_sims_label = ['SIM_NUM','Timestep','H','Diurnal', 'A','ALPHA','BETA','CQY',
                         'CUE_24','DCG','CGR','DWCGR','TCB','TEB',
@@ -423,7 +431,7 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
                 y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
                 fig, ax = plt.subplots()
-                ax.scatter(x, y)
+                ax.scatter(x, y, color='#067300')
                 ax.set_ylabel(f'{output_long_name} ({output_unit})')
                 ax.set_xlabel(f'{input_long_name} ({input_unit})')
                 plt.title(f'BOS {input_short_name} x {output_short_name}')
@@ -433,11 +441,18 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 p = np.poly1d(z)
                 plt.plot(x,p(x),"red")
 
-                plt.savefig(f'{structure_path}GSUA_BOS_out/figures/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{structure_path}GSUA_BOS_out/figures/scatter/BOS {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+
+                # histogram of the results
+                fig, ax = plt.subplots()
+                ax.hist(y, bins=20, density=True, histtype='bar', color='#067300', edgecolor='white')
+                ax.set_ylabel('Frequency')
+                ax.set_xlabel(f'{output_unit}')
+                ax.set_title(f'{output_long_name}')
+                plt.savefig(f'{structure_path}/GSUA_BOS_out/figures/histogram/BOS_{output_short_name}_historgram.png', bbox_inches='tight')
+
                 # in the likely rare event all of these need to be viewed...
                 # plt.show()
-
-
 # def RUN_FULL():
 #     print("Running Boscheri Simulations and Charting Functions")
 #     start=datetime.now()

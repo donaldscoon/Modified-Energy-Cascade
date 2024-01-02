@@ -52,9 +52,9 @@ def prob_spec(GSUA_type):
 
 
 def path_names():
-    gen_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/'
-    indiv_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Indiv/'
-    structure_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Structure/'
+    gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/'
+    indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Indiv/'
+    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Structure/'
 
     return gen_path, indiv_path, structure_path
 
@@ -111,15 +111,15 @@ def mec_output_names():     # Iterates through the output names
         ["g_S", "Stomatal Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
         ["g_A", "Atmospheric Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
         ["g_C", "Canopy Conductance", "mol$_{water}$ m$^{-2}$ second$^{-1}$"],
-        ["DTR", "Daily Tranpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
+        ["DTR", "Daily Transpiration Rate", "L$_{water}$ m$^{-2}$ day$^{-1}$"]
         ]
     return outputs
 
 def colors(): # combines all these functions into one!
     # Model, dark color, light color, med/bright color, marker
     colors = [['AMI', '#2A119B', '#A798EC', '#5E46C6', 'o'],     # blues
-              ['BOS', '#2A119B', '#96F391', '#09B600', 's'],     # greens
-              ['CAV', '#2A119B', '#FE989A', '#DF0006', '^']]    # reds
+              ['BOS', '#067300', '#96F391', '#09B600', 's'],     # greens
+              ['CAV', '#8C0004', '#FE989A', '#DF0006', '^']]    # reds
 
 def df_labels(GSUA_type):
     if GSUA_type =='Individual':

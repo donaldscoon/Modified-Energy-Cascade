@@ -197,7 +197,7 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
                 y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
                 fig, ax = plt.subplots()
-                ax.scatter(x, y)
+                ax.scatter(x, y, color ='#2A119B')
                 ax.set_ylabel(f'{output_long_name} ({output_unit})')
                 ax.set_xlabel(f'{input_long_name} ({input_unit})')
                 plt.title(f'AMI {input_short_name} x {output_short_name}')
@@ -209,8 +209,16 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 plt.plot(x,p(x),"red")
 
 
-                plt.savefig(f'{indiv_path}/GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{indiv_path}/GSUA_AMI_out/figures/scatter/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 # in the likely rare event all of these need to be viewed...
+
+                # histogram of the results
+                fig, ax = plt.subplots()
+                ax.hist(y, bins=20, density=True, histtype='bar', color='#2A119B', edgecolor='white')
+                ax.set_ylabel('Frequency')
+                ax.set_xlabel(f'{output_unit}')
+                ax.set_title(f'{output_long_name}')
+                plt.savefig(f'{indiv_path}/GSUA_AMI_out/figures/histogram/AMI_{output_short_name}_historgram.png', bbox_inches='tight')
                 # plt.show()
 
     if GSUA_type == 'Structure':
@@ -236,7 +244,7 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 x = VIS_GSUA[[input_short_name]].values.flatten()       # the flatten converts the df to a 1D array, needed for trendline
                 y = VIS_GSUA[[output_short_name]].values.flatten()      # the flatten converts the df to a 1D array, needed for trendline
                 fig, ax = plt.subplots()
-                ax.scatter(x, y)
+                ax.scatter(x, y, color='#2A119B')
                 ax.set_ylabel(f'{output_long_name} ({output_unit})')
                 ax.set_xlabel(f'{input_long_name} ({input_unit})')
                 plt.title(f'AMI {input_short_name} x {output_short_name}')
@@ -245,9 +253,20 @@ def RUN_CHART(GSUA_type, models, inputs, outputs):
                 z = np.polyfit(x, y, 2) # 1 is linear, 2 is quadratic!
                 p = np.poly1d(z)
                 plt.plot(x,p(x),"red")
-                plt.savefig(f'{structure_path}GSUA_AMI_out/figures/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
+                plt.savefig(f'{structure_path}GSUA_AMI_out/figures/scatter/AMI {input_short_name} x {output_short_name}.png', bbox_inches='tight') #there are many options for savefig
                 # in the likely rare event all of these need to be viewed...
                 # plt.show()
+
+                # histogram of the results
+                fig, ax = plt.subplots()
+                ax.hist(y, bins=20, density=True, histtype='bar', color='#2A119B', edgecolor='white')
+                ax.set_ylabel('Frequency')
+                ax.set_xlabel(f'{output_unit}')
+                ax.set_title(f'{output_long_name}')
+                plt.savefig(f'{structure_path}/GSUA_AMI_out/figures/histogram/AMI_{output_short_name}_historgram.png', bbox_inches='tight')
+                # plt.show()
+
+
 # # Executes this program/function
 # if __name__ ==('__main__'):
 #     RUN_CHART()
