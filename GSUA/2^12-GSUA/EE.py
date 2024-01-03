@@ -174,6 +174,11 @@ def CHART(GSUA_type, models, inputs, outputs):
                         sigma = Y[i]
                         mu_star_conf = X_conf[i]
 
+########################
+#BIG WHOOPSIE HERE
+# LOOKS LIKE ALL THE POINTS ARE CIRCLES
+# NEED TO ENUMERATE the markers
+########################
                         # Create the scatter plot
                         plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
 
