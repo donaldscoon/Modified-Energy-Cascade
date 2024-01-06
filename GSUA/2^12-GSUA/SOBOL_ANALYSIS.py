@@ -39,9 +39,13 @@ def SAMPLE(GSUA_type):
         sim_stru_values = [1, 2, 3]
 
         for i, X in enumerate(sp.samples):
-            # Use modulo operator to cycle through sim_stru_values
-            X[5] = sim_stru_values[i % len(sim_stru_values)]
-            # X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+            X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+
+            ##### This modulo thing gave an extremely uniform output but all the S1 stru outputs were zero. SUS.
+            # # Use modulo operator to cycle through sim_stru_values
+            # X[5] = sim_stru_values[i % len(sim_stru_values)]
+            ###### 
+            
             np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
             SIM_TEMP = X[0]
             SIM_RH   = X[1]
