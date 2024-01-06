@@ -38,7 +38,7 @@ def prob_spec(GSUA_type):
                     [767.74, 90.98],  # Atmo CO2 Concentration Average, SD 
                     [236.95, 13.47],  # PPFD Level Average, SD 
                     [10,22, 0.5],     # Photoperiod Peak at 16 +- 6 hours
-                    [0,2]],           # Model structure, AMI, BOS, CAV, uniform distri
+                    [0.5,3.5]],           # Model structure, AMI, BOS, CAV, uniform distri
             'dists': ['norm',             # Temperature
                     'norm',             # Relative Humidity
                     'norm',             # Atmo CO2

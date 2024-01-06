@@ -34,34 +34,41 @@ def SAMPLE(GSUA_type):
     multiplier = 2**12
     if GSUA_type == 'Structure': # Sampling procedure for the Structure GSUA
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
+        np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
 
-        # Define the range of SIM_STRU values
-        sim_stru_values = [1, 2, 3]
 
-        for i, X in enumerate(sp.samples):
-            # Use modulo operator to cycle through sim_stru_values
-            X[5] = sim_stru_values[i % len(sim_stru_values)]
-            # X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
-            np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
-            SIM_TEMP = X[0]
-            SIM_RH   = X[1]
-            SIM_CO2  = X[2]
-            SIM_PPFD = X[3]
-            SIM_H    = X[4]
-            SIM_STRU = X[5]
-            SIM_NUM = i
+#### THIS IS STUPID AND CONSUMED SO MUCH TIME
+        # # Define the range of SIM_STRU values
+        # sim_stru_values = [1, 2, 3]
+        # for i, X in enumerate(sp.samples):
+        #     # Use modulo operator to cycle through sim_stru_values
+        #     # X[5] = sim_stru_values[i % len(sim_stru_values)]
+        #     # X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
+        #     np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
+        #     SIM_TEMP = X[0]
+        #     SIM_RH   = X[1]
+        #     SIM_CO2  = X[2]
+        #     SIM_PPFD = X[3]
+        #     SIM_H    = X[4]
+        #     SIM_STRU = X[5]
+        #     SIM_NUM = i
+#### ------------------------------------------------
+
 
     elif GSUA_type == 'Individual': # Sampling procedure for the individual GSUA's
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
+        np.savetxt(f'{gen_path}/INDIV_SOBOL_parameters.txt', sp.samples)
 
-        for i, X in enumerate(sp.samples):
-            np.savetxt(f'{gen_path}/INDIV_SOBOL_parameters.txt', sp.samples)
-            SIM_TEMP = X[0]
-            SIM_RH   = X[1]
-            SIM_CO2  = X[2]
-            SIM_PPFD = X[3]
-            SIM_H    = X[4]
-            SIM_NUM = i
+#### THIS IS STUPID AND CONSUMED SO MUCH TIME
+        # for i, X in enumerate(sp.samples):
+        #     np.savetxt(f'{gen_path}/INDIV_SOBOL_parameters.txt', sp.samples)
+        #     SIM_TEMP = X[0]
+        #     SIM_RH   = X[1]
+        #     SIM_CO2  = X[2]
+        #     SIM_PPFD = X[3]
+        #     SIM_H    = X[4]
+        #     SIM_NUM = i
+#### ------------------------------------------------
 
 def ANALYZE(GSUA_type, models, inputs, outputs):
     # Create dataframe
