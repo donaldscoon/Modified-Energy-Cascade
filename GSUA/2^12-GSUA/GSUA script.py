@@ -58,13 +58,13 @@ if __name__ == '__main__':
         GSUA_type = item
         inputs = naming_function.mec_input_names(GSUA_type)
 
-        # type_start = datetime.now()
+        type_start = datetime.now()
 
-        # print(f"Generating the {GSUA_type} samples")
-        # SOBOL_ANALYSIS.SAMPLE(GSUA_type)
+        print(f"Generating the {GSUA_type} samples")
+        SOBOL_ANALYSIS.SAMPLE(GSUA_type)
         
-        # time_sampling = datetime.now() - type_start
-        # print(f'{GSUA_type} samples generated it took {time_sampling}')
+        time_sampling = datetime.now() - type_start
+        print(f'{GSUA_type} samples generated it took {time_sampling}')
 
         time_sim_start = datetime.now()
         if GSUA_type == 'Individual':
@@ -211,8 +211,6 @@ winsound.Beep(freq, duration)
 ###########################################
 
 
-            ##################################################################
-            #### Does EE analysis need to iterate through the input columns?
             ##################################################################
             #### Maybe try to condense the EE and sobol charting functions?
             ##################################################################

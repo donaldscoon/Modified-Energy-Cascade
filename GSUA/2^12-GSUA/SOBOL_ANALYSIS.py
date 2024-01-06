@@ -36,7 +36,6 @@ def SAMPLE(GSUA_type):
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
         np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
 
-
 #### THIS IS STUPID AND CONSUMED SO MUCH TIME
         # # Define the range of SIM_STRU values
         # sim_stru_values = [1, 2, 3]

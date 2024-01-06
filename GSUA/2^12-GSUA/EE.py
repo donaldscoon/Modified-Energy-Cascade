@@ -174,13 +174,8 @@ def CHART(GSUA_type, models, inputs, outputs):
                         sigma = Y[i]
                         mu_star_conf = X_conf[i]
 
-########################
-#BIG WHOOPSIE HERE
-# LOOKS LIKE ALL THE POINTS ARE CIRCLES
-# NEED TO ENUMERATE the markers
-########################
                         # Create the scatter plot
-                        plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
+                        plt.scatter(mu_star, sigma,    s=50, marker=marker, color= color)
 
                         # Adding Confidences
                         plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
@@ -233,7 +228,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                         mu_star_conf = X_conf[i]
 
                         # Create the scatter plot
-                        plt.scatter(mu_star, sigma,    s=50, marker= 'o', color= color)
+                        plt.scatter(mu_star, sigma,    s=50, marker=marker, color= color)
 
                         # Adding Confidences
                         plt.errorbar(mu_star,  sigma, xerr=mu_star_conf, ecolor=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
