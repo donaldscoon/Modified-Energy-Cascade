@@ -128,15 +128,16 @@ if __name__ == '__main__':
                 SIM_LENGTH = 30
                 if SIM_NUM % 100 == 0:
                     print(f"{SIM_NUM} / {total_sims} simulations completed")
-                if SIM_STRU == 1:
+
+                if 0.5 <= SIM_STRU < 1.5:
                     ami_count += 1
                     MEC_AMI_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
                                          GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Amitrano Model
-                elif SIM_STRU == 2:
+                elif 1.5 <= SIM_STRU < 2.5:
                     bos_count += 1
                     MEC_BOS_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
                                          GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Boscheri Model
-                else:
+                elif 2.5<= SIM_STRU < 3.5:
                     cav_count += 1
                     MEC_CAV_GSUA.RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM_STRU, 
                                          GSUA_type, inputs, outputs, models)      # Runs just the simulations for the Cavazzoni Model
