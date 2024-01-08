@@ -59,9 +59,9 @@ def path_names():
 
 
     ###### SCHOOL PATHS
-    gen_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/'
-    indiv_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Indiv/'
-    structure_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/SUS-Final-Structure-2/'
+    gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/'
+    indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Indiv/'
+    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA/Final-Structure/'
 
 
     return gen_path, indiv_path, structure_path
