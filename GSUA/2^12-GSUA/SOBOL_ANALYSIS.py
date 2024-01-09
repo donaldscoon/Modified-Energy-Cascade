@@ -35,39 +35,10 @@ def SAMPLE(GSUA_type):
     if GSUA_type == 'Structure': # Sampling procedure for the Structure GSUA
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
         np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
-
-#### THIS IS STUPID AND CONSUMED SO MUCH TIME
-        # # Define the range of SIM_STRU values
-        # sim_stru_values = [1, 2, 3]
-        # for i, X in enumerate(sp.samples):
-        #     # Use modulo operator to cycle through sim_stru_values
-        #     # X[5] = sim_stru_values[i % len(sim_stru_values)]
-        #     # X[5] = random.randint(1, 3)    # forces the sim structure distribution to dicrete uniform
-        #     np.savetxt(f'{gen_path}/STRUCTURE_SOBOL_parameters.txt', sp.samples)
-        #     SIM_TEMP = X[0]
-        #     SIM_RH   = X[1]
-        #     SIM_CO2  = X[2]
-        #     SIM_PPFD = X[3]
-        #     SIM_H    = X[4]
-        #     SIM_STRU = X[5]
-        #     SIM_NUM = i
-#### ------------------------------------------------
-
-
     elif GSUA_type == 'Individual': # Sampling procedure for the individual GSUA's
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
         np.savetxt(f'{gen_path}/INDIV_SOBOL_parameters.txt', sp.samples)
 
-#### THIS IS STUPID AND CONSUMED SO MUCH TIME
-        # for i, X in enumerate(sp.samples):
-        #     np.savetxt(f'{gen_path}/INDIV_SOBOL_parameters.txt', sp.samples)
-        #     SIM_TEMP = X[0]
-        #     SIM_RH   = X[1]
-        #     SIM_CO2  = X[2]
-        #     SIM_PPFD = X[3]
-        #     SIM_H    = X[4]
-        #     SIM_NUM = i
-#### ------------------------------------------------
 
 def ANALYZE(GSUA_type, models, inputs, outputs):
     # Create dataframe
@@ -245,7 +216,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                             fig, ax = plt.subplots()
                             
                             X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-                            Y = S2_small_df[column_name]
+                            Y = S2_small_df[column_name].clip(lower=0.0)
                             ciY = S2_small_df[confidence]
         
                             plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
@@ -315,7 +286,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                     confidence = f'{model_short_name}_{output_short_name}_{sobol_short_name}_conf'
 
                     if sobol_short_name == 'S2': # Charting for the S2 Results
-                        Y = S2_small_df[column_name]
+                        Y = S2_small_df[column_name].clip(lower=0.0)
                         ciY = S2_small_df[confidence]
                         ciY = np.nan_to_num(ciY, nan=0)
                         plt.errorbar(X_S2, Y, yerr=ciY, fmt='o', color=color, elinewidth=elinewidth, capsize=capsize, capthick=capthick)
@@ -361,7 +332,7 @@ def CHART(GSUA_type, models, inputs, outputs):
 
         
         ''' ##########################################################
-        SINGLE MODEL SOBOL OUTPUTS 
+        SINGLE MODEL SOBOL STRUCTURE OUTPUTS 
         ###########################################################'''
         for item in outputs:   # loop for outputs
             output_short_name = item[0]
@@ -392,7 +363,7 @@ def CHART(GSUA_type, models, inputs, outputs):
                         fig, ax = plt.subplots()
                         
                         X = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-                        Y = S2_small_df[column_name]
+                        Y = S2_small_df[column_name].clip(lower=0.0)
                         ciY = S2_small_df[confidence]
 
                         plt.errorbar(X, Y, yerr=ciY, fmt = 'o', label= '95% CI', color='black', elinewidth=elinewidth, capsize=capsize, capthick=capthick)
