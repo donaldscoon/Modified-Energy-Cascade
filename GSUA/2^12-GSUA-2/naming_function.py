@@ -53,15 +53,15 @@ def prob_spec(GSUA_type):
 
 def path_names():
     ###### HOME PATHS
-    gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/'
-    indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Indiv/'
-    structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Structure/'
-
-
-    # ###### SCHOOL PATHS
     # gen_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/'
     # indiv_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Indiv/'
     # structure_path = 'C:/Users/donal/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Structure/'
+
+
+    ###### SCHOOL PATHS
+    gen_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/'
+    indiv_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Indiv/'
+    structure_path = 'C:/Users/dcoon/Documents/GitHub/Modified-Energy-Cascade/GSUA/2^12-GSUA-2/Final-Structure/'
 
 
     return gen_path, indiv_path, structure_path

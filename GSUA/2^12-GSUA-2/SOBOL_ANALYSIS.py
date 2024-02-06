@@ -31,7 +31,7 @@ elinewidth, capsize, capthick = naming_function.conf_bars()
 
 def SAMPLE(GSUA_type):
     sp = naming_function.prob_spec(GSUA_type)
-    multiplier = 2**1
+    multiplier = 2**12
     
     if GSUA_type == 'Structure': # Sampling procedure for the Structure GSUA
         param_values = sp.sample_sobol(multiplier, calc_second_order=True) # sobol sampling 2**6 generates 768 samples
