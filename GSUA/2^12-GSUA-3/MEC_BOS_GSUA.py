@@ -289,8 +289,8 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
         P_NET = A*CQY*PPFD              # boscheri eq 13
         g_S = (1.717*T_LIGHT-19.96-10.54*VPD)*(P_NET/CO2) # boscheri unlabeled equation
         g_C = (g_A*g_S)*(g_A+g_S)**(-1) # boscheri unlabeled equation
-        HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10
-        # HTR = 3600*H*(MW_W/p_W)*g_C*(VPD/P_ATM) # cavazzonis DTR equation
+        # HTR = b*MW_W*g_C*(VPD/P_ATM)    # boscheir eq 10 Which is believed to be missing the density of water
+        HTR = b*(MW_W/p_W)*g_C*(VPD/P_ATM) # similar to the original but takes into account the density of water
         HCO2C = HOP*MW_CO2*MW_O2**(-1)  # boscheri eq 14
         HCO2P = HOC*MW_CO2*MW_O2**(-1)  # boscheri eq 15 
         HNC = HCGR*DRY_FR*NC_FR         # boscheri eq unlabeled
@@ -346,6 +346,7 @@ def RUN_SIM(SIM_TEMP, SIM_RH, SIM_CO2, SIM_PPFD, SIM_H, SIM_NUM, SIM_LENGTH, SIM
     df_sims = df_avg_sims
     df_sims['DCG'] = df_sum_sims['DCG']
     df_sims['CGR'] = df_sum_sims['CGR']
+    df_sims['DTR'] = df_sum_sims['DTR']
     df_sims.to_csv(f'{path}/GSUA_BOS_out/data/GSUA_BOS_Simulations.csv', mode='a', index=False, header=False) # exports entire final data frame to a CSV
     for output in outputs:      # This loop runs create text files for each /inputoutput of the MEC!
         with open(f'{path}/GSUA_BOS_out/data/GSUA_BOS_data_{output[0]}.txt', 'a') as file: # opens each output file in append mode
